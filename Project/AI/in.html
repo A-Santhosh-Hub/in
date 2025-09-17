@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Image Explorer | Trending AI-Generated Visuals</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+  <style>
+    :root {
+      --primary: #7c3aed;
+      --primary-light: #a78bfa;
+      --bg-dark: #0f0f13;
+      --bg-light: #fafafa;
+      --text-dark: #111;
+      --text-light: #f5f5f7;
+      --card-bg-dark: #1a1a22;
+      --card-bg-light: #ffffff;
+      --border-dark: #2a2a35;
+      --border-light: #eaeaea;
+      --shadow-dark: rgba(0, 0, 0, 0.4);
+      --shadow-light: rgba(0, 0, 0, 0.08);
+      --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      overflow-x: hidden;
+      transition: var(--transition);
+    }
+
+    body.light-theme {
+      background: var(--bg-light);
+      color: var(--text-dark);
+    }
+
+    /* Header & Navigation */
+    header {
+      padding: 1.5rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: rgba(15, 15, 19, 0.8);
+      transition: var(--transition);
+    }
+
+    body.light-theme header {
+      background: rgba(250, 250, 250, 0.8);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      background: linear-gradient(90deg, #a78bfa, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .theme-toggle {
+      width: 44px;
+      height: 24px;
+      border-radius: 9999px;
+      background: var(--border-dark);
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      outline: none;
+    }
+
+    .theme-toggle::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: white;
+      top: 2px;
+      left: 2px;
+      transition: var(--transition);
+    }
+
+    body.light-theme .theme-toggle {
+      background: var(--primary-light);
+    }
+
+    body.light-theme .theme-toggle::after {
+      transform: translateX(20px);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 4rem 5% 2rem;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards 0.2s;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 2.5rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards 0.4s;
+      line-height: 1.6;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Gallery Grid */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem 5% 4rem;
+      position: relative;
+    }
+
+    .gallery-item {
+      position: relative;
+      aspect-ratio: 3/4;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transform: translateY(50px);
+      opacity: 0;
+      animation: slideIn 0.6s ease forwards;
+      animation-delay: calc(var(--i) * 0.05s);
+      background: var(--card-bg-dark);
+      transition: var(--transition);
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    body.light-theme .gallery-item {
+      background: var(--card-bg-light);
+      box-shadow: 0 10px 30px var(--shadow-light);
+    }
+
+    body.light-theme .gallery-item:hover {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .image-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .image-before,
+    .image-after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .image-before {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    .gallery-item:hover .image-before,
+    .gallery-item.active .image-before {
+      opacity: 0;
+      transform: scale(1.05);
+    }
+
+    .image-after {
+      opacity: 0;
+      z-index: 2;
+    }
+
+    .gallery-item:hover .image-after,
+    .gallery-item.active .image-after {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+      padding: 2rem;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--card-bg-dark);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 900px;
+      max-height: 90vh;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+      position: relative;
+      transform: scale(0.95);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .modal-overlay.active .modal {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .modal-image-section {
+      position: relative;
+    }
+
+    .modal-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .modal-content {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .modal-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-prompt {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 1rem;
+      line-height: 1.6;
+      padding: 1.5rem;
+      background: var(--bg-dark);
+      border-radius: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-dark);
+      animation: glitchText 3s infinite;
+    }
+
+    body.light-theme .modal-prompt {
+      background: #f8f9fa;
+      border: 1px solid var(--border-light);
+      color: #2d3748;
+    }
+
+    .copy-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: auto;
+    }
+
+    .copy-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .copy-btn:hover {
+      background: #6d28d9;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(124, 58, 237, 0.4);
+    }
+
+    .copy-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: 0.5s;
+    }
+
+    .copy-btn:hover::after {
+      left: 100%;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) scale(0.8);
+      background: rgba(255, 255, 255, 0.95);
+      color: #111;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) scale(1);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: white;
+      font-size: 1.5rem;
+      transition: var(--transition);
+    }
+
+    .close-modal:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: rotate(90deg);
+    }
+
+    /* Footer */
+    footer {
+      padding: 2rem 5%;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #888;
+      border-top: 1px solid var(--border-dark);
+      transition: var(--transition);
+    }
+
+    body.light-theme footer {
+      border-top: 1px solid var(--border-light);
+      color: #666;
+    }
+
+    .developer-link {
+      color: var(--primary-light);
+      text-decoration: none;
+      position: relative;
+      padding-bottom: 2px;
+      transition: var(--transition);
+    }
+
+    .developer-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--primary-light);
+      transition: var(--transition);
+    }
+
+    .developer-link:hover {
+      color: var(--primary);
+    }
+
+    .developer-link:hover::after {
+      width: 100%;
+    }
+
+    /* Animations */
+    @keyframes glitchText {
+      0%, 100% { text-shadow: 0 0 0 transparent; }
+      2% { text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff; transform: translateX(-2px); }
+      4% { text-shadow: -2px 0 #00ffff, 2px 0 #ff00ff; transform: translateX(2px); }
+      6% { text-shadow: 0 0 0 transparent; transform: translateX(0); }
+      8%, 92% { text-shadow: 0 0 0 transparent; }
+      94% { text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff; transform: translateX(-2px); }
+      96% { text-shadow: -2px 0 #00ffff, 2px 0 #ff00ff; transform: translateX(2px); }
+      98% { text-shadow: 0 0 0 transparent; transform: translateX(0); }
+    }
+
+    @keyframes slideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Mobile Styles */
+    @media (max-width: 768px) {
+      .gallery {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+        padding: 1rem 2%;
+      }
+
+      .modal {
+        grid-template-columns: 1fr;
+        max-height: 95vh;
+      }
+
+      .modal-content {
+        padding: 1.5rem;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+    }
+
+    /* Loading Skeleton */
+    .skeleton {
+      animation: pulse 1.5s ease-in-out infinite;
+      background: linear-gradient(90deg, var(--card-bg-dark) 25%, #252530 50%, var(--card-bg-dark) 75%);
+      background-size: 200% 100%;
+    }
+
+    body.light-theme .skeleton {
+      background: linear-gradient(90deg, var(--card-bg-light) 25%, #f0f0f0 50%, var(--card-bg-light) 75%);
+    }
+
+    @keyframes pulse {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 9999px;
+    }
+
+    body.light-theme ::-webkit-scrollbar-thumb {
+      background: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">AI IMAGE EXPLORER</div>
+    <div class="nav-actions">
+      <button class="theme-toggle" aria-label="Toggle theme"></button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>Explore the Future of AI Imagery</h1>
+    <p>Hover or swipe to reveal AI-edited versions. Click any image to copy the prompt that created it.</p>
+  </section>
+
+  <main class="gallery" id="gallery">
+    <!-- Gallery items will be injected here by JavaScript -->
+  </main>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-image-section">
+        <img src="" alt="" class="modal-image" id="modalImage">
+        <button class="close-modal" id="closeModal">&times;</button>
+      </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Prompt Details</h2>
+        </div>
+        <div class="modal-prompt" id="promptText">Loading prompt...</div>
+        <div class="copy-container">
+          <button class="copy-btn" id="copyBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 16H6C4.89543 16 4 15.1046 4 14V6C4 4.89543 4.89543 4 6 4H14C15.1046 4 16 4.89543 16 6V8M12 20H18C19.1046 20 20 19.1046 20 18V12C20 10.8954 19.1046 10 18 10H12C10.8954 10 10 10.8954 10 12V18C10 19.1046 10.8954 20 12 20Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Copy Prompt
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copied to clipboard!</div>
+
+  <footer>
+    Developed By <a href="#" class="developer-link">Santhosh_A</a>
+  </footer>
+
+  <script>
+    // Sample data for demo purposes
+    const imageData = [
+      {
+        id: 1,
+        before: "as/o.jpg",
+        after: "as/1.jpg",
+        prompt: "Create a high-quality, cinematic image of a young man standing confidently in a racing pose, wearing a sleek F1 racer suit with BMW branding. The outfit should be modern, aerodynamic, and detailed like an authentic F1 uniform, including helmet in hand or on head. Place him beside a powerful BMW F1 car on a race track during sunset. The environment should be dramatic with glowing orange and purple skies, track reflections, and motion blur effects to give a sense of speed and intensity. The final image should focus on realism with a glossy finish, sharp details, and balanced lighting. The person’s face and body proportions should closely resemble the reference image provided."
+      },
+      {
+        id: 2,
+        before: "as/o.jpg",
+        after: "as/2.jpg",
+        prompt: "Create a magical, cinematic image of the reference picture but styled like a scene from a Harry Potter movie. The person is wearing a dark wizard’s cloak with intricate details and a scarf in Hogwarts house colors. The camera is at eye level, capturing the subject confidently facing the lens, as if ready for an adventure on a good day with soft, enchanted lighting. The environment is a mystical forest near Hogwarts, with soft floating dust particles and warm sunlight streaming through tall trees, evoking a golden hour atmosphere. The background is slightly foggy with hints of ancient stone pathways and distant castle towers, creating a sense of wonder and mystery. The expression on the person’s face is calm, brave, and curious—reflecting a young wizard ready to explore magic. The scene should feel atmospheric, story-driven, and full of warmth, with soft contrasts and textured shadows enhancing the cinematic look."
+      },
+      {
+        id: 3,
+        before: "as/o.jpg",
+        after: "as/3.jpg",
+        prompt: "Create a cinematic, high-contrast, and stylish image of the reference picture but transformed into a sleek “Men in Black” English movie scene. The subject is dressed in a perfectly tailored black suit with polished shoes, minimalist modern aesthetic, standing confidently in a subtle heroic pose. The environment is an urban sci-fi cityscape during golden hour, with soft sunlight reflecting off buildings and gentle lens flares. Only one person appears in the image, facing the camera with a calm, confident, and slightly mysterious expression. The background is slightly blurred, emphasizing depth and cinematic drama. Lighting is warm, with golden and subtle blue tones, casting dramatic shadows while highlighting the subject’s silhouette. Accessories like a slim tie, sunglasses, or futuristic gadget in hand are optional but enhance the “Men in Black” vibe. The atmosphere is tense but stylish, evoking mystery, sophistication, and cinematic storytelling."
+      },
+      {
+        id: 4,
+        before: "as/o.jpg",
+        after: "as/4.jpg",
+        prompt: "Create a hyper-realistic cinematic image based on the reference picture with only one person like me. The character should be dressed in stylish modern streetwear with sharp details, reflecting the fashion seen in GTA 6—think sleek jacket, dark pants, and cool accessories. It must feel like an action-packed open-world game scene with high-end textures and realistic lighting. The camera angle should be dynamic, slightly low and cinematic, as if following the character. The environment is a lively city street during golden hour—late afternoon with warm sunlight casting soft shadows. People are dressed in trendy outfits, but only the main character is in focus, with blurred background details suggesting a bustling but controlled environment. The atmosphere should be dramatic, bold, and immersive—where the lighting highlights facial features with sharp contrast and reflections. The background should feel urban, slightly gritty but polished, with subtle textures like concrete, neon signs, or futuristic architect"
+      },
+      {
+        id: 5,
+        before: "as/o.jpg",
+        after: "as/5.jpg",
+        prompt: "Create a cinematic and dreamy image of the reference picture but transformed into a soft yet vibrant scene inspired by a modern English web series. The person (me) is the only one in the frame, dressed in casual yet stylish clothing — light-colored shirt, denim jacket, and fitted pants — reflecting effortless charm. It’s a beautiful morning or late afternoon with soft golden light, giving a warm and pleasant glow. The environment is urban but calm — a quiet street with soft-focus greenery, cozy cafés, or lamp-lit pathways. The atmosphere is relaxed, friendly, and slightly romantic without being overdramatic. The man is standing naturally, hands in pockets or holding a coffee cup, against a soft blurred background with subtle texture, creating an artistic feel. The lighting is warm with soft shadows, evoking a sense of calm and contentment, as if it’s a perfect day for meaningful conversations and self-reflection. His expression is gentle, smiling slightly with thoughtful eyes — calm, happy, and quietly confident — giving off an approachable and introspective vibe. The image should feel like a snapshot from a heartwarming, story-driven web series where life’s simple moments are celebrated."
+      },
+      // {
+      //   id: 6,
+      //   before: "as/o.jpg",
+      //   after: "as/6.jpg",
+      //   prompt: "Underwater city with bioluminescent architecture, mermaid swimming through coral buildings, volumetric light rays, fantasy illustration, highly detailed, trending on ArtStation"
+      // }
+    ];
+
+    // DOM Elements
+    const gallery = document.getElementById('gallery');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalImage = document.getElementById('modalImage');
+    const promptText = document.getElementById('promptText');
+    const copyBtn = document.getElementById('copyBtn');
+    const closeModal = document.getElementById('closeModal');
+    const toast = document.getElementById('toast');
+    const themeToggle = document.querySelector('.theme-toggle');
+
+    // Create gallery items
+    function createGallery() {
+      gallery.innerHTML = '';
+      
+      // Add skeleton loaders first
+      for (let i = 0; i < 6; i++) {
+        const skeleton = document.createElement('div');
+        skeleton.className = 'gallery-item skeleton';
+        skeleton.style.animationDelay = `${i * 0.1}s`;
+        gallery.appendChild(skeleton);
+      }
+      
+      // Then load actual content
+      setTimeout(() => {
+        gallery.innerHTML = '';
+        imageData.forEach((item, index) => {
+          const galleryItem = document.createElement('div');
+          galleryItem.className = 'gallery-item';
+          galleryItem.style.setProperty('--i', index);
+          
+          const imageContainer = document.createElement('div');
+          imageContainer.className = 'image-container';
+          
+          const imgBefore = document.createElement('img');
+          imgBefore.src = item.before;
+          imgBefore.alt = `Original image ${index + 1}`;
+          imgBefore.className = 'image-before';
+          imgBefore.loading = 'lazy';
+          
+          const imgAfter = document.createElement('img');
+          imgAfter.src = item.after;
+          imgAfter.alt = `AI-edited image ${index + 1}`;
+          imgAfter.className = 'image-after';
+          imgAfter.loading = 'lazy';
+          
+          imageContainer.appendChild(imgBefore);
+          imageContainer.appendChild(imgAfter);
+          galleryItem.appendChild(imageContainer);
+          
+          galleryItem.addEventListener('click', () => openModal(item));
+          
+          // Touch support for mobile
+          let touchStartX = 0;
+          let touchEndX = 0;
+          
+          galleryItem.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+          });
+          
+          galleryItem.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX < touchStartX - 50) {
+              // Swipe left - show after image
+              galleryItem.classList.add('active');
+            } else if (touchEndX > touchStartX + 50) {
+              // Swipe right - show before image
+              galleryItem.classList.remove('active');
+            }
+          });
+          
+          gallery.appendChild(galleryItem);
+        });
+      }, 800);
+    }
+
+    // Open modal with selected image and prompt
+    function openModal(item) {
+      modalImage.src = item.after;
+      modalImage.alt = `AI-edited image ${item.id}`;
+      promptText.textContent = item.prompt;
+      modalOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      
+      // Trigger glitch animation
+      promptText.style.animation = 'none';
+      setTimeout(() => {
+        promptText.style.animation = 'glitchText 3s infinite';
+      }, 10);
+    }
+
+    // Close modal
+    function closeModalFunc() {
+      modalOverlay.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Copy prompt to clipboard
+    function copyPrompt() {
+      const text = promptText.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast();
+        
+        // Animation feedback
+        copyBtn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 6L9 17L4 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Copied!
+        `;
+        
+        setTimeout(() => {
+          copyBtn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 16H6C4.89543 16 4 15.1046 4 14V6C4 4.89543 4.89543 4 6 4H14C15.1046 4 16 4.89543 16 6V8M12 20H18C19.1046 20 20 19.1046 20 18V12C20 10.8954 19.1046 10 18 10H12C10.8954 10 10 10.8954 10 12V18C10 19.1046 10.8954 20 12 20Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Copy Prompt
+          `;
+        }, 2000);
+      });
+    }
+
+    // Show toast notification
+    function showToast() {
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    // Toggle theme
+    function toggleTheme() {
+      document.body.classList.toggle('light-theme');
+      localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+    }
+
+    // Load saved theme
+    function loadTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createGallery();
+      loadTheme();
+    });
+
+    // Event Listeners
+    closeModal.addEventListener('click', closeModalFunc);
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) closeModalFunc();
+    });
+    copyBtn.addEventListener('click', copyPrompt);
+    themeToggle.addEventListener('click', toggleTheme);
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+        closeModalFunc();
+      }
+    });
+
+    // Handle window resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        // Re-initialize animations if needed
+      }, 250);
+    });
+  </script>
+</body>
+</html>
