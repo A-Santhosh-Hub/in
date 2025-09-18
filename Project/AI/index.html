@@ -1,0 +1,563 @@
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Nano Banana Prompt Gallery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #1a1a2e;
+            --bg-glass: rgba(26, 26, 46, 0.4);
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0b0;
+            --border-color: rgba(138, 43, 226, 0.2);
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            /* Category Glow Colors */
+            --cyberpunk-glow: #00ffff;
+            --fantasy-glow: #be00ff;
+            --scifi-glow: #76ff03;
+            --abstract-glow: #ff00de;
+        }
+
+        html[data-theme='light'] {
+            --bg-primary: #f1f5f9;
+            --bg-secondary: #ffffff;
+            --bg-glass: rgba(255, 255, 255, 0.6);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --border-color: rgba(138, 43, 226, 0.2);
+            --accent-purple: #7c3aed;
+            --accent-cyan: #0891b2;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .font-mono { font-family: 'Roboto Mono', monospace; }
+
+        .glassmorphism {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .neon-glow-purple { box-shadow: 0 0 5px rgba(168, 85, 247, 0.8), 0 0 10px rgba(168, 85, 247, 0.6), 0 0 20px rgba(168, 85, 247, 0.4); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: #4a044e; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-purple); }
+
+        .gallery-card {
+            opacity: 0;
+            transform: translateY(30px) scale(0.98);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            border: 2px solid transparent;
+            box-shadow: 0 0 15px var(--glow-color), 0 0 30px var(--glow-color);
+        }
+        .gallery-card.is-visible { opacity: 1; transform: translateY(0) scale(1); }
+        
+        #modal.hidden { display: none; }
+        #modal { transition: opacity 0.3s ease; }
+
+        /* Vertical Before/After Slider */
+        .card-slider-container { position: relative; width: 100%; height: 100%; overflow: hidden; }
+        .card-slider-container .after-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center; }
+        .card-slider-container .before-image-wrapper { position: absolute; left:0; top: 0; width: 100%; height: 50%; overflow: hidden; }
+        .card-slider-container .before-image { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: contain; object-position: top center; max-height: none; }
+        
+        .slider-handle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+            background: transparent;
+            cursor: ns-resize;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            border-radius: 50%;
+        }
+        .slider-handle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px white, 0 0 15px white, 0 0 25px var(--glow-color);
+            transition: transform 0.3s ease;
+        }
+        .slider-handle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 45px;
+            height: 45px;
+            border: 2px solid white;
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+        
+        /* Favorite button */
+        .fav-btn .heart-icon { fill: transparent; stroke: white; stroke-width: 2px; transition: fill 0.2s ease; }
+        .fav-btn.is-favorite .heart-icon { fill: #ef4444; stroke: #ef4444; }
+
+        .particle {
+            position: absolute;
+            background: var(--glow-color);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 100;
+        }
+        @keyframes burst {
+            0% { transform: translate(0, 0) scale(0.5); opacity: 1; }
+            100% { transform: var(--transform-end) scale(0); opacity: 0; }
+        }
+
+        /* Skeleton Loader */
+        @keyframes pulse { 50% { opacity: 0.5; } }
+        .skeleton { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+    </style>
+    <script>
+        // Immediately sets theme from localStorage to prevent FOUC (Flash of Unstyled Content)
+        (function() {
+            const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            if (theme === 'light') { document.documentElement.setAttribute('data-theme', 'light'); } 
+            else { document.documentElement.removeAttribute('data-theme'); }
+        })();
+    </script>
+</head>
+<body>
+
+    <div id="root" class="min-h-screen p-4 sm:p-6 lg:p-8">
+        <header class="text-center mb-8 flex justify-between items-center max-w-7xl mx-auto">
+            <div></div>
+            <div class="flex-grow">
+                <h1 class="text-4xl sm:text-5xl font-bold tracking-wider" style="color: var(--text-primary);">AI Prompt <span style="color: var(--accent-purple);">Gallery</span></h1>
+                <p class="mt-2" style="color: var(--text-secondary);">Developed By Santhosh_A</p>
+            </div>
+            <button id="theme-toggle" class="p-2 rounded-full glassmorphism hover:bg-purple-500/30">
+                <svg id="theme-icon-sun" class="w-6 h-6" style="color: var(--text-primary);" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
+                <svg id="theme-icon-moon" class="w-6 h-6 hidden" style="color: var(--text-primary);" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>
+            </button>
+        </header>
+
+        <!-- Search and Filters -->
+        <div class="max-w-7xl mx-auto mb-8 space-y-4">
+            <div class="relative">
+                <input id="search-input" type="search" placeholder="Search images, styles, artists..." class="w-full pl-12 pr-4 py-3 border rounded-lg focus:ring-2  outline-none transition duration-300" style="background-color: var(--bg-secondary); border-color: var(--border-color); color: var(--text-primary); --tw-ring-color: var(--accent-purple);">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><svg class="w-5 h-5" style="color: var(--text-secondary);" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
+            </div>
+            <div class="flex flex-wrap gap-4 items-center justify-between">
+                 <div class="flex flex-wrap gap-4 items-center">
+                    <button id="show-favorites-btn" class="px-4 py-2 text-sm glassmorphism rounded-lg hover:bg-purple-500/30 transition duration-300 flex items-center gap-2"><svg class="w-4 h-4 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 4.529c2.349-2.109 5.979-2.039 8.242.228 2.262 2.268 2.34 5.88.236 8.236l-8.48 8.492-8.478-8.492c-2.104-2.356-2.025-5.968.236-8.236 2.265-2.264 5.888-2.34 8.244-.228z"/></svg><span>My Favorites</span></button>
+                    <div class="relative filter-dropdown">
+                        <button class="filter-btn px-4 py-2 text-sm glassmorphism rounded-lg hover:bg-purple-500/30 transition duration-300 flex items-center gap-2"><span>Style</span> <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg></button>
+                        <div class="filter-menu hidden absolute top-full left-0 mt-2 w-48 glassmorphism rounded-lg z-10 p-2 border" style="border-color: var(--border-color);">
+                            <a href="#" class="filter-option block px-3 py-2 text-sm rounded-md hover:bg-purple-500/30" data-filter="style" data-value="all">All Styles</a>
+                            <a href="#" class="filter-option block px-3 py-2 text-sm rounded-md hover:bg-purple-500/30" data-filter="style" data-value="Cyberpunk">Cyberpunk</a>
+                            <a href="#" class="filter-option block px-3 py-2 text-sm rounded-md hover:bg-purple-500/30" data-filter="style" data-value="Sci-Fi">Sci-Fi</a>
+                            <a href="#" class="filter-option block px-3 py-2 text-sm rounded-md hover:bg-purple-500/30" data-filter="style" data-value="Fantasy">Fantasy</a>
+                             <a href="#" class="filter-option block px-3 py-2 text-sm rounded-md hover:bg-purple-500/30" data-filter="style" data-value="Abstract">Abstract</a>
+                        </div>
+                    </div>
+                    <div class="relative filter-dropdown">
+                        <button class="filter-btn px-4 py-2 text-sm glassmorphism rounded-lg hover:bg-purple-500/30 transition duration-300 flex items-center gap-2"><span>Artist</span> <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg></button>
+                        <div class="filter-menu hidden absolute top-full left-0 mt-2 w-48 glassmorphism rounded-lg z-10 p-2 border" style="border-color: var(--border-color);">
+                            <a href="#" class="filter-option block px-3 py-2 text-sm rounded-md hover:bg-purple-500/30" data-filter="artist" data-value="all">All Artists</a>
+                            <a href="#" class="filter-option block px-3 py-2 text-sm rounded-md hover:bg-purple-500/30" data-filter="artist" data-value="Artgerm">Artgerm</a>
+                            <a href="#" class="filter-option block px-3 py-2 text-sm rounded-md hover:bg-purple-500/30" data-filter="artist" data-value="Greg Rutkowski">Greg Rutkowski</a>
+                            <a href="#" class="filter-option block px-3 py-2 text-sm rounded-md hover:bg-purple-500/30" data-filter="artist" data-value="Unreal Engine">Unreal Engine</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <span class="text-sm font-medium mr-2" style="color: var(--text-secondary);">Sort by:</span>
+                    <button class="sort-btn px-3 py-1 text-xs glassmorphism rounded-full hover:bg-purple-500/40 transition" data-sort="popular">Most Popular</button>
+                    <button class="sort-btn px-3 py-1 text-xs glassmorphism rounded-full hover:bg-purple-500/40 transition" data-sort="recent">Most Recent</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery Grid -->
+        <main id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
+            <!-- Skeleton Loader -->
+            <div class="gallery-card-skeleton h-96 rounded-xl skeleton" style="background-color: var(--bg-secondary);"></div>
+            <div class="gallery-card-skeleton h-96 rounded-xl skeleton" style="background-color: var(--bg-secondary);"></div>
+            <div class="gallery-card-skeleton h-96 rounded-xl skeleton" style="background-color: var(--bg-secondary);"></div>
+            <div class="gallery-card-skeleton h-96 rounded-xl skeleton" style="background-color: var(--bg-secondary);"></div>
+            <div class="gallery-card-skeleton h-96 rounded-xl skeleton" style="background-color: var(--bg-secondary);"></div>
+            <div class="gallery-card-skeleton h-96 rounded-xl skeleton" style="background-color: var(--bg-secondary);"></div>
+            <div class="gallery-card-skeleton h-96 rounded-xl skeleton" style="background-color: var(--bg-secondary);"></div>
+            <div class="gallery-card-skeleton h-96 rounded-xl skeleton" style="background-color: var(--bg-secondary);"></div>
+        </main>
+    </div>
+
+    <!-- Modal Popup -->
+    <div id="modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div id="modal-content" class="glassmorphism rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col md:flex-row overflow-hidden relative shadow-2xl shadow-purple-900/50" style="border-color: var(--accent-purple);">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-white bg-black/50 rounded-full p-2 z-20 hover:bg-purple-500 transition-colors"><svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
+            <div class="w-full md:w-3/5 h-64 md:h-auto relative"><img id="modal-image" src="" alt="AI Generated Artwork" class="w-full h-full object-contain"><button class="fav-btn absolute top-4 left-4 bg-black/50 rounded-full p-2 z-10" data-id=""><svg class="w-6 h-6 heart-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.001 4.529c2.349-2.109 5.979-2.039 8.242.228 2.262 2.268 2.34 5.88.236 8.236l-8.48 8.492-8.478-8.492c-2.104-2.356-2.025-5.968.236-8.236 2.265-2.264 5.888-2.34 8.244-.228z"/></svg></button></div>
+            <div class="w-full md:w-2/5 p-6 flex flex-col justify-center overflow-y-auto" style="background-color: var(--bg-secondary);">
+                <div class="mb-4"><h3 class="text-xl font-bold mb-2" style="color: var(--accent-purple);">Metadata</h3><div class="text-sm space-y-2" style="color: var(--text-secondary);"><p><strong>Artist:</strong> <span id="modal-artist"></span></p><p><strong>Style:</strong> <span id="modal-style"></span></p><p><strong>Popularity:</strong> <span id="modal-popularity"></span></p></div></div>
+                <h3 class="text-xl font-bold mb-2" style="color: var(--accent-purple);">AI Prompt</h3>
+                <div class="font-mono text-sm min-h-[100px] mb-6 p-4 rounded-lg" style="color: var(--accent-cyan); background-color: var(--bg-primary); border: 1px solid var(--border-color);"><p id="modal-prompt-text"></p></div>
+                <div class="flex gap-2">
+                    <button id="copy-prompt-btn" class="flex-grow flex items-center justify-center gap-3 px-6 py-3 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-500/50" style="background-color: var(--accent-purple);"><svg id="copy-icon" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><svg id="check-icon" class="w-5 h-5 hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span id="copy-btn-text">Copy Prompt</span></button>
+                     <a id="download-btn" href="#" download="artwork.png" class="p-3 bg-cyan-600 text-white font-semibold rounded-lg hover:bg-cyan-700 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-cyan-500/50"><svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="text-center p-6 mt-12 border-t" style="border-color: var(--border-color);"><p class="footer-glitch text-lg font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">Developed By Santhosh_A</p></footer>
+    <button id="back-to-top" class="hidden fixed bottom-20 md:bottom-6 right-6 w-12 h-12 bg-purple-600/80 backdrop-blur-sm rounded-full text-white flex items-center justify-center hover:bg-purple-500 transition-all duration-300 shadow-lg neon-glow-purple"><svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" /></svg></button>
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 glassmorphism p-2 z-40">
+        <div class="flex justify-around">
+            <a href="#" class="flex flex-col items-center p-2" style="color: var(--accent-purple);"><svg class="w-6 h-6 mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg><span class="text-xs">Gallery</span></a>
+            <a href="#" id="mobile-fav-btn" class="flex flex-col items-center p-2 hover:text-purple-400 transition" style="color: var(--text-secondary);"><svg class="w-6 h-6 mb-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 4.529c2.349-2.109 5.979-2.039 8.242.228 2.262 2.268 2.34 5.88.236 8.236l-8.48 8.492-8.478-8.492c-2.104-2.356-2.025-5.968.236-8.236 2.265-2.264 5.888-2.34 8.244-.228z"/></svg><span class="text-xs">Favorites</span></a>
+            <a href="#" class="flex flex-col items-center p-2 hover:text-purple-400 transition" style="color: var(--text-secondary);"><svg class="w-6 h-6 mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg><span class="text-xs">Contact</span></a>
+            <a href="#" class="flex flex-col items-center p-2 hover:text-purple-400 transition" style="color: var(--text-secondary);"><svg class="w-6 h-6 mb-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><span class="text-xs">Explore</span></a>
+        </div>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const getEl = (id) => document.getElementById(id);
+            const queryEl = (sel) => document.querySelector(sel);
+            const queryAll = (sel) => document.querySelectorAll(sel);
+
+            const galleryGrid = getEl('gallery-grid');
+            const modal = getEl('modal');
+            const modalImage = getEl('modal-image');
+            const modalPromptText = getEl('modal-prompt-text');
+            const modalArtist = getEl('modal-artist');
+            const modalStyle = getEl('modal-style');
+            const modalPopularity = getEl('modal-popularity');
+            const closeModalBtn = getEl('close-modal-btn');
+            const copyPromptBtn = getEl('copy-prompt-btn');
+            const copyBtnText = getEl('copy-btn-text');
+            const copyIcon = getEl('copy-icon');
+            const checkIcon = getEl('check-icon');
+            const backToTopBtn = getEl('back-to-top');
+            const searchInput = getEl('search-input');
+            const themeToggle = getEl('theme-toggle');
+            const sunIcon = getEl('theme-icon-sun');
+            const moonIcon = getEl('theme-icon-moon');
+            const downloadBtn = getEl('download-btn');
+            const showFavoritesBtn = getEl('show-favorites-btn');
+            const mobileFavBtn = getEl('mobile-fav-btn');
+
+            const galleryData = [
+                { id: 1, beforeSrc: 'as/o.jpg', afterSrc: 'as/1.jpg', prompt: 'A hyper-realistic cyberpunk city skyline at dusk, neon signs reflecting on wet asphalt, flying vehicles, cinematic lighting, 8k, octane render.', style: 'Cyberpunk', artist: 'Artgerm', date: '2023-03-15', popularity: 95 },
+                { id: 2, beforeSrc: 'as/o.jpg', afterSrc: 'as/2.jpg', prompt: 'Portrait of a futuristic warrior with bioluminescent tattoos, intricate mechanical details, depth of field, moody atmosphere, by artgerm and greg rutkowski.', style: 'Sci-Fi', artist: 'Greg Rutkowski', date: '2023-08-22', popularity: 98 },
+                { id: 3, beforeSrc: 'as/o.jpg', afterSrc: 'as/3.jpg', prompt: 'An enchanted forest from another dimension, glowing flora and fauna, ethereal light beams filtering through strange trees, fantasy art, highly detailed, unreal engine 5.', style: 'Fantasy', artist: 'Unreal Engine', date: '2023-10-01', popularity: 85 },
+                { id: 4, beforeSrc: 'as/o.jpg', afterSrc: 'as/4.jpg', prompt: 'Abstract representation of cosmic nebulae, swirling galaxies of purple and cyan, stars like diamonds, vast and epic scale, digital painting.', style: 'Abstract', artist: 'Artgerm', date: '2023-11-05', popularity: 91 },
+                { id: 5, beforeSrc: 'as/o.jpg', afterSrc: 'as/5.jpg', prompt: 'A sleek, chrome android meditating in a zen garden of neon sand, juxtaposition of nature and technology, peaceful yet futuristic, ray tracing, sharp focus.', style: 'Sci-Fi', artist: 'Greg Rutkowski', date: '2024-01-20', popularity: 88 },
+                { id: 6, beforeSrc: 'as/o.jpg', afterSrc: 'as/6.jpg', prompt: 'Close-up shot of a cybernetic eye, intricate iris details with glowing data streams, macro photography, hyper-detailed, metallic textures.', style: 'Cyberpunk', artist: 'Artgerm', date: '2024-02-11', popularity: 96 },
+                { id: 7, beforeSrc: 'as/o.jpg', afterSrc: 'as/7.jpg', prompt: 'An ancient leviathan rising from a digital ocean, made of circuits and light, stormy background, dramatic, Lovecraftian horror meets TRON.', style: 'Fantasy', artist: 'Unreal Engine', date: '2024-03-01', popularity: 93 },
+                { id: 8, beforeSrc: 'as/o.jpg', afterSrc: 'as/8.jpg', prompt: 'A lone figure in a glowing raincoat standing in a neon-drenched alley of Neo-Tokyo, Blade Runner aesthetic, cinematic, volumetric lighting.', style: 'Cyberpunk', artist: 'Greg Rutkowski', date: '2024-03-18', popularity: 99 }
+            ];
+
+            let state = {
+                favorites: JSON.parse(localStorage.getItem('favorites')) || [],
+                filters: { style: 'all', artist: 'all', showFavorites: false },
+                sortBy: 'popular',
+                currentPrompt: '',
+                glitchInterval: null,
+            };
+            
+            // --- Theme Manager ---
+            const syncThemeIcon = () => {
+                if (document.documentElement.hasAttribute('data-theme')) { // light mode
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                } else { // dark mode
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                }
+            };
+            themeToggle.addEventListener('click', () => {
+                const isLight = document.documentElement.hasAttribute('data-theme');
+                if (isLight) {
+                    document.documentElement.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    localStorage.setItem('theme', 'light');
+                }
+                syncThemeIcon();
+            });
+
+            // --- Favorites Manager ---
+            function toggleFavorite(id, btnElement) {
+                const favIndex = state.favorites.indexOf(id);
+                if (favIndex > -1) {
+                    state.favorites.splice(favIndex, 1);
+                } else {
+                    state.favorites.push(id);
+                    if (btnElement) createHeartParticles(btnElement);
+                }
+                localStorage.setItem('favorites', JSON.stringify(state.favorites));
+                updateAllFavoriteIcons(id);
+                if (state.filters.showFavorites) filterAndRender();
+            }
+            function updateAllFavoriteIcons(id) {
+                queryAll(`.fav-btn[data-id="${id}"]`).forEach(btn => btn.classList.toggle('is-favorite', state.favorites.includes(id)));
+            }
+            
+            function createHeartParticles(element) {
+                const rect = element.getBoundingClientRect();
+                const container = element.closest('.gallery-card') || document.body;
+                for (let i = 0; i < 15; i++) {
+                    const p = document.createElement('div');
+                    p.classList.add('particle');
+                    const angle = Math.random() * Math.PI * 2;
+                    const radius = 20 + Math.random() * 50;
+                    const xEnd = Math.cos(angle) * radius;
+                    const yEnd = Math.sin(angle) * radius;
+                    p.style.setProperty('--transform-end', `translate(${xEnd}px, ${yEnd}px)`);
+                    p.style.width = `${2 + Math.random() * 3}px`;
+                    p.style.height = p.style.width;
+                    p.style.left = `${rect.left + rect.width / 2 - container.getBoundingClientRect().left}px`;
+                    p.style.top = `${rect.top + rect.height / 2 - container.getBoundingClientRect().top}px`;
+                    container.appendChild(p);
+                    p.style.animation = `burst 0.6s ease-out forwards`;
+                    setTimeout(() => p.remove(), 600);
+                }
+            }
+            
+            // --- Render Functions ---
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+
+            function getGlowColor(style) {
+                switch(style.toLowerCase()) {
+                    case 'cyberpunk': return 'var(--cyberpunk-glow)';
+                    case 'fantasy': return 'var(--fantasy-glow)';
+                    case 'sci-fi': return 'var(--scifi-glow)';
+                    case 'abstract': return 'var(--abstract-glow)';
+                    default: return 'var(--accent-purple)';
+                }
+            }
+
+            function renderGallery(data) {
+                galleryGrid.innerHTML = data.map(item => {
+                    const isFavorite = state.favorites.includes(item.id);
+                    const glowColor = getGlowColor(item.style);
+                    return `
+                    <div class="gallery-card group relative aspect-[3/4] rounded-xl overflow-hidden cursor-pointer glassmorphism" data-id="${item.id}" style="--glow-color: ${glowColor};">
+                        <div class="absolute inset-0">
+                            <img src="${item.beforeSrc}" alt="Before" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 ease-in-out opacity-100 group-hover:opacity-0" draggable="false">
+                            <img src="${item.afterSrc}" alt="After" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 ease-in-out opacity-0 group-hover:opacity-100" draggable="false">
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent pointer-events-none">
+                            <h3 class="font-bold text-lg text-white">${item.style}</h3>
+                            <p class="text-sm text-slate-300">by ${item.artist}</p>
+                        </div>
+                        <button class="fav-btn absolute top-3 right-3 bg-black/50 rounded-full p-2 z-20 ${isFavorite ? 'is-favorite' : ''}" data-id="${item.id}">
+                             <svg class="w-6 h-6 heart-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.001 4.529c2.349-2.109 5.979-2.039 8.242.228 2.262 2.268 2.34 5.88.236 8.236l-8.48 8.492-8.478-8.492c-2.104-2.356-2.025-5.968.236-8.236 2.265-2.264 5.888-2.34 8.244-.228z"/></svg>
+                        </button>
+                    </div>`;
+                }).join('');
+                queryAll('.gallery-card').forEach(card => observer.observe(card));
+            }
+
+            
+            // --- Main Logic: Filter, Sort, Render ---
+            function filterAndRender() {
+                let data = [...galleryData];
+                
+                if (state.filters.showFavorites) {
+                    data = data.filter(item => state.favorites.includes(item.id));
+                    showFavoritesBtn.classList.add('bg-purple-500/30');
+                } else {
+                    showFavoritesBtn.classList.remove('bg-purple-500/30');
+                }
+
+                const searchTerm = searchInput.value.toLowerCase();
+                if (searchTerm) {
+                    data = data.filter(item => 
+                        item.prompt.toLowerCase().includes(searchTerm) || 
+                        item.style.toLowerCase().includes(searchTerm) || 
+                        item.artist.toLowerCase().includes(searchTerm)
+                    );
+                }
+
+                if (state.filters.style !== 'all') data = data.filter(item => item.style === state.filters.style);
+                if (state.filters.artist !== 'all') data = data.filter(item => item.artist === state.filters.artist);
+
+                if (state.sortBy === 'popular') data.sort((a,b) => b.popularity - a.popularity);
+                if (state.sortBy === 'recent') data.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+                if (data.length === 0) {
+                     galleryGrid.innerHTML = `<p class="col-span-full text-center py-16 text-lg" style="color: var(--text-secondary);">No results found.</p>`;
+                } else {
+                    renderGallery(data);
+                }
+            }
+            
+            // --- Event Listeners ---
+            searchInput.addEventListener('input', () => { state.filters.showFavorites = false; filterAndRender(); });
+            showFavoritesBtn.addEventListener('click', () => { state.filters.showFavorites = !state.filters.showFavorites; filterAndRender(); });
+            mobileFavBtn.addEventListener('click', (e) => { e.preventDefault(); state.filters.showFavorites = true; filterAndRender(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+            
+            queryAll('.sort-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    state.sortBy = btn.dataset.sort;
+                    queryAll('.sort-btn').forEach(b => b.classList.remove('bg-purple-500/30'));
+                    btn.classList.add('bg-purple-500/30');
+                    filterAndRender();
+                });
+            });
+
+            queryAll('.filter-dropdown').forEach(dropdown => {
+                const btn = dropdown.querySelector('.filter-btn');
+                const menu = dropdown.querySelector('.filter-menu');
+                btn.addEventListener('click', e => { e.stopPropagation(); menu.classList.toggle('hidden'); });
+                dropdown.querySelectorAll('.filter-option').forEach(option => {
+                    option.addEventListener('click', e => {
+                        e.preventDefault();
+                        state.filters[option.dataset.filter] = option.dataset.value;
+                        btn.querySelector('span').textContent = option.dataset.value === 'all' ? option.dataset.filter.charAt(0).toUpperCase() + option.dataset.filter.slice(1) : option.dataset.value;
+                        menu.classList.add('hidden');
+                        filterAndRender();
+                    });
+                });
+            });
+            document.addEventListener('click', () => queryAll('.filter-dropdown').forEach(d => d.querySelector('.filter-menu').classList.add('hidden')));
+
+
+            // --- ADVANCED Card Interactions ---
+            galleryGrid.addEventListener('mousemove', e => {
+                const card = e.target.closest('.gallery-card');
+                if (!card) return;
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const { width, height } = rect;
+                const rotateX = (y / height - 0.5) * -15; // Max 7.5 deg rotation
+                const rotateY = (x / width - 0.5) * 15;
+                card.style.transition = 'transform 0.1s ease-out';
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            galleryGrid.addEventListener('mouseleave', () => {
+                queryAll('.gallery-card').forEach(card => {
+                    card.style.transition = 'transform 0.5s ease-in-out';
+                    card.style.transform = 'rotateX(0) rotateY(0)';
+                });
+            });
+            
+            galleryGrid.addEventListener('click', (e) => {
+                const favBtn = e.target.closest('.fav-btn');
+                if (favBtn) {
+                    toggleFavorite(parseInt(favBtn.dataset.id), favBtn);
+                    return;
+                }
+
+                const card = e.target.closest('.gallery-card');
+                if (card) {
+                    const item = galleryData.find(d => d.id === parseInt(card.dataset.id));
+                    if (item) openModal(item);
+                }
+            });
+            
+            // --- Modal ---
+            const modalFavBtn = queryEl('#modal-content .fav-btn');
+            modalFavBtn.addEventListener('click', () => toggleFavorite(parseInt(modalFavBtn.dataset.id), modalFavBtn));
+
+            function openModal(item) {
+                state.currentPrompt = item.prompt;
+                modalImage.src = item.afterSrc;
+                downloadBtn.href = item.afterSrc;
+                modalArtist.textContent = item.artist;
+                modalStyle.textContent = item.style;
+                modalPopularity.textContent = item.popularity;
+                modalFavBtn.dataset.id = item.id;
+                modalFavBtn.classList.toggle('is-favorite', state.favorites.includes(item.id));
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                glitchEffect(modalPromptText, state.currentPrompt);
+            }
+            const closeModal = () => {
+                if (state.glitchInterval) { clearInterval(state.glitchInterval); state.glitchInterval = null; }
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            };
+            closeModalBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+            document.addEventListener('keydown', e => { if (e.key === "Escape") closeModal(); });
+
+            function glitchEffect(element, text) {
+                if (state.glitchInterval) clearInterval(state.glitchInterval);
+                let iteration = 0;
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+                state.glitchInterval = setInterval(() => {
+                    element.textContent = text.split('').map((letter, index) => {
+                        if(index < iteration) return text[index];
+                        return chars[Math.floor(Math.random() * chars.length)];
+                    }).join('');
+                    if(iteration >= text.length) {
+                        clearInterval(state.glitchInterval);
+                        state.glitchInterval = null;
+                    }
+                    iteration += text.length / 20; // Slower glitch
+                }, 30);
+            }
+            copyPromptBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(state.currentPrompt).then(() => {
+                    copyBtnText.textContent = 'Copied!';
+                    copyIcon.classList.add('hidden');
+                    checkIcon.classList.remove('hidden');
+                    setTimeout(() => {
+                        copyBtnText.textContent = 'Copy Prompt';
+                        copyIcon.classList.remove('hidden');
+                        checkIcon.classList.add('hidden');
+                    }, 2000);
+                }).catch(err => console.error('Failed to copy text: ', err));
+            });
+            
+            window.addEventListener('scroll', () => { backToTopBtn.classList.toggle('hidden', window.scrollY <= 300); });
+            backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+            // --- Initial Load ---
+            function init() {
+                syncThemeIcon();
+                queryEl('.sort-btn[data-sort="popular"]').classList.add('bg-purple-500/30');
+                setTimeout(() => { filterAndRender(); }, 500); // Shorten load simulation
+            }
+            
+            init();
+        });
+    </script>
+</body>
+</html>
+
