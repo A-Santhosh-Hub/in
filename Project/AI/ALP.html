@@ -1,0 +1,2741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ALP Astrology Content & Scheduling Tool - Developed By SanStudio">
+  <title>ALP Astrology - Content Manager</title>
+  
+  <!-- SheetJS for Excel Import/Export -->
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  
+  <!-- SortableJS for Drag and Drop -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  
+  <style>
+    /* ============================================
+       CSS VARIABLES & THEME
+    ============================================ */
+    :root {
+      /* Light Mode Colors */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f7;
+      --bg-card: #ffffff;
+      --text-primary: #1d1d1f;
+      --text-secondary: #6e6e73;
+      --text-tertiary: #86868b;
+      --accent: #007766;
+      --accent-hover: #005544;
+      --accent-light: rgba(0, 119, 102, 0.1);
+      --border: rgba(0, 0, 0, 0.1);
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
+      --overlay: rgba(0, 0, 0, 0.4);
+      --success: #34c759;
+      --error: #ff3b30;
+      --warning: #ff9500;
+      --quick-trending: #ff9500;
+    }
+    
+    [data-theme="dark"] {
+      /* Dark Mode Colors */
+      --bg-primary: #000000;
+      --bg-secondary: #1d1d1f;
+      --bg-card: #1d1d1f;
+      --text-primary: #f5f5f7;
+      --text-secondary: #a1a1a6;
+      --text-tertiary: #86868b;
+      --accent: #30d5c8;
+      --accent-hover: #5de0d5;
+      --accent-light: rgba(48, 213, 200, 0.15);
+      --border: rgba(255, 255, 255, 0.15);
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.5);
+      --overlay: rgba(0, 0, 0, 0.7);
+    }
+    
+    /* ============================================
+       RESET & BASE STYLES
+    ============================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background-color: var(--bg-primary);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    /* ============================================
+       TYPOGRAPHY
+    ============================================ */
+    h1 {
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    
+    h2 {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+    
+    h3 {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    
+    /* ============================================
+       LAYOUT
+    ============================================ */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background-color: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow);
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    
+    .header-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    /* ============================================
+       BUTTONS
+    ============================================ */
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    
+    .btn-primary {
+      background-color: var(--accent);
+      color: #ffffff;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    
+    .btn-secondary:hover {
+      background-color: var(--accent-light);
+    }
+    
+    .btn-danger {
+      background-color: var(--error);
+      color: #ffffff;
+    }
+    
+    .btn-danger:hover {
+      background-color: #d32f2f;
+    }
+    
+    .btn-icon {
+      padding: 8px;
+      background-color: transparent;
+      color: var(--text-secondary);
+      border: none;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-icon:hover {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+    
+    /* Floating Action Button */
+    .fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      color: #ffffff;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      box-shadow: var(--shadow-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 90;
+    }
+    
+    .fab:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* ============================================
+       FILTERS PANEL
+    ============================================ */
+    .filters-panel {
+      background-color: var(--bg-card);
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+    
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .filter-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .filter-input,
+    .filter-select {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+    }
+    
+    .filter-input:focus,
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
+    
+    .filters-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    /* ============================================
+       VIEW CONTROLS
+    ============================================ */
+    .view-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    
+    .view-toggle {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .view-btn {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-card);
+      color: var(--text-secondary);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    
+    .view-btn.active {
+      background-color: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+    
+    /* ============================================
+       ENTRIES LIST/GRID
+    ============================================ */
+    .entries-container {
+      margin-bottom: 40px;
+    }
+    
+    /* List View */
+    .entries-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    /* Grid View */
+    .entries-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    .entry-card {
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    
+    .entry-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+    
+    .entry-card.quick-trending {
+      border-left: 4px solid var(--quick-trending);
+    }
+    
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 12px;
+    }
+    
+    .entry-titles {
+      flex: 1;
+    }
+    
+    .entry-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    
+    .entry-raw-title {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+    
+    .entry-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    .entry-badge {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .badge-high {
+      background-color: rgba(255, 59, 48, 0.15);
+      color: var(--error);
+    }
+    
+    .badge-normal {
+      background-color: rgba(0, 122, 255, 0.15);
+      color: #007aff;
+    }
+    
+    .badge-low {
+      background-color: rgba(142, 142, 147, 0.15);
+      color: var(--text-secondary);
+    }
+    
+    .badge-quick-trending {
+      background-color: rgba(255, 149, 0, 0.15);
+      color: var(--quick-trending);
+    }
+    
+    .badge-draft {
+      background-color: rgba(142, 142, 147, 0.15);
+      color: var(--text-secondary);
+    }
+    
+    .badge-scheduled {
+      background-color: rgba(0, 122, 255, 0.15);
+      color: #007aff;
+    }
+    
+    .badge-posted {
+      background-color: rgba(52, 199, 89, 0.15);
+      color: var(--success);
+    }
+    
+    .entry-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    .entry-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .entry-platforms {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    
+    .platform-badge {
+      padding: 3px 8px;
+      background-color: var(--bg-secondary);
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    
+    /* ============================================
+       PAGINATION
+    ============================================ */
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    
+    .pagination-info {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    
+    .pagination-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    .page-input {
+      width: 60px;
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      text-align: center;
+    }
+    
+    /* ============================================
+       SLIDE-OVER PANEL
+    ============================================ */
+    .slide-over-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--overlay);
+      z-index: 200;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .slide-over-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .slide-over {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 90%;
+      max-width: 600px;
+      background-color: var(--bg-card);
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
+      z-index: 201;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+    }
+    
+    .slide-over.active {
+      transform: translateX(0);
+    }
+    
+    .slide-over-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background-color: var(--bg-card);
+      z-index: 10;
+    }
+    
+    .slide-over-body {
+      padding: 24px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    
+    .form-input,
+    .form-textarea,
+    .form-select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+    
+    .form-textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
+    
+    .checkbox-group,
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .checkbox-item,
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    
+    .checkbox-item input,
+    .radio-item input {
+      cursor: pointer;
+    }
+    
+    .multi-select-container {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px;
+      background-color: var(--bg-secondary);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .duration-inputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      margin-top: 20px;
+    }
+    
+    /* ============================================
+       MODAL
+    ============================================ */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--overlay);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .modal-backdrop.active {
+      display: flex;
+    }
+    
+    .modal {
+      background-color: var(--bg-card);
+      border-radius: 16px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      animation: modalFadeIn 0.3s ease;
+    }
+    
+    .modal-large {
+      max-width: 700px;
+    }
+    
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .modal-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .modal-body {
+      padding: 24px;
+    }
+    
+    .modal-footer {
+      padding: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    
+    /* ============================================
+       TOAST NOTIFICATIONS
+    ============================================ */
+    .toast-container {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      z-index: 400;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .toast {
+      background-color: var(--bg-card);
+      padding: 16px 20px;
+      border-radius: 12px;
+      box-shadow: var(--shadow-hover);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 300px;
+      max-width: 400px;
+      animation: toastSlideIn 0.3s ease;
+      border: 1px solid var(--border);
+    }
+    
+    @keyframes toastSlideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    .toast-success {
+      border-left: 4px solid var(--success);
+    }
+    
+    .toast-error {
+      border-left: 4px solid var(--error);
+    }
+    
+    .toast-warning {
+      border-left: 4px solid var(--warning);
+    }
+    
+    .toast-icon {
+      font-size: 20px;
+    }
+    
+    .toast-message {
+      flex: 1;
+      color: var(--text-primary);
+    }
+    
+    /* ============================================
+       FOOTER
+    ============================================ */
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 60px;
+      color: var(--text-tertiary);
+      font-size: 12px;
+    }
+    
+    /* ============================================
+       LOADING SPINNER
+    ============================================ */
+    .spinner {
+      border: 3px solid var(--border);
+      border-top: 3px solid var(--accent);
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--overlay);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+    }
+    
+    .loading-overlay.active {
+      display: flex;
+    }
+    
+    .loading-content {
+      background-color: var(--bg-card);
+      padding: 32px;
+      border-radius: 16px;
+      text-align: center;
+    }
+    
+    /* ============================================
+       UTILITY CLASSES
+    ============================================ */
+    .hidden {
+      display: none !important;
+    }
+    
+    .text-center {
+      text-align: center;
+    }
+    
+    .mt-8 {
+      margin-top: 8px;
+    }
+    
+    .mb-8 {
+      margin-bottom: 8px;
+    }
+    
+    .flex {
+      display: flex;
+    }
+    
+    .flex-wrap {
+      flex-wrap: wrap;
+    }
+    
+    .gap-8 {
+      gap: 8px;
+    }
+    
+    .gap-12 {
+      gap: 12px;
+    }
+    
+    .admin-warning {
+      background-color: rgba(255, 149, 0, 0.1);
+      border: 1px solid var(--warning);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    
+    .checkbox-wrapper {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+    
+    .checkbox-wrapper input {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+    
+    .no-results-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    
+    /* URL Input Styles */
+    .url-input-wrapper {
+      position: relative;
+      margin-bottom: 12px;
+    }
+    
+    .url-input-large {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'Courier New', monospace;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+      word-wrap: break-word;
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    .url-input-large:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
+    
+    .url-input-large.valid {
+      border-color: var(--success);
+      background-color: rgba(52, 199, 89, 0.05);
+    }
+    
+    .url-input-large.invalid {
+      border-color: var(--error);
+      background-color: rgba(255, 59, 48, 0.05);
+    }
+    
+    .url-validation-icon {
+      position: absolute;
+      right: 16px;
+      top: 16px;
+      font-size: 20px;
+    }
+    
+    .url-char-count {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    
+    .url-helper-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+      padding: 8px 12px;
+      background-color: var(--bg-secondary);
+      border-radius: 6px;
+      border-left: 3px solid var(--accent);
+    }
+    
+    .validation-message {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .validation-message.success {
+      background-color: rgba(52, 199, 89, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(52, 199, 89, 0.3);
+    }
+    
+    .validation-message.error {
+      background-color: rgba(255, 59, 48, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(255, 59, 48, 0.3);
+    }
+    
+    .btn-test-connection {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .sync-loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    /* ============================================
+       RESPONSIVE DESIGN
+    ============================================ */
+    @media (max-width: 768px) {
+      .container {
+        padding: 16px;
+      }
+      
+      h1 {
+        font-size: 28px;
+      }
+      
+      h2 {
+        font-size: 22px;
+      }
+      
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .filters-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .entries-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .slide-over {
+        width: 100%;
+        max-width: 100%;
+      }
+      
+      .view-controls {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .pagination {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .toast-container {
+        left: 20px;
+        right: 20px;
+      }
+      
+      .toast {
+        min-width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+  
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="spinner" style="margin: 0 auto 16px;"></div>
+      <div>Loading...</div>
+    </div>
+  </div>
+  
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <div class="header-title">🌟 ALP Astrology</div>
+      <div class="header-actions">
+        <button class="btn-icon" id="syncBtn" title="Sync Settings">
+          ⚙️
+        </button>
+        <button class="btn-icon" id="adminToggle" title="Admin Mode">
+          🔒
+        </button>
+        <button class="btn-icon" id="darkModeToggle" title="Toggle Dark Mode">
+          🌙
+        </button>
+        <button class="btn btn-secondary" id="exportBtn">
+          📊 Export
+        </button>
+        <button class="btn btn-secondary" id="importBtn">
+          📥 Import
+        </button>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Admin Warning -->
+    <div class="admin-warning hidden" id="adminWarning">
+      <span>⚠️</span>
+      <div>
+        <strong>Admin Mode Active:</strong> The admin password is stored in frontend code. For production, use server-side authentication.
+      </div>
+    </div>
+    
+    <!-- Sync Notice -->
+    <div class="admin-warning" style="background-color: rgba(0, 122, 255, 0.1); border-color: #007aff;">
+      <span>📅</span>
+      <div>
+        <strong>Scheduling Notice:</strong> Scheduling is for planning only. This app does not auto-post to social platforms. Export scheduled items for use with third-party schedulers.
+      </div>
+    </div>
+    
+    <!-- Filters Panel -->
+    <div class="filters-panel">
+      <h3>Filters</h3>
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label class="filter-label">Search</label>
+          <input type="text" class="filter-input" id="searchInput" placeholder="Search titles...">
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Date From</label>
+          <input type="date" class="filter-input" id="dateFromInput">
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Date To</label>
+          <input type="date" class="filter-input" id="dateToInput">
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Platform</label>
+          <select class="filter-select" id="platformFilter">
+            <option value="">All Platforms</option>
+            <option value="YouTube">YouTube</option>
+            <option value="YT Short">YT Short</option>
+            <option value="Facebook">Facebook</option>
+            <option value="Instagram">Instagram</option>
+            <option value="WhatsApp">WhatsApp</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Editor</label>
+          <select class="filter-select" id="editorFilter">
+            <option value="">All Editors</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Priority</label>
+          <select class="filter-select" id="priorityFilter">
+            <option value="">All Priorities</option>
+            <option value="High">High</option>
+            <option value="Normal">Normal</option>
+            <option value="Low">Low</option>
+            <option value="Quick-Trending">Quick-Trending</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Status</label>
+          <select class="filter-select" id="statusFilter">
+            <option value="">All Status</option>
+            <option value="Draft">Draft</option>
+            <option value="Scheduled">Scheduled</option>
+            <option value="Posted">Posted</option>
+          </select>
+        </div>
+      </div>
+      <div class="filters-actions">
+        <button class="btn btn-secondary" id="clearFiltersBtn">Clear Filters</button>
+        <button class="btn btn-secondary" id="exportScheduleBtn">📅 Export Schedule</button>
+        <button class="btn btn-secondary" id="backupBtn">💾 Backup JSON</button>
+        <button class="btn btn-secondary" id="restoreBtn">📂 Restore JSON</button>
+        <button class="btn btn-danger hidden" id="bulkDeleteBtn">🗑️ Bulk Delete</button>
+      </div>
+    </div>
+    
+    <!-- View Controls -->
+    <div class="view-controls">
+      <div class="view-toggle">
+        <button class="view-btn active" data-view="list">📋</button>
+        <button class="view-btn" data-view="grid">⊞</button>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <label style="color: var(--text-secondary); font-size: 13px;">Items per page:</label>
+        <select class="filter-select" id="itemsPerPage" style="width: auto;">
+          <option value="10">10</option>
+          <option value="25" selected>25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Entries Container -->
+    <div class="entries-container">
+      <div class="entries-list" id="entriesList"></div>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="pagination">
+      <div class="pagination-info" id="paginationInfo">Showing 0 of 0</div>
+      <div class="pagination-controls">
+        <button class="btn btn-secondary" id="prevPageBtn">← Previous</button>
+        <input type="number" class="page-input" id="pageInput" min="1" value="1">
+        <span class="pagination-info" id="totalPages">of 1</span>
+        <button class="btn btn-secondary" id="nextPageBtn">Next →</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <footer>
+    Developed By SanStudio
+  </footer>
+  
+  <!-- Floating Action Button -->
+  <button class="fab" id="addEntryBtn" title="Add New Entry">+</button>
+  
+  <!-- Slide-over Panel for Create/Edit Entry -->
+  <div class="slide-over-backdrop" id="slideOverBackdrop"></div>
+  <div class="slide-over" id="slideOver">
+    <div class="slide-over-header">
+      <h2 id="slideOverTitle">Add New Entry</h2>
+      <button class="btn-icon" id="closeSlideOver">✕</button>
+    </div>
+    <div class="slide-over-body">
+      <form id="entryForm">
+        <div class="form-group">
+          <label class="form-label">Raw Title *</label>
+          <input type="text" class="form-input" id="rawTitle" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Final Title *</label>
+          <input type="text" class="form-input" id="finalTitle" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Artists *</label>
+          <div class="multi-select-container" id="artistsContainer"></div>
+          <div style="margin-top: 8px; display: flex; gap: 8px;">
+            <input type="text" class="form-input" id="newArtist" placeholder="Add new artist">
+            <button type="button" class="btn btn-secondary" id="addArtistBtn">Add</button>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Editor *</label>
+          <select class="form-select" id="editor" required></select>
+          <div style="margin-top: 8px; display: flex; gap: 8px;">
+            <input type="text" class="form-input" id="newEditor" placeholder="Add new editor">
+            <button type="button" class="btn btn-secondary" id="addEditorBtn">Add</button>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Priority *</label>
+          <div class="radio-group">
+            <label class="radio-item">
+              <input type="radio" name="priority" value="High" required>
+              <span>High</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="priority" value="Normal" checked>
+              <span>Normal</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="priority" value="Low">
+              <span>Low</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="priority" value="Quick-Trending">
+              <span>Quick-Trending ⚡</span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Platforms *</label>
+          <div class="checkbox-group" id="platformsContainer"></div>
+        </div>
+        
+        <div class="form-group" id="durationsGroup" style="display: none;">
+          <label class="form-label">Durations (HH:MM or MM:SS)</label>
+          <div class="duration-inputs" id="durationsContainer"></div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Scheduled Date &amp; Time *</label>
+          <input type="datetime-local" class="form-input" id="scheduledAt" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Status *</label>
+          <select class="form-select" id="status" required>
+            <option value="Draft">Draft</option>
+            <option value="Scheduled">Scheduled</option>
+            <option value="Posted">Posted</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">YouTube Link</label>
+          <input type="url" class="form-input" id="youtubeLink" placeholder="https://youtube.com/...">
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" style="flex: 1;">Save Entry</button>
+          <button type="button" class="btn btn-secondary" id="cancelFormBtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Sync Settings Modal -->
+  <div class="modal-backdrop" id="syncModal">
+    <div class="modal modal-large">
+      <div class="modal-header">
+        <h3>Google Sheets Sync Settings</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Enable Google Sheets Sync</label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="enableSync">
+            <span>Enable sync with Google Sheets</span>
+          </label>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Google Apps Script Web App URL *</label>
+          <div class="url-helper-text">
+            📋 Paste your complete Google Apps Script Web App URL here. It should look like:<br>
+            <code style="font-size: 11px;">https://script.google.com/macros/s/[UNIQUE_ID]/exec</code>
+          </div>
+          <div class="url-input-wrapper">
+            <textarea class="url-input-large" id="syncUrl" placeholder="https://script.google.com/macros/s/AKfycbx...YOUR_SCRIPT_ID.../exec" rows="3"></textarea>
+            <span class="url-validation-icon" id="urlValidationIcon"></span>
+          </div>
+          <div class="url-char-count" id="urlCharCount">0 characters</div>
+          <div id="urlValidationMessage"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Connection Test</label>
+          <button class="btn btn-secondary btn-test-connection" id="testConnectionBtn" disabled>
+            <span>🔌</span>
+            <span>Test Connection</span>
+          </button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Synced</label>
+          <div style="color: var(--text-secondary); font-size: 13px;" id="lastSynced">Never</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sync Status</label>
+          <div style="color: var(--text-secondary); font-size: 13px;" id="syncStatus">Not configured</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="syncNowBtn" disabled>Sync Now</button>
+        <button class="btn btn-secondary" id="closeSyncModal">Close</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Export Modal -->
+  <div class="modal-backdrop" id="exportModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Export to Excel</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="radio-item">
+            <input type="radio" name="exportType" value="all" checked>
+            <span>Export all entries</span>
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="exportType" value="filtered">
+            <span>Export filtered entries</span>
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="exportType" value="dateRange">
+            <span>Export date range</span>
+          </label>
+        </div>
+        <div class="form-group" id="exportDateRangeGroup" style="display: none;">
+          <label class="form-label">Date Range</label>
+          <div style="display: flex; gap: 12px;">
+            <input type="date" class="form-input" id="exportDateFrom">
+            <input type="date" class="form-input" id="exportDateTo">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="confirmExportBtn">Export</button>
+        <button class="btn btn-secondary" id="closeExportModal">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Hidden file inputs -->
+  <input type="file" id="fileInput" accept=".xlsx,.xls" style="display: none;">
+  <input type="file" id="jsonInput" accept=".json" style="display: none;">
+  
+  <script>
+    // ============================================
+    // STATE MANAGEMENT (In-Memory Only)
+    // ============================================
+    
+    // Default Google Apps Script URL for ALP Astrology
+    const DEFAULT_GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwD-7xecn6BQNH_fGf2IYWNafIkRK1fe5Q5M10WG45VS3OXEi4E2WMZrm3OutjUFLiBLg/exec';
+    
+    const DEFAULT_SYNC_SETTINGS = {
+      enabled: true,
+      url: DEFAULT_GOOGLE_APPS_SCRIPT_URL,
+      lastSynced: null,
+      lastSyncStatus: 'Not synced yet'
+    };
+    
+    let entries = [];
+    let filteredEntries = [];
+    let currentPage = 1;
+    let itemsPerPage = 25;
+    let currentView = 'list';
+    let isAdminMode = false;
+    let editingEntryId = null;
+    let selectedEntries = new Set();
+    let darkMode = false;
+    
+    // Initialize sync settings with defaults (in-memory only)
+    let syncSettings = { ...DEFAULT_SYNC_SETTINGS };
+    
+    // Default data
+    const DEFAULT_ARTISTS = [
+      'Dr. S. Pothuvudaimoorthy',
+      'Astrologer Kumar',
+      'Vimala Devi',
+      'Rajesh Sharma',
+      'Priya Menon'
+    ];
+    
+    const DEFAULT_EDITORS = [
+      'Editor 1 - Sanjay',
+      'Editor 2 - Ravi',
+      'Editor 3 - Meena',
+      'Editor 4 - Arun'
+    ];
+    
+    const PLATFORMS = ['YouTube', 'YT Short', 'Facebook', 'Instagram', 'WhatsApp'];
+    
+    let availableArtists = [...DEFAULT_ARTISTS];
+    let availableEditors = [...DEFAULT_EDITORS];
+    
+    // Admin password
+    const ADMIN_PASSWORD = 'Alp@5656';
+    
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeApp();
+      setupEventListeners();
+      loadSampleData();
+      renderEntries();
+    });
+    
+    function initializeApp() {
+      // Initialize sync settings with defaults
+      syncSettings = { ...DEFAULT_SYNC_SETTINGS };
+      
+      // Populate form
+      populateArtistsCheckboxes();
+      populateEditorSelect();
+      populatePlatformsCheckboxes();
+      populateEditorFilter();
+      
+      // Show sync ready message in console
+      console.log('✅ Google Sheets Sync configured with default URL');
+    }
+    
+    function loadSampleData() {
+      // Load sample data on first load
+      entries = getSampleData();
+    }
+    
+    function getSampleData() {
+      return [
+        {
+          id: '550e8400-e29b-41d4-a716-446655440000',
+          rawTitle: 'Rahu Ketu Transit 2025 Effects',
+          finalTitle: '2025 Rahu Ketu Peyarchi - Complete Analysis | ALP Method',
+          artists: ['Dr. S. Pothuvudaimoorthy', 'Astrologer Kumar'],
+          editor: 'Editor 1 - Sanjay',
+          priority: 'High',
+          platforms: ['YouTube', 'Facebook', 'Instagram'],
+          durations: { YouTube: '15:30', Facebook: '15:30', Instagram: '0:59' },
+          scheduledAt: '2025-11-10T10:00:00',
+          status: 'Scheduled',
+          youtubeLink: 'https://youtube.com/watch?v=example1',
+          createdAt: '2025-11-01T08:30:00',
+          updatedAt: '2025-11-01T08:30:00'
+        },
+        {
+          id: '550e8400-e29b-41d4-a716-446655440001',
+          rawTitle: 'Daily Astrology Prediction Nov 5',
+          finalTitle: 'இன்றைய ராசி பலன் - நவம்பர் 5, 2025 | ALP Astrology',
+          artists: ['Vimala Devi'],
+          editor: 'Editor 2 - Ravi',
+          priority: 'Quick-Trending',
+          platforms: ['YT Short', 'Instagram', 'WhatsApp'],
+          durations: { 'YT Short': '0:45', Instagram: '0:45', WhatsApp: '0:45' },
+          scheduledAt: '2025-11-05T06:00:00',
+          status: 'Posted',
+          youtubeLink: 'https://youtube.com/shorts/example2',
+          createdAt: '2025-11-04T18:00:00',
+          updatedAt: '2025-11-05T06:30:00'
+        },
+        {
+          id: '550e8400-e29b-41d4-a716-446655440002',
+          rawTitle: 'Marriage Yoga in Horoscope',
+          finalTitle: 'திருமண யோகம் - ஜாதகத்தில் எப்படி கண்டுபிடிப்பது? | ALP Method',
+          artists: ['Dr. S. Pothuvudaimoorthy', 'Rajesh Sharma'],
+          editor: 'Editor 3 - Meena',
+          priority: 'Normal',
+          platforms: ['YouTube', 'Facebook'],
+          durations: { YouTube: '20:15', Facebook: '20:15' },
+          scheduledAt: '2025-11-12T14:00:00',
+          status: 'Draft',
+          youtubeLink: '',
+          createdAt: '2025-11-02T10:15:00',
+          updatedAt: '2025-11-03T16:45:00'
+        },
+        {
+          id: '550e8400-e29b-41d4-a716-446655440003',
+          rawTitle: 'Saturn Remedies 2025',
+          finalTitle: 'Sani Pariharam - 2025 | Powerful Remedies',
+          artists: ['Priya Menon'],
+          editor: 'Editor 1 - Sanjay',
+          priority: 'High',
+          platforms: ['YouTube', 'Instagram', 'WhatsApp'],
+          durations: { YouTube: '12:00', Instagram: '0:55', WhatsApp: '0:55' },
+          scheduledAt: '2025-11-08T16:00:00',
+          status: 'Scheduled',
+          youtubeLink: '',
+          createdAt: '2025-11-01T12:00:00',
+          updatedAt: '2025-11-02T09:30:00'
+        },
+        {
+          id: '550e8400-e29b-41d4-a716-446655440004',
+          rawTitle: 'Career Growth Jupiter Transit',
+          finalTitle: 'வேலை உயர்வு - குரு பெயர்ச்சி பலன்கள் 2025',
+          artists: ['Dr. S. Pothuvudaimoorthy'],
+          editor: 'Editor 4 - Arun',
+          priority: 'Low',
+          platforms: ['YouTube'],
+          durations: { YouTube: '18:45' },
+          scheduledAt: '2025-11-15T11:00:00',
+          status: 'Draft',
+          youtubeLink: '',
+          createdAt: '2025-10-30T14:20:00',
+          updatedAt: '2025-11-01T11:10:00'
+        }
+      ];
+    }
+    
+    // ============================================
+    // STATE PERSISTENCE (In-Memory)
+    // Note: All data is stored in memory only.
+    // Changes persist only during the current session.
+    // ============================================
+    function saveState() {
+      // Data persists in memory only during this session
+      // No external storage used
+    }
+    
+    // ============================================
+    // EVENT LISTENERS
+    // ============================================
+    function setupEventListeners() {
+      // Header actions
+      document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
+      document.getElementById('adminToggle').addEventListener('click', toggleAdminMode);
+      document.getElementById('syncBtn').addEventListener('click', openSyncModal);
+      document.getElementById('exportBtn').addEventListener('click', () => showModal('exportModal'));
+      document.getElementById('importBtn').addEventListener('click', () => document.getElementById('fileInput').click());
+      
+      // FAB
+      document.getElementById('addEntryBtn').addEventListener('click', openCreateForm);
+      
+      // Slide-over
+      document.getElementById('slideOverBackdrop').addEventListener('click', closeSlideOver);
+      document.getElementById('closeSlideOver').addEventListener('click', closeSlideOver);
+      document.getElementById('cancelFormBtn').addEventListener('click', closeSlideOver);
+      document.getElementById('entryForm').addEventListener('submit', handleFormSubmit);
+      
+      // View toggle
+      document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', () => changeView(btn.dataset.view));
+      });
+      
+      // Filters
+      document.getElementById('searchInput').addEventListener('input', applyFilters);
+      document.getElementById('dateFromInput').addEventListener('change', applyFilters);
+      document.getElementById('dateToInput').addEventListener('change', applyFilters);
+      document.getElementById('platformFilter').addEventListener('change', applyFilters);
+      document.getElementById('editorFilter').addEventListener('change', applyFilters);
+      document.getElementById('priorityFilter').addEventListener('change', applyFilters);
+      document.getElementById('statusFilter').addEventListener('change', applyFilters);
+      document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
+      
+      // Pagination
+      document.getElementById('itemsPerPage').addEventListener('change', (e) => {
+        itemsPerPage = parseInt(e.target.value);
+        currentPage = 1;
+        renderEntries();
+      });
+      document.getElementById('prevPageBtn').addEventListener('click', () => changePage(-1));
+      document.getElementById('nextPageBtn').addEventListener('click', () => changePage(1));
+      document.getElementById('pageInput').addEventListener('change', (e) => {
+        currentPage = parseInt(e.target.value) || 1;
+        renderEntries();
+      });
+      
+      // Form helpers
+      document.getElementById('addArtistBtn').addEventListener('click', addNewArtist);
+      document.getElementById('addEditorBtn').addEventListener('click', addNewEditor);
+      document.getElementById('platformsContainer').addEventListener('change', updateDurationFields);
+      
+      // Modals
+      document.getElementById('closeSyncModal').addEventListener('click', closeSyncModal);
+      document.getElementById('syncNowBtn').addEventListener('click', syncNow);
+      document.getElementById('closeExportModal').addEventListener('click', () => hideModal('exportModal'));
+      document.getElementById('confirmExportBtn').addEventListener('click', exportToExcel);
+      
+      // Export type radio
+      document.querySelectorAll('input[name="exportType"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          const dateRangeGroup = document.getElementById('exportDateRangeGroup');
+          dateRangeGroup.style.display = e.target.value === 'dateRange' ? 'block' : 'none';
+        });
+      });
+      
+      // File inputs
+      document.getElementById('fileInput').addEventListener('change', handleFileImport);
+      document.getElementById('jsonInput').addEventListener('change', handleJsonRestore);
+      
+      // Other buttons
+      document.getElementById('exportScheduleBtn').addEventListener('click', exportSchedule);
+      document.getElementById('backupBtn').addEventListener('click', downloadBackup);
+      document.getElementById('restoreBtn').addEventListener('click', () => document.getElementById('jsonInput').click());
+      document.getElementById('bulkDeleteBtn').addEventListener('click', bulkDelete);
+      
+      // Sync settings
+      document.getElementById('enableSync').addEventListener('change', (e) => {
+        syncSettings.enabled = e.target.checked;
+        updateSyncButtonStates();
+        updateSyncStatusDisplay();
+      });
+      document.getElementById('syncUrl').addEventListener('input', handleUrlInput);
+      document.getElementById('testConnectionBtn').addEventListener('click', testConnection);
+    }
+    
+    // ============================================
+    // UI FUNCTIONS
+    // ============================================
+    function toggleDarkMode() {
+      darkMode = !darkMode;
+      document.body.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+      document.getElementById('darkModeToggle').textContent = darkMode ? '☀️' : '🌙';
+    }
+    
+    function toggleAdminMode() {
+      if (!isAdminMode) {
+        const password = prompt('Enter admin password:');
+        if (password === ADMIN_PASSWORD) {
+          isAdminMode = true;
+          document.getElementById('adminToggle').textContent = '🔓';
+          document.getElementById('adminWarning').classList.remove('hidden');
+          document.getElementById('bulkDeleteBtn').classList.remove('hidden');
+          showToast('Admin mode enabled', 'success');
+          renderEntries();
+        } else {
+          showToast('Incorrect password', 'error');
+        }
+      } else {
+        isAdminMode = false;
+        selectedEntries.clear();
+        document.getElementById('adminToggle').textContent = '🔒';
+        document.getElementById('adminWarning').classList.add('hidden');
+        document.getElementById('bulkDeleteBtn').classList.add('hidden');
+        showToast('Admin mode disabled', 'success');
+        renderEntries();
+      }
+    }
+    
+    function showModal(modalId) {
+      document.getElementById(modalId).classList.add('active');
+    }
+    
+    function hideModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+    
+    // Open sync modal with pre-filled defaults
+    function openSyncModal() {
+      // Pre-fill URL field with default or current URL
+      const urlInput = document.getElementById('syncUrl');
+      urlInput.value = syncSettings.url || DEFAULT_GOOGLE_APPS_SCRIPT_URL;
+      
+      // Check sync enable checkbox (default is enabled)
+      const enableCheckbox = document.getElementById('enableSync');
+      enableCheckbox.checked = syncSettings.enabled;
+      
+      // Update last synced time
+      const lastSyncedEl = document.getElementById('lastSynced');
+      if (syncSettings.lastSynced) {
+        lastSyncedEl.textContent = new Date(syncSettings.lastSynced).toLocaleString();
+      } else {
+        lastSyncedEl.textContent = 'Never';
+      }
+      
+      // Trigger URL validation to show status
+      handleUrlInput({ target: urlInput });
+      
+      // Update status display
+      updateSyncStatusDisplay();
+      
+      // Show modal
+      showModal('syncModal');
+    }
+    
+    // Close sync modal and save settings
+    function closeSyncModal() {
+      // Save current settings to memory
+      syncSettings.url = document.getElementById('syncUrl').value.trim();
+      syncSettings.enabled = document.getElementById('enableSync').checked;
+      
+      hideModal('syncModal');
+    }
+    
+    // Update sync status display
+    function updateSyncStatusDisplay() {
+      const statusEl = document.getElementById('syncStatus');
+      const enabled = document.getElementById('enableSync').checked;
+      const url = document.getElementById('syncUrl').value.trim();
+      const validation = validateGoogleAppsScriptURL(url);
+      
+      if (!enabled) {
+        statusEl.textContent = 'Sync is disabled';
+      } else if (!validation.valid) {
+        statusEl.textContent = 'Please configure a valid URL';
+      } else {
+        statusEl.textContent = '✅ Google Sheets Sync is configured and ready!';
+      }
+    }
+    
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      
+      const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : '⚠';
+      toast.innerHTML = `
+        <div class="toast-icon">${icon}</div>
+        <div class="toast-message">${message}</div>
+      `;
+      
+      document.getElementById('toastContainer').appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+    
+    function showLoading() {
+      document.getElementById('loadingOverlay').classList.add('active');
+    }
+    
+    function hideLoading() {
+      document.getElementById('loadingOverlay').classList.remove('active');
+    }
+    
+    function changeView(view) {
+      currentView = view;
+      document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.view === view);
+      });
+      renderEntries();
+    }
+    
+    // ============================================
+    // FORM FUNCTIONS
+    // ============================================
+    function openCreateForm() {
+      editingEntryId = null;
+      document.getElementById('slideOverTitle').textContent = 'Add New Entry';
+      document.getElementById('entryForm').reset();
+      document.querySelector('input[name="priority"][value="Normal"]').checked = true;
+      updateDurationFields();
+      document.getElementById('slideOverBackdrop').classList.add('active');
+      document.getElementById('slideOver').classList.add('active');
+    }
+    
+    function openEditForm(entryId) {
+      editingEntryId = entryId;
+      const entry = entries.find(e => e.id === entryId);
+      if (!entry) return;
+      
+      document.getElementById('slideOverTitle').textContent = 'Edit Entry';
+      
+      // Populate form
+      document.getElementById('rawTitle').value = entry.rawTitle;
+      document.getElementById('finalTitle').value = entry.finalTitle;
+      document.getElementById('editor').value = entry.editor;
+      document.querySelector(`input[name="priority"][value="${entry.priority}"]`).checked = true;
+      document.getElementById('scheduledAt').value = entry.scheduledAt.slice(0, 16);
+      document.getElementById('status').value = entry.status;
+      document.getElementById('youtubeLink').value = entry.youtubeLink || '';
+      
+      // Artists
+      document.querySelectorAll('#artistsContainer input[type="checkbox"]').forEach(cb => {
+        cb.checked = entry.artists.includes(cb.value);
+      });
+      
+      // Platforms
+      document.querySelectorAll('#platformsContainer input[type="checkbox"]').forEach(cb => {
+        cb.checked = entry.platforms.includes(cb.value);
+      });
+      
+      updateDurationFields();
+      
+      // Durations
+      Object.keys(entry.durations).forEach(platform => {
+        const input = document.getElementById(`duration-${platform}`);
+        if (input) input.value = entry.durations[platform];
+      });
+      
+      document.getElementById('slideOverBackdrop').classList.add('active');
+      document.getElementById('slideOver').classList.add('active');
+    }
+    
+    function closeSlideOver() {
+      document.getElementById('slideOverBackdrop').classList.remove('active');
+      document.getElementById('slideOver').classList.remove('active');
+      editingEntryId = null;
+    }
+    
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      
+      const selectedArtists = Array.from(document.querySelectorAll('#artistsContainer input[type="checkbox"]:checked'))
+        .map(cb => cb.value);
+      
+      if (selectedArtists.length === 0) {
+        showToast('Please select at least one artist', 'error');
+        return;
+      }
+      
+      const selectedPlatforms = Array.from(document.querySelectorAll('#platformsContainer input[type="checkbox"]:checked'))
+        .map(cb => cb.value);
+      
+      if (selectedPlatforms.length === 0) {
+        showToast('Please select at least one platform', 'error');
+        return;
+      }
+      
+      const durations = {};
+      selectedPlatforms.forEach(platform => {
+        const input = document.getElementById(`duration-${platform}`);
+        durations[platform] = input ? input.value : '0:00';
+      });
+      
+      const priority = document.querySelector('input[name="priority"]:checked').value;
+      
+      const entry = {
+        id: editingEntryId || generateUUID(),
+        rawTitle: document.getElementById('rawTitle').value,
+        finalTitle: document.getElementById('finalTitle').value,
+        artists: selectedArtists,
+        editor: document.getElementById('editor').value,
+        priority: priority,
+        platforms: selectedPlatforms,
+        durations: durations,
+        scheduledAt: document.getElementById('scheduledAt').value,
+        status: document.getElementById('status').value,
+        youtubeLink: document.getElementById('youtubeLink').value,
+        createdAt: editingEntryId ? entries.find(e => e.id === editingEntryId).createdAt : new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      if (editingEntryId) {
+        const index = entries.findIndex(e => e.id === editingEntryId);
+        entries[index] = entry;
+        showToast('Entry updated successfully', 'success');
+      } else {
+        entries.unshift(entry);
+        showToast('Entry created successfully', 'success');
+      }
+      
+      saveState();
+      closeSlideOver();
+      applyFilters();
+    }
+    
+    function populateArtistsCheckboxes() {
+      const container = document.getElementById('artistsContainer');
+      container.innerHTML = availableArtists.map(artist => `
+        <label class="checkbox-item">
+          <input type="checkbox" value="${artist}">
+          <span>${artist}</span>
+        </label>
+      `).join('');
+    }
+    
+    function populateEditorSelect() {
+      const select = document.getElementById('editor');
+      select.innerHTML = availableEditors.map(editor => 
+        `<option value="${editor}">${editor}</option>`
+      ).join('');
+    }
+    
+    function populateEditorFilter() {
+      const select = document.getElementById('editorFilter');
+      const currentValue = select.value;
+      select.innerHTML = '<option value="">All Editors</option>' + 
+        availableEditors.map(editor => 
+          `<option value="${editor}">${editor}</option>`
+        ).join('');
+      if (currentValue) select.value = currentValue;
+    }
+    
+    function populatePlatformsCheckboxes() {
+      const container = document.getElementById('platformsContainer');
+      container.innerHTML = PLATFORMS.map(platform => `
+        <label class="checkbox-item">
+          <input type="checkbox" value="${platform}">
+          <span>${platform}</span>
+        </label>
+      `).join('');
+    }
+    
+    function updateDurationFields() {
+      const selectedPlatforms = Array.from(document.querySelectorAll('#platformsContainer input[type="checkbox"]:checked'))
+        .map(cb => cb.value);
+      
+      const container = document.getElementById('durationsContainer');
+      const group = document.getElementById('durationsGroup');
+      
+      if (selectedPlatforms.length > 0) {
+        group.style.display = 'block';
+        container.innerHTML = selectedPlatforms.map(platform => `
+          <div class="filter-group">
+            <label class="filter-label">${platform}</label>
+            <input type="text" class="form-input" id="duration-${platform}" 
+                   placeholder="HH:MM" pattern="[0-9]{1,2}:[0-9]{2}" value="0:00">
+          </div>
+        `).join('');
+      } else {
+        group.style.display = 'none';
+      }
+    }
+    
+    function addNewArtist() {
+      const input = document.getElementById('newArtist');
+      const artist = input.value.trim();
+      if (!artist) return;
+      
+      if (availableArtists.includes(artist)) {
+        showToast('Artist already exists', 'error');
+        return;
+      }
+      
+      availableArtists.push(artist);
+      saveState();
+      populateArtistsCheckboxes();
+      input.value = '';
+      showToast('Artist added successfully', 'success');
+    }
+    
+    function addNewEditor() {
+      const input = document.getElementById('newEditor');
+      const editor = input.value.trim();
+      if (!editor) return;
+      
+      if (availableEditors.includes(editor)) {
+        showToast('Editor already exists', 'error');
+        return;
+      }
+      
+      availableEditors.push(editor);
+      saveState();
+      populateEditorSelect();
+      populateEditorFilter();
+      input.value = '';
+      showToast('Editor added successfully', 'success');
+    }
+    
+    // ============================================
+    // CRUD OPERATIONS
+    // ============================================
+    function deleteEntry(entryId) {
+      if (!confirm('Are you sure you want to delete this entry?')) return;
+      
+      entries = entries.filter(e => e.id !== entryId);
+      selectedEntries.delete(entryId);
+      saveState();
+      showToast('Entry deleted successfully', 'success');
+      applyFilters();
+    }
+    
+    function toggleQuickTrending(entryId) {
+      const entry = entries.find(e => e.id === entryId);
+      if (!entry) return;
+      
+      if (entry.priority === 'Quick-Trending') {
+        entry.priority = 'Normal';
+        showToast('Quick-Trending removed', 'success');
+      } else {
+        entry.priority = 'Quick-Trending';
+        showToast('Marked as Quick-Trending', 'success');
+      }
+      
+      entry.updatedAt = new Date().toISOString();
+      saveState();
+      applyFilters();
+    }
+    
+    function bulkDelete() {
+      if (selectedEntries.size === 0) {
+        showToast('No entries selected', 'error');
+        return;
+      }
+      
+      if (!confirm(`Delete ${selectedEntries.size} selected entries?`)) return;
+      
+      entries = entries.filter(e => !selectedEntries.has(e.id));
+      selectedEntries.clear();
+      saveState();
+      showToast('Entries deleted successfully', 'success');
+      applyFilters();
+    }
+    
+    // ============================================
+    // FILTERING & SEARCH
+    // ============================================
+    function applyFilters() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const dateFrom = document.getElementById('dateFromInput').value;
+      const dateTo = document.getElementById('dateToInput').value;
+      const platform = document.getElementById('platformFilter').value;
+      const editor = document.getElementById('editorFilter').value;
+      const priority = document.getElementById('priorityFilter').value;
+      const status = document.getElementById('statusFilter').value;
+      
+      filteredEntries = entries.filter(entry => {
+        // Search
+        if (search && !entry.rawTitle.toLowerCase().includes(search) && 
+            !entry.finalTitle.toLowerCase().includes(search)) {
+          return false;
+        }
+        
+        // Date range
+        if (dateFrom && entry.scheduledAt < dateFrom) return false;
+        if (dateTo && entry.scheduledAt > dateTo + 'T23:59:59') return false;
+        
+        // Platform
+        if (platform && !entry.platforms.includes(platform)) return false;
+        
+        // Editor
+        if (editor && entry.editor !== editor) return false;
+        
+        // Priority
+        if (priority && entry.priority !== priority) return false;
+        
+        // Status
+        if (status && entry.status !== status) return false;
+        
+        return true;
+      });
+      
+      // Sort: Quick-Trending first, then by scheduled date
+      filteredEntries.sort((a, b) => {
+        if (a.priority === 'Quick-Trending' && b.priority !== 'Quick-Trending') return -1;
+        if (b.priority === 'Quick-Trending' && a.priority !== 'Quick-Trending') return 1;
+        return new Date(b.scheduledAt) - new Date(a.scheduledAt);
+      });
+      
+      currentPage = 1;
+      renderEntries();
+    }
+    
+    function clearFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('dateFromInput').value = '';
+      document.getElementById('dateToInput').value = '';
+      document.getElementById('platformFilter').value = '';
+      document.getElementById('editorFilter').value = '';
+      document.getElementById('priorityFilter').value = '';
+      document.getElementById('statusFilter').value = '';
+      applyFilters();
+    }
+    
+    // ============================================
+    // RENDERING
+    // ============================================
+    function renderEntries() {
+      const container = document.getElementById('entriesList');
+      const start = (currentPage - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const pageEntries = filteredEntries.slice(start, end);
+      
+      // Update container class
+      container.className = currentView === 'grid' ? 'entries-grid' : 'entries-list';
+      
+      if (pageEntries.length === 0) {
+        container.innerHTML = `
+          <div class="no-results">
+            <div class="no-results-icon">📭</div>
+            <h3>No entries found</h3>
+            <p>Try adjusting your filters or create a new entry</p>
+          </div>
+        `;
+      } else {
+        container.innerHTML = pageEntries.map(entry => renderEntryCard(entry)).join('');
+      }
+      
+      updatePagination();
+      
+      // Add event listeners to cards
+      container.querySelectorAll('.entry-card').forEach(card => {
+        const entryId = card.dataset.id;
+        
+        card.addEventListener('click', (e) => {
+          // Don't open edit if clicking on action buttons
+          if (e.target.closest('.entry-actions') || e.target.closest('.checkbox-wrapper')) return;
+          openEditForm(entryId);
+        });
+      });
+      
+      // Add event listeners to action buttons
+      container.querySelectorAll('.btn-quick-trending').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleQuickTrending(btn.dataset.id);
+        });
+      });
+      
+      container.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteEntry(btn.dataset.id);
+        });
+      });
+      
+      container.querySelectorAll('.entry-checkbox').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+          if (e.target.checked) {
+            selectedEntries.add(e.target.dataset.id);
+          } else {
+            selectedEntries.delete(e.target.dataset.id);
+          }
+        });
+      });
+    }
+    
+    function renderEntryCard(entry) {
+      const isQuickTrending = entry.priority === 'Quick-Trending';
+      const scheduledDate = new Date(entry.scheduledAt);
+      const formattedDate = scheduledDate.toLocaleDateString('en-US', { 
+        month: 'short', day: 'numeric', year: 'numeric' 
+      });
+      const formattedTime = scheduledDate.toLocaleTimeString('en-US', { 
+        hour: '2-digit', minute: '2-digit' 
+      });
+      
+      return `
+        <div class="entry-card ${isQuickTrending ? 'quick-trending' : ''}" data-id="${entry.id}">
+          ${isAdminMode ? `
+            <div class="checkbox-wrapper">
+              <input type="checkbox" class="entry-checkbox" data-id="${entry.id}" 
+                     ${selectedEntries.has(entry.id) ? 'checked' : ''}>
+            </div>
+          ` : ''}
+          
+          <div class="entry-header">
+            <div class="entry-titles">
+              <div class="entry-title">${entry.finalTitle}</div>
+              <div class="entry-raw-title">${entry.rawTitle}</div>
+            </div>
+            <div class="entry-actions">
+              <button class="btn-icon btn-quick-trending" data-id="${entry.id}" title="Toggle Quick-Trending">
+                ${isQuickTrending ? '⚡' : '⭐'}
+              </button>
+              ${isAdminMode ? `
+                <button class="btn-icon btn-delete" data-id="${entry.id}" title="Delete" style="color: var(--error);">
+                  🗑️
+                </button>
+              ` : ''}
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+            <span class="entry-badge badge-${entry.priority.toLowerCase().replace('-', '')}">
+              ${entry.priority}
+            </span>
+            <span class="entry-badge badge-${entry.status.toLowerCase()}">
+              ${entry.status}
+            </span>
+          </div>
+          
+          <div class="entry-platforms">
+            ${entry.platforms.map(p => `<span class="platform-badge">${p}</span>`).join('')}
+          </div>
+          
+          <div class="entry-meta">
+            <div class="entry-meta-item">
+              <span>👤</span>
+              <span>${entry.artists.join(', ')}</span>
+            </div>
+            <div class="entry-meta-item">
+              <span>✂️</span>
+              <span>${entry.editor}</span>
+            </div>
+            <div class="entry-meta-item">
+              <span>📅</span>
+              <span>${formattedDate} ${formattedTime}</span>
+            </div>
+          </div>
+          
+          ${entry.youtubeLink ? `
+            <div class="entry-meta" style="margin-top: 8px;">
+              <a href="${entry.youtubeLink}" target="_blank" 
+                 style="color: var(--accent); text-decoration: none;"
+                 onclick="event.stopPropagation();">
+                🔗 YouTube Link
+              </a>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+    
+    function updatePagination() {
+      const totalPages = Math.ceil(filteredEntries.length / itemsPerPage);
+      const start = (currentPage - 1) * itemsPerPage + 1;
+      const end = Math.min(currentPage * itemsPerPage, filteredEntries.length);
+      
+      document.getElementById('paginationInfo').textContent = 
+        `Showing ${filteredEntries.length ? start : 0}-${end} of ${filteredEntries.length}`;
+      document.getElementById('totalPages').textContent = `of ${totalPages || 1}`;
+      document.getElementById('pageInput').value = currentPage;
+      document.getElementById('pageInput').max = totalPages || 1;
+      
+      document.getElementById('prevPageBtn').disabled = currentPage === 1;
+      document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+    }
+    
+    function changePage(delta) {
+      const totalPages = Math.ceil(filteredEntries.length / itemsPerPage);
+      currentPage = Math.max(1, Math.min(currentPage + delta, totalPages));
+      renderEntries();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    // ============================================
+    // EXCEL IMPORT/EXPORT
+    // ============================================
+    function exportToExcel() {
+      const exportType = document.querySelector('input[name="exportType"]:checked').value;
+      let dataToExport = [];
+      
+      if (exportType === 'all') {
+        dataToExport = entries;
+      } else if (exportType === 'filtered') {
+        dataToExport = filteredEntries;
+      } else if (exportType === 'dateRange') {
+        const dateFrom = document.getElementById('exportDateFrom').value;
+        const dateTo = document.getElementById('exportDateTo').value;
+        
+        if (!dateFrom || !dateTo) {
+          showToast('Please select date range', 'error');
+          return;
+        }
+        
+        dataToExport = entries.filter(entry => {
+          return entry.scheduledAt >= dateFrom && entry.scheduledAt <= dateTo + 'T23:59:59';
+        });
+      }
+      
+      if (dataToExport.length === 0) {
+        showToast('No data to export', 'error');
+        return;
+      }
+      
+      showLoading();
+      
+      // Prepare data for Excel
+      const excelData = dataToExport.map(entry => ({
+        'ID': entry.id,
+        'Raw Title': entry.rawTitle,
+        'Final Title': entry.finalTitle,
+        'Artists': entry.artists.join(', '),
+        'Editor': entry.editor,
+        'Priority': entry.priority,
+        'Platforms': entry.platforms.join(', '),
+        'Durations': Object.entries(entry.durations).map(([k, v]) => `${k}: ${v}`).join(', '),
+        'Scheduled At': new Date(entry.scheduledAt).toLocaleString(),
+        'Status': entry.status,
+        'YouTube Link': entry.youtubeLink || '',
+        'Created At': new Date(entry.createdAt).toLocaleString(),
+        'Updated At': new Date(entry.updatedAt).toLocaleString()
+      }));
+      
+      // Create workbook
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(excelData);
+      XLSX.utils.book_append_sheet(wb, ws, 'ALP Content');
+      
+      // Download
+      const fileName = `ALP_Astrology_${new Date().toISOString().split('T')[0]}.xlsx`;
+      XLSX.writeFile(wb, fileName);
+      
+      hideLoading();
+      hideModal('exportModal');
+      showToast(`Exported ${dataToExport.length} entries`, 'success');
+    }
+    
+    function handleFileImport(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      showLoading();
+      
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const data = new Uint8Array(event.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+          
+          let added = 0;
+          let updated = 0;
+          
+          jsonData.forEach(row => {
+            const id = row['ID'] || row['id'] || generateUUID();
+            const existingIndex = entries.findIndex(e => e.id === id);
+            
+            // Parse artists and platforms
+            const artists = (row['Artists'] || row['artists'] || '').split(',').map(s => s.trim()).filter(Boolean);
+            const platforms = (row['Platforms'] || row['platforms'] || '').split(',').map(s => s.trim()).filter(Boolean);
+            
+            // Parse durations
+            const durationsStr = row['Durations'] || row['durations'] || '';
+            const durations = {};
+            durationsStr.split(',').forEach(d => {
+              const parts = d.split(':');
+              if (parts.length >= 2) {
+                const platform = parts[0].trim();
+                const duration = parts.slice(1).join(':').trim();
+                durations[platform] = duration;
+              }
+            });
+            
+            const entry = {
+              id: id,
+              rawTitle: row['Raw Title'] || row['rawTitle'] || '',
+              finalTitle: row['Final Title'] || row['finalTitle'] || '',
+              artists: artists.length > 0 ? artists : ['Unknown'],
+              editor: row['Editor'] || row['editor'] || availableEditors[0],
+              priority: row['Priority'] || row['priority'] || 'Normal',
+              platforms: platforms.length > 0 ? platforms : ['YouTube'],
+              durations: Object.keys(durations).length > 0 ? durations : { YouTube: '0:00' },
+              scheduledAt: row['Scheduled At'] || row['scheduledAt'] || new Date().toISOString(),
+              status: row['Status'] || row['status'] || 'Draft',
+              youtubeLink: row['YouTube Link'] || row['youtubeLink'] || '',
+              createdAt: row['Created At'] || row['createdAt'] || new Date().toISOString(),
+              updatedAt: new Date().toISOString()
+            };
+            
+            if (existingIndex >= 0) {
+              entries[existingIndex] = entry;
+              updated++;
+            } else {
+              entries.push(entry);
+              added++;
+            }
+          });
+          
+          saveState();
+          applyFilters();
+          hideLoading();
+          showToast(`Import complete: ${added} added, ${updated} updated`, 'success');
+        } catch (error) {
+          hideLoading();
+          showToast('Error importing file: ' + error.message, 'error');
+        }
+      };
+      
+      reader.readAsArrayBuffer(file);
+      e.target.value = '';
+    }
+    
+    function exportSchedule() {
+      const scheduled = entries.filter(e => e.status === 'Scheduled');
+      
+      if (scheduled.length === 0) {
+        showToast('No scheduled entries to export', 'error');
+        return;
+      }
+      
+      showLoading();
+      
+      const excelData = scheduled.map(entry => ({
+        'Title': entry.finalTitle,
+        'Platforms': entry.platforms.join(', '),
+        'Scheduled Date': new Date(entry.scheduledAt).toLocaleDateString(),
+        'Scheduled Time': new Date(entry.scheduledAt).toLocaleTimeString(),
+        'Status': entry.status,
+        'Priority': entry.priority
+      }));
+      
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(excelData);
+      XLSX.utils.book_append_sheet(wb, ws, 'Schedule');
+      
+      const fileName = `ALP_Schedule_${new Date().toISOString().split('T')[0]}.xlsx`;
+      XLSX.writeFile(wb, fileName);
+      
+      hideLoading();
+      showToast(`Exported ${scheduled.length} scheduled entries`, 'success');
+    }
+    
+    // ============================================
+    // JSON BACKUP/RESTORE
+    // ============================================
+    function downloadBackup() {
+      const backup = {
+        version: '1.0',
+        exportDate: new Date().toISOString(),
+        entries: entries,
+        artists: availableArtists,
+        editors: availableEditors
+      };
+      
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ALP_Backup_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      showToast('Backup downloaded', 'success');
+    }
+    
+    function handleJsonRestore(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const backup = JSON.parse(event.target.result);
+          
+          if (!backup.entries) {
+            throw new Error('Invalid backup file');
+          }
+          
+          if (!confirm(`This will restore ${backup.entries.length} entries. Continue?`)) {
+            return;
+          }
+          
+          entries = backup.entries;
+          if (backup.artists) availableArtists = backup.artists;
+          if (backup.editors) availableEditors = backup.editors;
+          
+          saveState();
+          populateArtistsCheckboxes();
+          populateEditorSelect();
+          populateEditorFilter();
+          applyFilters();
+          
+          showToast('Backup restored successfully', 'success');
+        } catch (error) {
+          showToast('Error restoring backup: ' + error.message, 'error');
+        }
+      };
+      
+      reader.readAsText(file);
+      e.target.value = '';
+    }
+    
+    // ============================================
+    // GOOGLE SHEETS SYNC
+    // ============================================
+    
+    // URL Validation Function
+    function validateGoogleAppsScriptURL(url) {
+      // Check if empty
+      if (!url || url.trim() === '') {
+        return { valid: false, error: '❌ URL field cannot be empty' };
+      }
+      
+      const trimmedUrl = url.trim();
+      
+      // Check if starts correctly
+      if (!trimmedUrl.startsWith('https://script.google.com/macros/s/')) {
+        return { 
+          valid: false, 
+          error: '❌ URL must start with: https://script.google.com/macros/s/' 
+        };
+      }
+      
+      // Check if ends correctly
+      if (!trimmedUrl.endsWith('/exec')) {
+        return { 
+          valid: false, 
+          error: '❌ URL is incomplete - missing /exec at end' 
+        };
+      }
+      
+      // Check reasonable length (should be 70+ chars)
+      if (trimmedUrl.length < 70) {
+        return { 
+          valid: false, 
+          error: '❌ URL appears incomplete (too short)' 
+        };
+      }
+      
+      // Check for spaces
+      if (trimmedUrl.includes(' ')) {
+        return { 
+          valid: false, 
+          error: '❌ URL contains spaces - please check' 
+        };
+      }
+      
+      return { valid: true, error: null };
+    }
+    
+    // Handle URL input changes
+    function handleUrlInput(e) {
+      const url = e.target.value;
+      const charCount = url.length;
+      const urlInput = document.getElementById('syncUrl');
+      const validationIcon = document.getElementById('urlValidationIcon');
+      const validationMessage = document.getElementById('urlValidationMessage');
+      const charCountEl = document.getElementById('urlCharCount');
+      
+      // Update character count
+      charCountEl.textContent = `${charCount} character${charCount !== 1 ? 's' : ''}`;
+      
+      // Validate URL
+      const validation = validateGoogleAppsScriptURL(url);
+      
+      if (url.trim() === '') {
+        // Empty state
+        urlInput.classList.remove('valid', 'invalid');
+        validationIcon.textContent = '';
+        validationMessage.innerHTML = '';
+      } else if (validation.valid) {
+        // Valid state
+        urlInput.classList.remove('invalid');
+        urlInput.classList.add('valid');
+        validationIcon.textContent = '✅';
+        validationMessage.innerHTML = `
+          <div class="validation-message success">
+            <span>✅</span>
+            <span>URL validated successfully - ready to test connection!</span>
+          </div>
+        `;
+      } else {
+        // Invalid state
+        urlInput.classList.remove('valid');
+        urlInput.classList.add('invalid');
+        validationIcon.textContent = '❌';
+        validationMessage.innerHTML = `
+          <div class="validation-message error">
+            <span>❌</span>
+            <span>${validation.error}</span>
+          </div>
+        `;
+      }
+      
+      // Update button states and status
+      syncSettings.url = url;
+      updateSyncButtonStates();
+      updateSyncStatusDisplay();
+    }
+    
+    // Update sync button states based on validation
+    function updateSyncButtonStates() {
+      const url = document.getElementById('syncUrl').value;
+      const enabled = document.getElementById('enableSync').checked;
+      const validation = validateGoogleAppsScriptURL(url);
+      const isValid = validation.valid && enabled;
+      
+      document.getElementById('testConnectionBtn').disabled = !validation.valid;
+      document.getElementById('syncNowBtn').disabled = !isValid;
+    }
+    
+    // Test connection to Google Apps Script
+    async function testConnection() {
+      const url = document.getElementById('syncUrl').value.trim();
+      const validation = validateGoogleAppsScriptURL(url);
+      
+      if (!validation.valid) {
+        showToast(validation.error, 'error');
+        return;
+      }
+      
+      const testBtn = document.getElementById('testConnectionBtn');
+      const originalText = testBtn.innerHTML;
+      testBtn.disabled = true;
+      testBtn.innerHTML = '<span class="sync-loading"></span><span>Testing...</span>';
+      
+      const statusEl = document.getElementById('syncStatus');
+      statusEl.textContent = 'Testing connection...';
+      
+      try {
+        // Create timeout promise
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Connection timeout (5 seconds)')), 5000)
+        );
+        
+        // Fetch with timeout
+        const fetchPromise = fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'test', payload: {} })
+        });
+        
+        const response = await Promise.race([fetchPromise, timeoutPromise]);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+        }
+        
+        // Try to parse response
+        let data;
+        try {
+          data = await response.json();
+        } catch (e) {
+          // If can't parse JSON, consider it successful if status is OK
+          data = { success: true };
+        }
+        
+        statusEl.textContent = 'Connection successful! ✅';
+        showToast('✅ Connection successful! URL is reachable', 'success');
+        
+      } catch (error) {
+        let errorMsg = error.message;
+        if (errorMsg.includes('Failed to fetch')) {
+          errorMsg = 'Failed to reach URL - check URL or internet connection';
+        }
+        statusEl.textContent = `Connection failed: ${errorMsg}`;
+        showToast(`❌ Connection failed: ${errorMsg}`, 'error');
+      } finally {
+        testBtn.disabled = false;
+        testBtn.innerHTML = originalText;
+      }
+    }
+    
+    // Sync with Google Sheets
+    async function syncNow() {
+      const enabled = document.getElementById('enableSync').checked;
+      const url = document.getElementById('syncUrl').value.trim();
+      
+      if (!enabled) {
+        showToast('❌ Please enable sync first', 'error');
+        return;
+      }
+      
+      const validation = validateGoogleAppsScriptURL(url);
+      if (!validation.valid) {
+        showToast(validation.error, 'error');
+        return;
+      }
+      
+      if (entries.length === 0) {
+        showToast('❌ No entries to sync', 'error');
+        return;
+      }
+      
+      showLoading();
+      const statusEl = document.getElementById('syncStatus');
+      statusEl.textContent = 'Syncing entries...';
+      
+      let success = 0;
+      let failed = 0;
+      const errors = [];
+      
+      for (const entry of entries) {
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              action: 'update',
+              payload: entry
+            })
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          
+          success++;
+        } catch (error) {
+          console.error('Sync error for entry:', entry.id, error);
+          failed++;
+          errors.push(`${entry.finalTitle}: ${error.message}`);
+        }
+        
+        // Update status during sync
+        statusEl.textContent = `Syncing... ${success + failed}/${entries.length}`;
+      }
+      
+      const now = new Date().toISOString();
+      syncSettings.lastSynced = now;
+      syncSettings.lastSyncStatus = `${success} successful, ${failed} failed`;
+      document.getElementById('lastSynced').textContent = new Date(now).toLocaleString();
+      
+      if (failed === 0) {
+        statusEl.textContent = `✅ Last sync: ${success} entries synced successfully`;
+        showToast(`✅ Sync complete: ${success} entries synced successfully`, 'success');
+      } else {
+        statusEl.textContent = `⚠️ Last sync: ${success} successful, ${failed} failed`;
+        showToast(`⚠️ Sync complete: ${success} successful, ${failed} failed`, 'warning');
+        
+        // Show first error as example
+        if (errors.length > 0) {
+          console.error('Sync errors:', errors);
+          showToast(`First error: ${errors[0]}`, 'error');
+        }
+      }
+      
+      hideLoading();
+    }
+    
+    // ============================================
+    // UTILITIES
+    // ============================================
+    function generateUUID() {
+      if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+        return crypto.randomUUID();
+      }
+      // Fallback UUID generator
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+  </script>
+</body>
+</html>
