@@ -8,6 +8,7 @@
   
   <!-- SheetJS for Excel Import/Export -->
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <link rel="icon" type="image/png" href="ALP_Logo.png">
   
   <!-- SortableJS for Drag and Drop -->
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
@@ -1214,7 +1215,7 @@
         
         <div class="form-group">
           <label class="form-label">Final Title *</label>
-          <input type="text" class="form-input" id="finalTitle" required>
+          <input type="text" class="form-input" id="finalTitle" >
         </div>
         
         <div class="form-group">
@@ -1275,7 +1276,9 @@
         <div class="form-group">
           <label class="form-label">Status *</label>
           <select class="form-select" id="status" required>
+            <option value="Draft">RAW Video</option>
             <option value="Draft">Draft</option>
+            <option value="Draft">Edited Video</option>
             <option value="Scheduled">Scheduled</option>
             <option value="Posted">Posted</option>
           </select>
@@ -1429,18 +1432,18 @@
     
     // Default data
     const DEFAULT_ARTISTS = [
-      'Dr. S. Pothuvudaimoorthy',
-      'Astrologer Kumar',
-      'Vimala Devi',
-      'Rajesh Sharma',
-      'Priya Menon'
+      'Dr. S. Pothuvudaimoorthy Sir',
+      'Santha Kumar Sir',
+      'Sathyanarayanan Sir',
+      'Shanthi Devi Mam',
+      'Uma venkat Mam'
     ];
     
     const DEFAULT_EDITORS = [
-      'Editor 1 - Sanjay',
-      'Editor 2 - Ravi',
-      'Editor 3 - Meena',
-      'Editor 4 - Arun'
+      'Raja ',
+      'Mahesh',
+      'Ranjith',
+      'Gowtham',
     ];
     
     const PLATFORMS = ['YouTube', 'YT Short', 'Facebook', 'Instagram', 'WhatsApp'];
