@@ -1322,10 +1322,16 @@
           <div id="urlValidationMessage"></div>
         </div>
         <div class="form-group">
-          <label class="form-label">Connection Test</label>
+          <label class="form-label">Connection Test (Format Validation Only)</label>
+          <div style="background-color: rgba(0, 122, 255, 0.1); border: 1px solid rgba(0, 122, 255, 0.3); border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 13px; color: var(--text-secondary);">
+            ⚠️ <strong>CORS Security Note:</strong><br>
+            Browser security prevents direct connection testing.<br>
+            This button validates URL format only.<br>
+            The <strong>real test</strong> happens when you click "Sync Now".
+          </div>
           <button class="btn btn-secondary btn-test-connection" id="testConnectionBtn" disabled>
-            <span>🔌</span>
-            <span>Test Connection</span>
+            <span>✅</span>
+            <span>Validate URL Format</span>
           </button>
         </div>
         <div class="form-group">
@@ -1337,9 +1343,18 @@
           <div style="color: var(--text-secondary); font-size: 13px;" id="syncStatus">Not configured</div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" id="syncNowBtn" disabled>Sync Now</button>
-        <button class="btn btn-secondary" id="closeSyncModal">Close</button>
+      <div class="modal-footer" style="flex-direction: column; align-items: stretch;">
+        <div style="background-color: var(--bg-secondary); border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 12px; color: var(--text-secondary);">
+          <strong>📖 Troubleshooting Tips:</strong><br>
+          • Verify Google Apps Script "Who has access" = "Anyone"<br>
+          • Check deployment is "Active" in Apps Script<br>
+          • Make sure doPost() function exists in script<br>
+          • Try opening URL in new browser tab to test manually
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <button class="btn btn-primary" id="syncNowBtn" disabled style="flex: 1;">Sync Now (Real Test)</button>
+          <button class="btn btn-secondary" id="closeSyncModal">Close</button>
+        </div>
       </div>
     </div>
   </div>
@@ -2581,8 +2596,8 @@
       document.getElementById('syncNowBtn').disabled = !isValid;
     }
     
-    // Test connection to Google Apps Script
-    async function testConnection() {
+    // Test connection to Google Apps Script (Format validation only - CORS prevents real testing)
+    function testConnection() {
       const url = document.getElementById('syncUrl').value.trim();
       const validation = validateGoogleAppsScriptURL(url);
       
@@ -2591,59 +2606,22 @@
         return;
       }
       
-      const testBtn = document.getElementById('testConnectionBtn');
-      const originalText = testBtn.innerHTML;
-      testBtn.disabled = true;
-      testBtn.innerHTML = '<span class="sync-loading"></span><span>Testing...</span>';
-      
       const statusEl = document.getElementById('syncStatus');
-      statusEl.textContent = 'Testing connection...';
       
-      try {
-        // Create timeout promise
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Connection timeout (5 seconds)')), 5000)
-        );
-        
-        // Fetch with timeout
-        const fetchPromise = fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'test', payload: {} })
-        });
-        
-        const response = await Promise.race([fetchPromise, timeoutPromise]);
-        
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status} - ${response.statusText}`);
-        }
-        
-        // Try to parse response
-        let data;
-        try {
-          data = await response.json();
-        } catch (e) {
-          // If can't parse JSON, consider it successful if status is OK
-          data = { success: true };
-        }
-        
-        statusEl.textContent = 'Connection successful! ✅';
-        showToast('✅ Connection successful! URL is reachable', 'success');
-        
-      } catch (error) {
-        let errorMsg = error.message;
-        if (errorMsg.includes('Failed to fetch')) {
-          errorMsg = 'Failed to reach URL - check URL or internet connection';
-        }
-        statusEl.textContent = `Connection failed: ${errorMsg}`;
-        showToast(`❌ Connection failed: ${errorMsg}`, 'error');
-      } finally {
-        testBtn.disabled = false;
-        testBtn.innerHTML = originalText;
-      }
+      // Show success with CORS explanation
+      statusEl.innerHTML = `
+        <div style="color: var(--success); margin-bottom: 8px;">✅ URL format is valid! Ready to sync.</div>
+        <div style="color: var(--text-secondary); font-size: 12px; line-height: 1.5;">
+          📋 <strong>Note:</strong> Browser security prevents direct connection testing.<br>
+          The real test happens when you click "Sync Now" below.<br>
+          If sync fails, check your Google Apps Script deployment settings.
+        </div>
+      `;
+      
+      showToast('✅ URL format valid! Click "Sync Now" to test connection', 'success');
     }
     
-    // Sync with Google Sheets
+    // Sync with Google Sheets (Real connection test happens here)
     async function syncNow() {
       const enabled = document.getElementById('enableSync').checked;
       const url = document.getElementById('syncUrl').value.trim();
@@ -2666,14 +2644,18 @@
       
       showLoading();
       const statusEl = document.getElementById('syncStatus');
-      statusEl.textContent = 'Syncing entries...';
+      statusEl.textContent = 'Syncing entries to Google Sheets...';
       
       let success = 0;
       let failed = 0;
       const errors = [];
       
+      // Try syncing with better error handling
       for (const entry of entries) {
         try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+          
           const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -2682,18 +2664,29 @@
             body: JSON.stringify({
               action: 'update',
               payload: entry
-            })
+            }),
+            signal: controller.signal
           });
           
+          clearTimeout(timeoutId);
+          
           if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+            throw new Error(`HTTP ${response.status} - ${response.statusText}`);
           }
           
           success++;
         } catch (error) {
           console.error('Sync error for entry:', entry.id, error);
           failed++;
-          errors.push(`${entry.finalTitle}: ${error.message}`);
+          
+          let errorMsg = error.message;
+          if (errorMsg.includes('Failed to fetch')) {
+            errorMsg = 'CORS/Network error - Check Google Apps Script deployment';
+          } else if (error.name === 'AbortError') {
+            errorMsg = 'Timeout - Google Apps Script took too long';
+          }
+          
+          errors.push(`${entry.finalTitle}: ${errorMsg}`);
         }
         
         // Update status during sync
@@ -2705,21 +2698,39 @@
       syncSettings.lastSyncStatus = `${success} successful, ${failed} failed`;
       document.getElementById('lastSynced').textContent = new Date(now).toLocaleString();
       
+      hideLoading();
+      
       if (failed === 0) {
-        statusEl.textContent = `✅ Last sync: ${success} entries synced successfully`;
-        showToast(`✅ Sync complete: ${success} entries synced successfully`, 'success');
+        statusEl.innerHTML = `
+          <div style="color: var(--success);">✅ Last sync: ${success} entries synced successfully</div>
+          <div style="color: var(--text-tertiary); font-size: 12px; margin-top: 4px;">Check your Google Sheet to verify data</div>
+        `;
+        showToast(`✅ Sync complete: ${success} entries synced successfully!`, 'success');
+      } else if (success === 0 && failed > 0) {
+        // All failed - likely CORS or deployment issue
+        statusEl.innerHTML = `
+          <div style="color: var(--error);">❌ Sync failed: ${failed} entries failed</div>
+          <div style="color: var(--text-secondary); font-size: 12px; margin-top: 8px; line-height: 1.5;">
+            <strong>Troubleshooting:</strong><br>
+            1. Check Google Apps Script deployment is Active<br>
+            2. Verify "Who has access" = "Anyone"<br>
+            3. Make sure doPost() function exists<br>
+            4. Try opening URL in browser tab to test manually
+          </div>
+        `;
+        showToast(`❌ Sync failed - Check Google Apps Script deployment`, 'error');
       } else {
+        // Partial failure
         statusEl.textContent = `⚠️ Last sync: ${success} successful, ${failed} failed`;
-        showToast(`⚠️ Sync complete: ${success} successful, ${failed} failed`, 'warning');
-        
-        // Show first error as example
-        if (errors.length > 0) {
-          console.error('Sync errors:', errors);
-          showToast(`First error: ${errors[0]}`, 'error');
-        }
+        showToast(`⚠️ Partial sync: ${success} successful, ${failed} failed`, 'warning');
       }
       
-      hideLoading();
+      // Log errors for debugging
+      if (errors.length > 0) {
+        console.group('Sync Errors Details');
+        errors.forEach(err => console.error(err));
+        console.groupEnd();
+      }
     }
     
     // ============================================
