@@ -1,5 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>GTA VI — Vice City Reimagined</title>
+    <meta name="description" content="A cinematic, animation‑heavy GTA VI inspired landing experience. Rockstar‑style, 2025 aesthetic.">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="assets/icons/star.svg" />
+    <meta name="theme-color" content="#0b0b0f" />
+  </head>
+  <body class="theme-dark">
+    <!-- Preloader -->
+    <div id="preloader" aria-hidden="true">
+      <div class="loader-ring">
+        <div class="ring"></div>
+        <div class="dot"></div>
+      </div>
+      <span class="loader-label">Loading Vice City…</span>
+    </div>
+
+    <!-- Navigation -->
+    <header class="site-header" role="banner">
+      <nav class="navbar" aria-label="Primary Navigation">
+        <a class="brand" href="#hero" aria-label="GTA VI Home">
+          <img src="assets/img/rockstar-mark.svg" alt="Rockstar" class="brand-mark" />
+          <span class="brand-text">GTA VI</span>
+        </a>
+        <button id="themeToggle" class="btn btn-ghost" aria-pressed="false" aria-label="Toggle dark mode">
+          <span class="icon-moon"></span>
+        </button>
+        <ul class="nav-links">
+          <li><a href="#story" data-hover="Story">Story</a></li>
+          <li><a href="#characters" data-hover="Characters">Characters</a></li>
+          <li><a href="#media" data-hover="Media">Media</a></li>
+          <li><a href="#countdown" data-hover="Countdown">Countdown</a></li>
+          <li><a href="downloads.html" data-hover="Downloads">Downloads</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="section-hero" aria-label="Hero">
+      <video class="hero-video" autoplay muted loop playsinline poster="assets/posters/hero.jpg">
+        <source src="assets/video/hero.mp4" type="video/mp4" />
+      </video>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <img src="assets/img/gta6-logo.png" alt="GTA VI Logo" class="gta-logo" />
+        <p class="hero-kicker">Leonida | Vice City | 2025</p>
+        <div class="hero-ctas">
+          <a href="#trailer" class="btn btn-primary" id="openTrailer">Watch Trailer</a>
+          <a href="#story" class="btn btn-ghost">Explore</a>
+        </div>
+      </div>
+      <div class="scroll-indicator" aria-hidden="true">
+        <span>Scroll</span>
+        <div class="mouse"><div class="wheel"></div></div>
+      </div>
+    </section>
+
+    <!-- Divider / Ambient scene -->
+    <section class="scene-divider" aria-hidden="true">
+      <div class="parallax-layer layer-back"></div>
+      <div class="parallax-layer layer-mid"></div>
+      <div class="parallax-layer layer-front"></div>
+      <div class="divider-marquee">
+        <span>Vice City</span>
+        <span>Leonida</span>
+        <span>Neon Nights</span>
+        <span>Open World</span>
+      </div>
+    </section>
+
+    <!-- Story Section -->
+    <section id="story" class="section section-story">
+      <div class="container">
+        <div class="split">
+          <div class="split-col media reveal-left">
+            <img src="assets/img/vice-skyline.jpg" alt="Vice City Skyline" loading="lazy" />
+          </div>
+          <div class="split-col copy reveal-right">
+            <h2>Welcome to Leonida</h2>
+            <p>
+              A sprawling state of sun-soaked coasts, neon nights, and dangerous dreams. From the glitz of
+              Vice City to the untamed wilds inland, every street tells a story.
+            </p>
+            <p>
+              Built for the next generation, this world moves, breathes, and reacts to you. Feel the 
+              rhythm of the city as you carve your legend.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Characters Section -->
+    <section id="characters" class="section section-characters">
+      <div class="container">
+        <article class="character split">
+          <div class="split-col copy reveal-left">
+            <h3>Lucia</h3>
+            <p>
+              Fierce, focused, and unbreakable. Lucia knows the rules of survival—and how to rewrite them.
+              Every move is calculated, every moment a step forward.
+            </p>
+          </div>
+          <div class="split-col media reveal-right">
+            <img src="assets/img/char-lucia.jpg" alt="Lucia" loading="lazy" />
+          </div>
+        </article>
+        <article class="character reverse split">
+          <div class="split-col media reveal-left">
+            <img src="assets/img/char-jason.jpg" alt="Jason" loading="lazy" />
+          </div>
+          <div class="split-col copy reveal-right">
+            <h3>Jason</h3>
+            <p>
+              Street-smart with a code of his own. Jason plays the long game—loyal to a fault, ruthless 
+              when it counts.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Media Gallery -->
+    <section id="media" class="section section-media">
+      <div class="container">
+        <header class="section-header">
+          <h2>Media</h2>
+          <p>Screenshots, wallpapers, and more. Tap to preview.</p>
+        </header>
+        <div class="media-grid">
+          <a href="assets/img/shot-1.jpg" class="media-item" data-type="image">
+            <img src="assets/img/shot-1-thumb.jpg" alt="Screenshot 1" loading="lazy" />
+          </a>
+          <a href="assets/img/shot-2.jpg" class="media-item" data-type="image">
+            <img src="assets/img/shot-2-thumb.jpg" alt="Screenshot 2" loading="lazy" />
+          </a>
+          <a href="assets/img/shot-3.jpg" class="media-item" data-type="image">
+            <img src="assets/img/shot-3-thumb.jpg" alt="Screenshot 3" loading="lazy" />
+          </a>
+          <a href="#" class="media-item" data-type="video" data-video="https://www.youtube.com/embed/QdBZY2fkU-0?autoplay=1&amp;rel=0">
+            <img src="assets/img/trailer-thumb.jpg" alt="Trailer" loading="lazy" />
+            <span class="play-badge" aria-hidden="true">▶</span>
+          </a>
+          <!-- Add more items as needed -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Countdown Section -->
+    <section id="countdown" class="section section-countdown">
+      <div class="container">
+        <header class="section-header">
+          <h2>Coming Soon</h2>
+          <p>Counting down to the next big reveal.</p>
+        </header>
+        <div class="timer" role="timer" aria-live="polite">
+          <div class="time">
+            <span id="dd">00</span>
+            <small>Days</small>
+          </div>
+          <div class="time">
+            <span id="hh">00</span>
+            <small>Hours</small>
+          </div>
+          <div class="time">
+            <span id="mm">00</span>
+            <small>Minutes</small>
+          </div>
+          <div class="time">
+            <span id="ss">00</span>
+            <small>Seconds</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="col">
+            <a class="brand" href="#hero">
+              <img src="assets/img/rockstar-mark.svg" alt="Rockstar" class="brand-mark" />
+              <span class="brand-text">GTA VI</span>
+            </a>
+            <p class="muted">This is a fan-made UI/UX template inspired by Rockstar Games.</p>
+          </div>
+          <div class="col">
+            <nav aria-label="Footer">
+              <ul>
+                <li><a href="#story">Story</a></li>
+                <li><a href="#characters">Characters</a></li>
+                <li><a href="#media">Media</a></li>
+                <li><a href="#countdown">Countdown</a></li>
+                <li><a href="downloads.html">Downloads</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="col align-end">
+            <a href="#" class="btn btn-ghost small">Social Club</a>
+            <a href="#" class="btn btn-ghost small">Newswire</a>
+          </div>
+        </div>
+        <div class="credits">Developed By <strong>Santhosh_A</strong></div>
+      </div>
+    </footer>
+
+    <!-- Image/Video Modal -->
+    <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog" aria-label="Media Preview">
+      <button class="lightbox-close" id="lightboxClose" aria-label="Close preview">×</button>
+      <div class="lightbox-content" id="lightboxContent"></div>
+    </div>
+
+    <!-- Trailer Modal -->
+    <div id="trailer" class="trailer-modal" aria-hidden="true" role="dialog" aria-label="Trailer">
+      <div class="trailer-dialog">
+        <button class="trailer-close" id="trailerClose" aria-label="Close trailer">×</button>
+        <div class="trailer-embed">
+          <!-- Video injected by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-5Dg1Hq1oJvAqR5gJgQJgY6v1exZ9tqjI6qI0lv/ls6zHZX2JvYl7gNQd1sL1bN0n8vI4HkHJe6kZpOllCw3+ng==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha512-yqFxQgEFX3lqfC8x5g3jO1FzIdkEX5hVbI3J1k9QTO4Qe9q8m0Zb8M5f7CE1Kuf4w1Q9j4Z2pBI7gkP0oS1qvA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="scripts.js"></script>
+  </body>
+  </html>
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
