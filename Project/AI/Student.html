@@ -89,30 +89,28 @@
   </div>
 
   <script>
-    // ==== CONFIG: paste your Apps Script Web App URL here ====
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzeUacNv5Ni002Zb8ZKBAoh37g6DD4f_VztEKoRvebcALs2ONzDaJAaEAQJZWch6SbltA/exec'; // e.g., https://script.google.com/macros/s/AKfycbx.../exec
+    // ==== CONFIG: paste your Apps Script Web App URL here (MUST end with /exec) ====
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzeUacNv5Ni002Zb8ZKBAoh37g6DD4f_VztEKoRvebcALs2ONzDaJAaEAQJZWch6SbltA/exec';
 
     const form = document.getElementById('studentForm');
     const btn = document.getElementById('submitBtn');
     const msg = document.getElementById('message');
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    function showMessage(text, type = 'ok') {
+    function showMessage(text, ok = true) {
       msg.textContent = text;
-      msg.className = 'msg ' + (type === 'ok' ? 'ok' : 'err');
+      msg.className = 'msg ' + (ok ? 'ok' : 'err');
     }
-
     function clearMessage() {
       msg.textContent = '';
       msg.className = 'msg';
     }
-
-    function validate(formData) {
+    function validate() {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!formData.name.trim()) return 'Please enter your name.';
-      if (!formData.className.trim()) return 'Please enter your class.';
-      if (!formData.location.trim()) return 'Please enter your location.';
-      if (!emailRegex.test(formData.email.trim())) return 'Please enter a valid email.';
+      if (!name.value.trim()) return 'Please enter your name.';
+      if (!className.value.trim()) return 'Please enter your class.';
+      if (!location.value.trim()) return 'Please enter your location.';
+      if (!emailRegex.test(email.value.trim())) return 'Please enter a valid email.';
       return null;
     }
 
@@ -120,58 +118,26 @@
       e.preventDefault();
       clearMessage();
 
-      const formData = {
-        name: document.getElementById('name').value || '',
-        className: document.getElementById('className').value || '',
-        location: document.getElementById('location').value || '',
-        email: document.getElementById('email').value || ''
-      };
+      const error = validate();
+      if (error) { showMessage(error, false); return; }
 
-      const error = validate(formData);
-      if (error) {
-        showMessage(error, 'err');
-        return;
-      }
+      // IMPORTANT: Use FormData and DO NOT set headers. This avoids preflight/CORS.
+      const fd = new FormData(form);
 
       btn.disabled = true;
       btn.textContent = 'Submitting...';
 
       try {
-        const res = await fetch(WEB_APP_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-          // mode: 'cors' is default; we rely on server CORS headers.
-        });
-
-        // If backend is Apps Script with proper CORS, this will be fine.
-        // Some deployments might not return non-200 codes; we still parse JSON.
-        let data = null;
-        try {
-          data = await res.json();
-        } catch (_) {
-          // If response is opaque or not JSON, provide generic success
-          // (fallback) — but our Apps Script returns JSON.
-        }
-
-        if (res.ok && data && data.ok) {
-          showMessage('✅ Submission successful. Thank you!');
-          form.reset();
-        } else if (data && data.error) {
-          showMessage('❌ ' + data.error, 'err');
-        } else if (res.ok) {
-          showMessage('✅ Submission received.'); // generic
+        const res = await fetch(WEB_APP_URL, { method: 'POST', body: fd });
+        if (res.ok) {
+          showMessage('✅ Submission successful.');
           form.reset();
         } else {
-          showMessage('❌ Failed to submit. Please try again.', 'err');
+          showMessage('❌ Submit failed. Check your Apps Script deployment/access.', false);
         }
       } catch (err) {
-        // Fallback: if you ever face strict corporate proxies/CDNs causing CORS,
-        // uncomment the beacon approach below as a last resort (no response readback).
-        // navigator.sendBeacon(WEB_APP_URL, new Blob([JSON.stringify(formData)], { type: 'application/json' }));
-        // showMessage('✅ Submitted (fallback). Please check the Google Sheet in a moment.');
-        showMessage('❌ Network error. Please check your internet and try again.', 'err');
         console.error(err);
+        showMessage('❌ Network error. Please try again.', false);
       } finally {
         btn.disabled = false;
         btn.textContent = 'Submit';
@@ -180,4 +146,3 @@
   </script>
 </body>
 </html>
-
