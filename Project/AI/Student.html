@@ -80,67 +80,50 @@
     <footer>© <span id="year"></span> Student Intake · Built with HTML, CSS & JS</footer>
   </div>
 
-  <script>
-    // ==== Your Apps Script Web App URL (must be the /exec URL) ====
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby9tXyhlUQdVdNBB7pNbiT4M_2-C-T0_0IiqrbJLuxltZmtlPJ546QLdGsELjmjFW5iSg/exec';
 
-    // Cache DOM elements safely (avoid using bare 'name' which can collide with window.name)
-    const form = document.getElementById('studentForm');
-    const btn  = document.getElementById('submitBtn');
-    const msg  = document.getElementById('message');
-    const nameEl = document.getElementById('name');
-    const classEl = document.getElementById('className');
-    const locationEl = document.getElementById('location');
-    const emailEl = document.getElementById('email');
-    document.getElementById('year').textContent = new Date().getFullYear();
 
-    function showMessage(text, ok = true) {
-      msg.textContent = text;
-      msg.className = 'msg ' + (ok ? 'ok' : 'err');
+   <script>
+  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby9tXyhlUQdVdNBB7pNbiT4M_2-C-T0_0IiqrbJLuxltZmtlPJ546QLdGsELjmjFW5iSg/exec';
+
+  const form = document.getElementById('studentForm');
+  const btn  = document.getElementById('submitBtn');
+  const msg  = document.getElementById('message');
+  const nameEl = document.getElementById('name');
+  const classEl = document.getElementById('className');
+  const locationEl = document.getElementById('location');
+  const emailEl = document.getElementById('email');
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const show = (t, ok=true)=>{ msg.textContent=t; msg.className='msg ' + (ok?'ok':'err'); };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // simple validation
+    if (!nameEl.value.trim())  return show('Please enter your name.', false);
+    if (!classEl.value.trim()) return show('Please enter your class.', false);
+    if (!locationEl.value.trim()) return show('Please enter your location.', false);
+    if (!emailRegex.test(emailEl.value.trim())) return show('Please enter a valid email.', false);
+
+    const fd = new FormData(form);          // <-- no headers
+    btn.disabled = true; btn.textContent='Submitting…';
+
+    try {
+      // IMPORTANT: no-cors avoids the browser’s CORS check. The request is sent.
+      await fetch(WEB_APP_URL, { method:'POST', body: fd, mode:'no-cors' });
+      show('✅ Submission sent. Check the Google Sheet.');
+      form.reset();
+    } catch (err) {
+      console.error(err);
+      show('❌ Network error. Please try again.', false);
+    } finally {
+      btn.disabled = false; btn.textContent='Submit';
     }
-    function clearMessage() {
-      msg.textContent = '';
-      msg.className = 'msg';
-    }
-    function validate() {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!nameEl.value.trim()) return 'Please enter your name.';
-      if (!classEl.value.trim()) return 'Please enter your class.';
-      if (!locationEl.value.trim()) return 'Please enter your location.';
-      if (!emailRegex.test(emailEl.value.trim())) return 'Please enter a valid email.';
-      return null;
-    }
+  });
+</script>
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      clearMessage();
-
-      const error = validate();
-      if (error) { showMessage(error, false); return; }
-
-      // Use FormData (no headers) to avoid CORS preflight
-      const fd = new FormData(form);
-
-      btn.disabled = true;
-      btn.textContent = 'Submitting...';
-
-      try {
-        const res = await fetch(WEB_APP_URL, { method: 'POST', body: fd });
-        if (res.ok) {
-          showMessage('✅ Submission successful.');
-          form.reset();
-        } else {
-          showMessage('❌ Submit failed. Check your Apps Script deployment/access.', false);
-        }
-      } catch (err) {
-        console.error(err);
-        showMessage('❌ Network error. Please try again.', false);
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Submit';
-      }
-    });
-  </script>
 </body>
 </html>
+
 
