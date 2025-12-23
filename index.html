@@ -4,7 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Santhosh_A Portfolio | Frontend Developer & Designer</title>
+    
+    <!-- SEO Meta Tags -->
+    <title>Santhosh A | Frontend Developer, UI/UX Designer & 3D Artist</title>
+    <meta name="description" content="Portfolio of Santhosh A, a creative Frontend Developer, UI/UX Designer, and 3D Artist based in India. Specializing in React, JavaScript, Blender 3D, and modern web experiences.">
+    <meta name="keywords" content="Santhosh A, Portfolio, Frontend Developer, UI/UX Designer, Blender 3D Artist, Web Development, React Developer, JavaScript, HTML, CSS, Erode, India">
+    <meta name="author" content="Santhosh A">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://santhosh2024.neocities.org/"> <!-- Replace with your actual live URL -->
+    <meta property="og:title" content="Santhosh A | Frontend Developer & 3D Artist">
+    <meta property="og:description" content="Explore the portfolio of Santhosh A - featuring web projects, 3D models, and UI/UX designs.">
+    <meta property="og:image" content="1.jpg"> <!-- Ensure this image exists on your server -->
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://santhosh2024.neocities.org/">
+    <meta property="twitter:title" content="Santhosh A | Frontend Developer & 3D Artist">
+    <meta property="twitter:description" content="Explore the portfolio of Santhosh A - featuring web projects, 3D models, and UI/UX designs.">
+    <meta property="twitter:image" content="1.jpg">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,6 +36,32 @@
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     
+    <!-- Structured Data (JSON-LD) for Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Santhosh A",
+      "url": "https://santhosh2024.neocities.org/",
+      "image": "1.jpg",
+      "jobTitle": ["Frontend Developer", "UI/UX Designer", "3D Artist"],
+      "alumniOf": "Nandha Engineering College",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Erode",
+        "addressRegion": "Tamil Nadu",
+        "addressCountry": "India"
+      },
+      "sameAs": [
+        "https://github.com/A-Santhosh-Hub",
+        "https://www.linkedin.com/in/santhosh-a-bb5622305",
+        "https://www.instagram.com/santhosh_747_dark/",
+        "https://www.facebook.com/santhosh.mp.923519",
+        "https://www.youtube.com/@crazyvideos788"
+      ]
+    }
+    </script>
+
     <style>
         /* CSS Variables for Theming */
         :root {
@@ -1226,11 +1273,11 @@
                 <a href="#education" class="nav-link">Education</a>
                 <a href="#certificates" class="nav-link">Certificates</a>
                 <a href="#contact" class="nav-link">Contact</a>
-                <div class="theme-toggle" id="theme-toggle">
+                <div class="theme-toggle" id="theme-toggle" aria-label="Toggle Dark Mode" role="button" tabindex="0">
                     <div class="theme-toggle-circle"></div>
                 </div>
             </div>
-            <i class="fa-solid fa-bars hamburg" id="hamburg"></i>
+            <i class="fa-solid fa-bars hamburg" id="hamburg" aria-label="Open Menu" role="button" tabindex="0"></i>
         </div>
     </header>
 
@@ -1244,16 +1291,16 @@
                     environment there by ultimately enriching the excellence of the organization to the best of my
                     ability.</p>
                 <div class="social-links">
-                    <a href="https://github.com/A-Santhosh-Hub" data-aos="fade-up" data-aos-delay="100"><i
+                    <a href="https://github.com/A-Santhosh-Hub" data-aos="fade-up" data-aos-delay="100" aria-label="GitHub"><i
                             class="fa-brands fa-github"></i></a>
-                    <a href="https://www.facebook.com/santhosh.mp.923519" data-aos="fade-up" data-aos-delay="200"><i
+                    <a href="https://www.facebook.com/santhosh.mp.923519" data-aos="fade-up" data-aos-delay="200" aria-label="Facebook"><i
                             class="fa-brands fa-facebook"></i></a>
                     <a href="https://www.linkedin.com/in/santhosh-a-bb5622305" data-aos="fade-up"
-                        data-aos-delay="300"><i class="fa-brands fa-linkedin"></i></a>
-                    <a href="#" data-aos="fade-up" data-aos-delay="400"><i class="fa-brands fa-twitter"></i></a>
-                    <a href="https://www.youtube.com/@crazyvideos788" data-aos="fade-up" data-aos-delay="500"><i
+                        data-aos-delay="300" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                    <a href="#" data-aos="fade-up" data-aos-delay="400" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="https://www.youtube.com/@crazyvideos788" data-aos="fade-up" data-aos-delay="500" aria-label="YouTube"><i
                             class="fa-brands fa-youtube"></i></a>
-                    <a href="https://www.instagram.com/santhosh_747_dark/" data-aos="fade-up" data-aos-delay="600"><i
+                    <a href="https://www.instagram.com/santhosh_747_dark/" data-aos="fade-up" data-aos-delay="600" aria-label="Instagram"><i
                             class="fa-brands fa-instagram"></i></a>
                 </div>
                 <div class="hero-buttons">
@@ -1264,7 +1311,7 @@
             </div>
             <div class="hero-image" data-aos="fade-left">
                 <!-- Added onerror fallback for preview purposes -->
-                <img src="1.jpg" onerror="this.src='https://placehold.co/400x400/1e293b/FFF?text=Santhosh'" alt="Santhosh">
+                <img src="1.jpg" onerror="this.src='https://placehold.co/400x400/1e293b/FFF?text=Santhosh'" alt="Santhosh Profile Picture">
             </div>
         </div>
     </section>
@@ -1294,7 +1341,7 @@
                     </div>
                 </div>
                 <div class="about-image" data-aos="fade-left">
-                    <img src="1.jpg" onerror="this.src='https://placehold.co/400x400/1e293b/FFF?text=About+Me'" alt="About Me">
+                    <img src="1.jpg" onerror="this.src='https://placehold.co/400x400/1e293b/FFF?text=About+Me'" alt="About Me Image">
                 </div>
             </div>
         </div>
@@ -1672,11 +1719,11 @@
                         </div>
                     </div>
                     <div class="social-links">
-                        <a href="https://github.com/A-Santhosh-Hub"><i class="fa-brands fa-github"></i></a>
-                        <a href="https://www.linkedin.com/in/santhosh-a-bb5622305"><i
+                        <a href="https://github.com/A-Santhosh-Hub" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/santhosh-a-bb5622305" aria-label="LinkedIn"><i
                                 class="fa-brands fa-linkedin"></i></a>
-                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                        <a href="https://www.instagram.com/santhosh_747_dark/"><i
+                        <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/santhosh_747_dark/" aria-label="Instagram"><i
                                 class="fa-brands fa-instagram"></i></a>
                     </div>
                 </div>
