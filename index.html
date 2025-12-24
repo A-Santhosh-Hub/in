@@ -31,6 +31,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- Model Viewer Script -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
     <link rel="icon" type="image/png" href="1.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
@@ -468,6 +471,30 @@
             margin-top: 30px;
         }
 
+        /* Updated About Image Container for 3D Model */
+        .about-image {
+            position: relative;
+            height: 400px; /* Fixed height for model viewer */
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            min-height: 1000px;
+            --poster-color: transparent;
+        }
+
+        /* Fallback if model fails to load */
+        .about-image img {
+            max-width: 100%;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
         .stat-item {
             text-align: center;
             padding: 20px;
@@ -508,31 +535,115 @@
             margin-bottom: 15px;
         }
 
-        .skill-name {
-            font-weight: 600;
+        /* NEW: Circular Skill Card Styling */
+        .skill-item {
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: inherit;
+            text-align: center;
+            height: 350px; /* Fixed height for consistent swiper experience */
         }
 
-        .skill-percentage {
-            color: var(--primary);
-            font-weight: 700;
-        }
-
-        .skill-bar {
-            height: 8px;
-            background: var(--dark-alt);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .skill-progress {
-            height: 100%;
-            background: var(--primary-gradient);
-            border-radius: 4px;
+        .skill-circle-container {
             position: relative;
-            width: 0;
-            transition: width 1.5s ease;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            /* Conic Gradient for Progress: --percent var controls the fill */
+            background: conic-gradient(var(--primary) var(--percent), rgba(255,255,255,0.1) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+            transition: all 0.3s ease;
         }
+
+        /* Inner circle to create the "Donut" effect */
+        .skill-circle-container::before {
+            content: '';
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            z-index: 1;
+            /* FIX: Add a solid background color in light mode to ensure text is readable */
+            background-color: var(--dark-alt); 
+        }
+
+        .skill-circle-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* FIX: Ensure text color uses the theme variable for readability */
+            color: var(--light);
+        }
+
+        .skill-icon {
+            font-size: 3.5rem;
+            margin-bottom: 5px;
+            /* FIX: Ensure icon color is visible */
+            color: var(--primary);
+        }
+
+        .skill-percentage-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            /* FIX: Change from --text-light (grey) to --light (high contrast) for visibility */
+            color: var(--light);
+        }
+
+        .skill-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 10px;
+            color: var(--light);
+        }
+
+        /* Hide the old linear bar styles */
+        .skill-bar, .skill-progress {
+            display: none; 
+        }
+
         
+        /* UPDATED: Large Background Countdown Timer */
+        .autoplay-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Sit behind the swiper interactions but check opacity */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none; /* Let clicks pass through to the skill card */
+        }
+
+        .autoplay-progress span {
+            font-size: 15rem; /* Very large number */
+            font-weight: 900;
+            color: var(--primary); /* Use primary theme color */
+            opacity: 0.15; /* 15% opacity creates a nice "background watermark" effect (50% is often too dark/blocking for text overlay) */
+            line-height: 1;
+            font-family: sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        /* Ensure Swiper Slides sit above the timer */
+        .skills-container .swiper-wrapper {
+            z-index: 2;
+        }
+
         /* View All Skills Button Container */
         .view-all-container {
             display: flex;
@@ -1340,8 +1451,24 @@
                         </div>
                     </div>
                 </div>
+                <!-- Updated About Image Section with 3D Model Viewer -->
                 <div class="about-image" data-aos="fade-left">
-                    <img src="1.jpg" onerror="this.src='https://placehold.co/400x400/1e293b/FFF?text=About+Me'" alt="About Me Image">
+                    <model-viewer 
+                        src="2.glb" 
+                        alt="A 3D model of a mobile phone" 
+                        auto-rotate 
+                        camera-controls 
+                        shadow-intensity="1"
+                        camera-orbit="45deg 55deg 4.5m"
+                        field-of-view="15deg"
+                        environment-image="neutral"
+                        interaction-prompt="auto"
+                        loading="lazy"
+                        poster="1.jpg"> <!-- Uses your profile pic as a poster/loading placeholder -->
+                        
+                        <!-- Fallback content if AR/3D is not supported -->
+                        <img src="1.jpg" alt="About Me Image" slot="poster" style="display:none;">
+                    </model-viewer>
                 </div>
             </div>
         </div>
@@ -1354,101 +1481,115 @@
             <!-- Added Swiper Classes for Mobile Slider -->
             <div class="skills-container swiper skills-slider">
                 <div class="swiper-wrapper">
-                    <!-- Updated Skill Items: Wrapped in swiper-slide, removed individual data-aos to let swiper handle animation on mobile -->
                     
-                    <!-- CHANGED: Blender 3D is now a DIV with data attributes to trigger the modal -->
+                    <!-- SKILL 1: Blender 3D -->
+                    <!-- Added style="--percent: 85%" for the circular graph -->
                     <div class="skill-item glass-card swiper-slide skill-link-card" 
                          data-project-url="https://a-santhosh-hub.github.io/My-Blender-3D-Models/" 
                          data-project-title="My Blender 3D Models"
                          style="cursor: pointer;">
-                        <div class="skill-header">
-                            <div class="skill-name">Blender 3D</div>
-                            <div class="skill-percentage">85%</div>
+                        
+                        <div class="skill-circle-container" style="--percent: 85%;">
+                            <div class="skill-circle-content">
+                                <i class="fa-solid fa-cube skill-icon"></i>
+                                <span class="skill-percentage-text">85%</span>
+                            </div>
                         </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="85%"></div>
-                        </div>
+                        <div class="skill-name">Blender 3D</div>
                     </div>
 
+                    <!-- SKILL 2: HTML/CSS -->
                     <a href="#" class="skill-item glass-card swiper-slide">
-                        <div class="skill-header">
-                            <div class="skill-name">HTML/CSS</div>
-                            <div class="skill-percentage">95%</div>
+                        <div class="skill-circle-container" style="--percent: 95%;">
+                            <div class="skill-circle-content">
+                                <i class="fa-brands fa-html5 skill-icon"></i>
+                                <span class="skill-percentage-text">95%</span>
+                            </div>
                         </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="95%"></div>
-                        </div>
+                        <div class="skill-name">HTML/CSS</div>
                     </a>
 
+                    <!-- SKILL 3: Photoshop -->
                     <a href="#" class="skill-item glass-card swiper-slide">
-                        <div class="skill-header">
-                            <div class="skill-name">Photo Shop</div>
-                            <div class="skill-percentage">85%</div>
+                        <div class="skill-circle-container" style="--percent: 85%;">
+                            <div class="skill-circle-content">
+                                <i class="fa-solid fa-palette skill-icon"></i>
+                                <span class="skill-percentage-text">85%</span>
+                            </div>
                         </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="85%"></div>
-                        </div>
+                        <div class="skill-name">Photo Shop</div>
                     </a>
 
+                    <!-- SKILL 4: Video Editing -->
                     <a href="#" class="skill-item glass-card swiper-slide">
-                        <div class="skill-header">
-                            <div class="skill-name">Video Editing</div>
-                            <div class="skill-percentage">95%</div>
+                        <div class="skill-circle-container" style="--percent: 95%;">
+                            <div class="skill-circle-content">
+                                <i class="fa-solid fa-film skill-icon"></i>
+                                <span class="skill-percentage-text">95%</span>
+                            </div>
                         </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="95%"></div>
-                        </div>
+                        <div class="skill-name">Video Editing</div>
                     </a>
 
+                    <!-- SKILL 5: JavaScript -->
                     <a href="#" class="skill-item glass-card swiper-slide">
-                        <div class="skill-header">
-                            <div class="skill-name">JavaScript</div>
-                            <div class="skill-percentage">90%</div>
+                        <div class="skill-circle-container" style="--percent: 90%;">
+                            <div class="skill-circle-content">
+                                <i class="fa-brands fa-js skill-icon"></i>
+                                <span class="skill-percentage-text">90%</span>
+                            </div>
                         </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="90%"></div>
-                        </div>
+                        <div class="skill-name">JavaScript</div>
                     </a>
                     
+                    <!-- SKILL 6: React -->
                     <a href="#" class="skill-item glass-card swiper-slide">
-                        <div class="skill-header">
-                            <div class="skill-name">React</div>
-                            <div class="skill-percentage">75%</div>
+                        <div class="skill-circle-container" style="--percent: 75%;">
+                            <div class="skill-circle-content">
+                                <i class="fa-brands fa-react skill-icon"></i>
+                                <span class="skill-percentage-text">75%</span>
+                            </div>
                         </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="75%"></div>
-                        </div>
+                        <div class="skill-name">React</div>
                     </a>
                     
+                    <!-- SKILL 7: UI/UX Design -->
                     <a href="#" class="skill-item glass-card swiper-slide">
-                        <div class="skill-header">
-                            <div class="skill-name">UI/UX Design</div>
-                            <div class="skill-percentage">90%</div>
+                        <div class="skill-circle-container" style="--percent: 90%;">
+                            <div class="skill-circle-content">
+                                <i class="fa-solid fa-pen-nib skill-icon"></i>
+                                <span class="skill-percentage-text">90%</span>
+                            </div>
                         </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="90%"></div>
-                        </div>
+                        <div class="skill-name">UI/UX Design</div>
                     </a>
                     
+                    <!-- SKILL 8: Node.js -->
                     <a href="#" class="skill-item glass-card swiper-slide">
-                        <div class="skill-header">
-                            <div class="skill-name">Node.js</div>
-                            <div class="skill-percentage">75%</div>
+                        <div class="skill-circle-container" style="--percent: 75%;">
+                            <div class="skill-circle-content">
+                                <i class="fa-brands fa-node-js skill-icon"></i>
+                                <span class="skill-percentage-text">75%</span>
+                            </div>
                         </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="75%"></div>
-                        </div>
+                        <div class="skill-name">Node.js</div>
                     </a>
                     
+                    <!-- SKILL 9: Graphic Design -->
                     <a href="#" class="skill-item glass-card swiper-slide">
-                        <div class="skill-header">
-                            <div class="skill-name">Graphic Design</div>
-                            <div class="skill-percentage">80%</div>
+                        <div class="skill-circle-container" style="--percent: 80%;">
+                            <div class="skill-circle-content">
+                                <i class="fa-solid fa-bezier-curve skill-icon"></i>
+                                <span class="skill-percentage-text">80%</span>
+                            </div>
                         </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" data-width="80%"></div>
-                        </div>
+                        <div class="skill-name">Graphic Design</div>
                     </a>
+                </div>
+                
+                <!-- UPDATED: Large Background Countdown Number -->
+                <div class="autoplay-progress">
+                    <span>3</span>
                 </div>
             </div>
             
@@ -1532,7 +1673,7 @@
 
                     <div class="swiper-slide project-card glass-card" data-category="web" data-aos="fade-up"
                         data-project-url="Project/AI/Smart UPI Tracker.html" data-project-title="All_Skill"><iframe
-                            src="Project/AI/Smart UPI Tracker.html" class="project-preview-iframe" loading="lazy"></iframe>
+                            src="Smart UPI Tracker.html" class="project-preview-iframe" loading="lazy"></iframe>
                         <div class="project-overlay">
                             <h3 class="project-title">Smart UPI Tracker</h3>
                             <div class="project-category">Smart UPI Tracker</div>
@@ -1540,8 +1681,8 @@
                     </div>
 
                     <div class="swiper-slide project-card glass-card" data-category="web" data-aos="fade-up"
-                        data-project-url="https://santhosh2024.neocities.org/temp/Project/AI/Text%20to%20All%20Text" data-project-title="All_Skill"><iframe
-                            src="Project/AI/Text to All Text.html" class="project-preview-iframe" loading="lazy"></iframe>
+                        data-project-url="Project/AI/Text to All Text.html" data-project-title="All_Skill"><iframe
+                            src="Text to All Text.html" class="project-preview-iframe" loading="lazy"></iframe>
                         <div class="project-overlay">
                             <h3 class="project-title">Text to All Text</h3>
                             <div class="project-category">Text to All Text</div>
@@ -1549,8 +1690,8 @@
                     </div>
 
                     <div class="swiper-slide project-card glass-card" data-category="web" data-aos="fade-up"
-                        data-project-url="https://santhosh2024.neocities.org/temp/Project/AI/SimpleWebSourceViewer" data-project-title="All_Skill"><iframe
-                            src="Project/AI/SimpleWebSourceViewer.html" class="project-preview-iframe" loading="lazy"></iframe>
+                        data-project-url="Project/AI/SimpleWebSourceViewer.html" data-project-title="All_Skill"><iframe
+                            src="SimpleWebSourceViewer.html" class="project-preview-iframe" loading="lazy"></iframe>
                         <div class="project-overlay">
                             <h3 class="project-title">Simple Web Source Viewer</h3>
                             <div class="project-category">Simple Web Source Viewer</div>
@@ -1973,12 +2114,11 @@
         if (typewriterText) setTimeout(type, 1000);
 
         // --- Animate Skill Bars on Scroll ---
+        // (Simplified: We now use CSS transitions on load, but we can keep this for future needs)
         const skillsSection = document.querySelector('#skills');
         const animateSkills = () => {
-            skillProgressBars.forEach(bar => {
-                const width = bar.getAttribute('data-width');
-                bar.style.width = width;
-            });
+            // Updated to handle circular graphs if we wanted to animate them from 0 on scroll
+            // Currently they load with CSS --percent
         };
         const skillsObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -2095,12 +2235,12 @@
                         // Clean up classes for Grid View
                         clonedSkill.classList.remove('swiper-slide');
                         
-                        // Ensure the width style from swiper is removed
+                        // Remove fixed height/width styles that might interfere with grid
                         clonedSkill.style.width = '';
+                        clonedSkill.style.height = 'auto'; // Auto height for grid view
                         clonedSkill.style.marginRight = '';
                         
                         // FIX: Re-attach click listener for the Blender card inside the modal
-                        // (cloneNode does not copy event listeners)
                         if (clonedSkill.classList.contains('skill-link-card')) {
                             clonedSkill.addEventListener('click', () => {
                                 const projectUrl = clonedSkill.dataset.projectUrl;
@@ -2241,7 +2381,7 @@
             spaceBetween: 30,
             loop: true,
             autoplay: {
-                delay: 2000,
+                delay: 3000, // 3 seconds
                 disableOnInteraction: false,
             },
             // The "Zoom In then Hide" effect using Swiper Creative Effect
@@ -2260,6 +2400,16 @@
                 },
                 limitProgress: 2,
             },
+            on: {
+                autoplayTimeLeft(s, time, progress) {
+                    // Update the large background number
+                    const progressContent = document.querySelector(".autoplay-progress span");
+                    if(progressContent) {
+                        // Math.ceil gives us 3, 2, 1 based on milliseconds remaining
+                        progressContent.textContent = `${Math.ceil(time / 1000)}`;
+                    }
+                }
+            }
         });
 
         // 2. Projects Slider
@@ -2327,5 +2477,3 @@
 </body>
 
 </html>
-
-
