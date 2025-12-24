@@ -484,7 +484,7 @@
         model-viewer {
             width: 100%;
             height: 100%;
-            min-height: 700px;
+            min-height: 400px;
             --poster-color: transparent;
         }
 
@@ -518,6 +518,33 @@
 
         .model-next-btn:hover {
             transform: scale(1.1);
+            color: white;
+        }
+
+        /* NEW: Previous Section (Home) Button for Model Viewer */
+        .model-prev-btn {
+            position: absolute;
+            bottom: 75px; /* Positioned vertically above the next button */
+            right: 20px;
+            z-index: 100;
+            width: 45px;
+            height: 45px;
+            background: var(--dark-alt); /* Darker background to distinguish from main CTA */
+            border: 1px solid var(--primary); /* Primary border */
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .model-prev-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary);
             color: white;
         }
 
@@ -1485,14 +1512,14 @@
                 </div>
                 <!-- Updated About Image Section with 3D Model Viewer -->
                 <div class="about-image" data-aos="fade-left">
-                   <model-viewer 
+                    <model-viewer 
                         src="2.glb" 
                         alt="A 3D model of a mobile phone" 
                         auto-rotate 
                         camera-controls 
                         shadow-intensity="1"
-                        camera-orbit="45deg 55deg 4.5m"
-                        field-of-view="15deg"
+                        camera-orbit="45deg 55deg 2.5m"
+                        field-of-view="30deg"
                         environment-image="neutral"
                         interaction-prompt="auto"
                         loading="lazy"
@@ -1502,7 +1529,12 @@
                         <img src="1.jpg" alt="About Me Image" slot="poster" style="display:none;">
                     </model-viewer>
 
-                    <!-- NEW: Button to skip to Skills section -->
+                    <!-- NEW: Button to scroll UP to Home/Header -->
+                    <a href="#home" class="model-prev-btn" aria-label="Scroll to Header">
+                        <i class="fa-solid fa-arrow-up"></i>
+                    </a>
+
+                    <!-- Button to scroll DOWN to Skills section -->
                     <a href="#skills" class="model-next-btn" aria-label="Scroll to Skills">
                         <i class="fa-solid fa-arrow-down"></i>
                     </a>
@@ -2514,6 +2546,3 @@
 </body>
 
 </html>
-
-
-
