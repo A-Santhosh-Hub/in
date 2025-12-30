@@ -1,22 +1,58 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text to All Text | Modern Text Tool</title>
+    
+    <!-- SEO & Metadata -->
+    <title>Text to All Text | Free Online Code Formatter, Cleaner & HTML Viewer</title>
+    <meta name="description" content="Free online text tool by SanStudio. Format code (JSON, HTML, CSS, JS, C++, Python), clean text, remove line breaks, and preview HTML files instantly. No download required.">
+    <meta name="keywords" content="text to all text, free text converter, online code formatter, json beautifier, html viewer, clean text, remove spaces, sanstudio, web tool, free, c++ formatter, python indenter">
+    <meta name="author" content="SanStudio">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Text to All Text | Free Code & Text Tools">
+    <meta property="og:description" content="The ultimate free tool to format code, clean text, and preview HTML files in your browser.">
+    <meta property="og:site_name" content="Text to All Text">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Text to All Text | Free Code & Text Tools">
+    <meta name="twitter:description" content="Format code, clean text, and preview HTML files instantly for free.">
+
+    <!-- JSON-LD Structured Data for Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Text to All Text",
+      "url": "https://your-website-url.com",
+      "description": "A free online utility to format code, clean text, and preview HTML files locally.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "author": {
+        "@type": "Organization",
+        "name": "SanStudio"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Google Fonts: Inter and Fira Code -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="Logo.png" />
     
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-   <link rel="icon" type="image/png" href="Logo.png" />
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -87,7 +123,7 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col font-sans">
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col font-sans relative">
 
     <!-- Navbar -->
     <nav class="sticky top-0 z-40 w-full backdrop-blur-lg bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
@@ -98,13 +134,13 @@
                         <i class="ph ph-text-aa text-xl"></i>
                     </div>
                     <div class="flex flex-col">
-                        <span class="font-bold text-lg leading-tight tracking-tight">Text to All Text</span>
-                        <span class="text-xs text-slate-500 dark:text-slate-400">Format, clean & convert</span>
+                        <h1 class="font-bold text-lg leading-tight tracking-tight">Text to All Text</h1>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">Free Format, Clean & Convert Tool</span>
                     </div>
                 </div>
                 
                 <div class="flex items-center gap-4">
-                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300">
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300" aria-label="Toggle Dark Mode">
                         <i class="ph ph-sun text-xl hidden dark:block"></i>
                         <i class="ph ph-moon text-xl block dark:hidden"></i>
                     </button>
@@ -165,7 +201,8 @@
                     <textarea id="main-editor" 
                         class="w-full h-full p-4 pr-12 font-mono text-sm bg-transparent text-slate-800 dark:text-slate-200 leading-6 border-none focus:ring-0" 
                         placeholder="// Type or paste your code/text here..."
-                        spellcheck="false"></textarea>
+                        spellcheck="false"
+                        aria-label="Code Editor"></textarea>
                     
                     <!-- Stats Footer -->
                     <div class="h-8 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 flex items-center px-4 text-xs text-slate-500 dark:text-slate-400 justify-between">
@@ -288,6 +325,16 @@
                         Browse HTML
                     </button>
                     <input type="file" id="html-input" accept=".html,.htm" class="hidden" onchange="handleHtmlPreview(this.files[0])">
+
+                    <div class="flex items-center gap-3 my-6 w-full max-w-[200px] mx-auto opacity-60">
+                        <div class="h-px bg-slate-300 dark:bg-slate-600 flex-grow"></div>
+                        <span class="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase">or</span>
+                        <div class="h-px bg-slate-300 dark:bg-slate-600 flex-grow"></div>
+                    </div>
+
+                    <button onclick="enterHtmlTypeMode()" class="px-6 py-3 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl font-medium shadow-sm transition-all w-full sm:w-auto">
+                        <i class="ph ph-keyboard mr-2"></i>Type / Paste Code
+                    </button>
                 </div>
             </div>
 
@@ -330,12 +377,21 @@
 
     </main>
 
+    <!-- Global Drag Overlay -->
+    <div id="drag-overlay" class="fixed inset-0 z-50 bg-brand-600/90 backdrop-blur-sm hidden flex flex-col items-center justify-center text-white transition-opacity duration-200 pointer-events-none">
+        <div class="bg-white/10 p-8 rounded-3xl backdrop-blur-md border border-white/20 text-center animate-bounce">
+            <i class="ph ph-files text-6xl mb-4 block"></i>
+            <h2 class="text-3xl font-bold">Drop file to open</h2>
+            <p class="text-lg opacity-80 mt-2">Auto-detects HTML or Text/Code</p>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 transition-colors">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
             <span class="text-sm text-slate-500">© 2025 Text to All Text. All rights reserved.</span>
             <span class="text-sm font-medium text-slate-700 dark:text-slate-300">
-                Developed By <span class="text-brand-600 dark:text-brand-400 hover:underline cursor-pointer transition-colors">SanStudio</span>
+                Developed By <a href="https://sanstudio.neocities.org/" target="_blank" rel="noopener noreferrer" class="text-brand-600 dark:text-brand-400 hover:underline cursor-pointer transition-colors">SanStudio</a>
             </span>
         </div>
     </footer>
@@ -408,19 +464,58 @@
             // Theme Toggle
             document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
 
-            // Drag & Drop for Upload Mode
-            const uploadZone = document.getElementById('upload-zone');
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                uploadZone.addEventListener(eventName, preventDefaults, false);
-            });
-            ['dragenter', 'dragover'].forEach(eventName => {
-                uploadZone.addEventListener(eventName, () => uploadZone.classList.add('border-brand-500', 'bg-brand-50', 'dark:bg-brand-900/20'), false);
-            });
-            ['dragleave', 'drop'].forEach(eventName => {
-                uploadZone.addEventListener(eventName, () => uploadZone.classList.remove('border-brand-500', 'bg-brand-50', 'dark:bg-brand-900/20'), false);
-            });
-            uploadZone.addEventListener('drop', handleDrop, false);
+            // Setup Global Drag & Drop
+            setupGlobalDragAndDrop();
         });
+
+        // --- Global Drag & Drop Logic ---
+        function setupGlobalDragAndDrop() {
+            const overlay = document.getElementById('drag-overlay');
+            let dragCounter = 0;
+
+            window.addEventListener('dragenter', (e) => {
+                e.preventDefault();
+                dragCounter++;
+                overlay.classList.remove('hidden');
+            });
+
+            window.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                dragCounter--;
+                if (dragCounter === 0) {
+                    overlay.classList.add('hidden');
+                }
+            });
+
+            window.addEventListener('dragover', (e) => {
+                e.preventDefault(); // Essential for drop to work
+            });
+
+            window.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dragCounter = 0;
+                overlay.classList.add('hidden');
+
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    const file = e.dataTransfer.files[0];
+                    handleGlobalFileDrop(file);
+                }
+            });
+        }
+
+        function handleGlobalFileDrop(file) {
+            const ext = file.name.split('.').pop().toLowerCase();
+            
+            if (ext === 'html' || ext === 'htm') {
+                // Switch to HTML tab and load
+                switchTab('html');
+                handleHtmlPreview(file);
+            } else {
+                // Switch to Editor tab and load
+                switchTab('editor'); // Or 'upload' if you prefer showing the upload UI
+                handleFileUpload(file);
+            }
+        }
 
         // --- Core Logic: Formatter ---
         function formatContent() {
@@ -448,8 +543,13 @@
                 updateStats();
                 showToast('Formatted & Cleaned successfully!', 'success');
             } catch (e) {
-                console.error(e);
-                showToast('Error formatting content. Check syntax.', 'error');
+                // Handle JSON parse errors specifically to avoid console noise
+                if (fmt === 'json' && e instanceof SyntaxError) {
+                    showToast('Invalid JSON: Fix syntax to format', 'error');
+                } else {
+                    console.error(e);
+                    showToast('Error formatting content. Check syntax.', 'error');
+                }
             }
         }
 
@@ -569,7 +669,6 @@
                 
                 updateUIForFormat();
                 updateStats();
-                switchTab('editor'); // Switch back to editor to show content
                 showToast(`Loaded ${file.name}`, 'success');
             };
             reader.readAsText(file);
@@ -581,17 +680,25 @@
                 return;
             }
             
+            // 1. Determine Extension
+            let ext = state.format === 'doc' ? 'txt' : state.format; // Fallback for doc
+            if(state.format === 'c') ext = 'c'; 
+
+            // 2. Ask for Filename
+            const defaultName = `formatted-${new Date().toISOString().slice(0,10)}`;
+            let userInput = prompt("Enter a name for your file:", defaultName);
+
+            if (userInput === null) return; // User cancelled
+            
+            const fileName = userInput.trim() || defaultName;
+
+            // 3. Create Blob and Download
             const blob = new Blob([state.content], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             
-            // Generate filename
-            const date = new Date().toISOString().slice(0,19).replace(/:/g,'-');
-            let ext = state.format === 'doc' ? 'txt' : state.format; // Fallback for doc
-            if(state.format === 'c') ext = 'c'; 
-            
             a.href = url;
-            a.download = `formatted-${date}.${ext}`;
+            a.download = `${fileName}.${ext}`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -619,6 +726,17 @@
                 showToast('File loaded. Ready to launch.', 'success');
             };
             reader.readAsText(file);
+        }
+
+        function enterHtmlTypeMode() {
+            els.htmlFilename.textContent = 'untitled.html';
+            els.htmlSource.value = '<!DOCTYPE html>\n<html>\n<head>\n    <meta charset="UTF-8">\n    <title>Preview</title>\n    <style>\n        body { font-family: sans-serif; padding: 2rem; }\n        h1 { color: #4f46e5; }\n    </style>\n</head>\n<body>\n    <h1>Hello World</h1>\n    <p>Edit this code to see changes...</p>\n</body>\n</html>';
+            
+            els.htmlUploadZone.classList.add('hidden');
+            els.htmlNote.classList.add('hidden');
+            els.htmlWorkspace.classList.remove('hidden');
+            
+            showToast('Editor ready.', 'success');
         }
 
         function launchPreview() {
