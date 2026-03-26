@@ -14,7 +14,6 @@
     
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="https://santhosh2025.neocities.org/img1.jpg" />
     
     <!-- Marked.js for Markdown Preview -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -128,7 +127,7 @@
         }
         ::-webkit-scrollbar-thumb {
             background: #464646;
-            border: 2px solid #1e1e1e; /* Matches editor bg to make it look thinner */
+            border: 2px solid #1e1e1e;
             border-radius: 0px;
         }
         ::-webkit-scrollbar-thumb:hover {
@@ -143,17 +142,66 @@
             resize: none;
             outline: none;
             tab-size: 4;
-            color: var(--vs-text); /* Ensure text respects theme */
+            color: var(--vs-text);
         }
         
         textarea::selection {
             background: var(--vs-selection);
         }
 
-        /* Syntax Highlighting Fake Colors for demo */
-        .token-keyword { color: #569cd6; }
-        .token-string { color: #ce9178; }
-        .token-comment { color: #6a9955; }
+        /* Spreadsheet Styling */
+        .spreadsheet-table {
+            border-collapse: collapse;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: var(--vs-text);
+            min-width: 100%;
+        }
+        .spreadsheet-th {
+            background-color: var(--vs-sidebar);
+            border: 1px solid var(--vs-border);
+            text-align: center;
+            font-weight: 500;
+            padding: 4px 8px;
+            user-select: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            color: var(--vs-textMuted);
+        }
+        .spreadsheet-th-row {
+            position: sticky;
+            left: 0;
+            z-index: 11;
+            background-color: var(--vs-sidebar);
+            min-width: 40px;
+        }
+        .spreadsheet-th-corner {
+            z-index: 12;
+            left: 0;
+            top: 0;
+        }
+        .spreadsheet-td {
+            border: 1px solid var(--vs-border);
+            padding: 0;
+            min-width: 100px;
+            height: 28px;
+            background-color: var(--vs-editor);
+        }
+        .spreadsheet-input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            padding: 4px 8px;
+            background: transparent;
+            color: inherit;
+        }
+        .spreadsheet-input:focus {
+            outline: 2px solid var(--vs-accent);
+            outline-offset: -2px;
+            background-color: var(--vs-selection);
+        }
 
         /* Accordion transition */
         .accordion-content {
@@ -162,7 +210,7 @@
             overflow: hidden;
         }
         .accordion-content.expanded {
-            max-height: 500px; /* Arbitrary large number */
+            max-height: 500px;
         }
 
         /* About Modal Animations */
@@ -196,7 +244,6 @@
             <nav class="hidden sm:flex items-center gap-3 text-vs-text">
                 <div class="relative group">
                     <div class="hover:bg-vs-hover px-2 py-0.5 rounded cursor-pointer transition-colors">File</div>
-                    <!-- Invisible bridge to keep hover active -->
                     <div class="absolute top-full left-0 w-full h-2"></div>
                     <!-- Dropdown Menu -->
                     <div class="absolute left-0 top-full mt-1 w-48 bg-vs-sidebar border border-vs-border shadow-2xl rounded hidden group-hover:flex flex-col py-1 z-[100]">
@@ -271,6 +318,10 @@
             <button onclick="switchSidebarTab('qr-generator')" id="activity-qr-generator" class="w-12 h-12 flex items-center justify-center text-vs-activityInactive relative group mb-1" title="QR Code Generator">
                 <div id="activity-qr-generator-border" class="absolute left-0 top-0 bottom-0 w-0.5 bg-transparent"></div>
                 <i class="fa-solid fa-qrcode text-xl group-hover:text-vs-activityActive transition-colors"></i>
+            </button>
+            <button onclick="switchSidebarTab('excel')" id="activity-excel" class="w-12 h-12 flex items-center justify-center text-vs-activityInactive relative group mb-1" title="Excel Sheet">
+                <div id="activity-excel-border" class="absolute left-0 top-0 bottom-0 w-0.5 bg-transparent"></div>
+                <i class="fa-solid fa-table text-xl group-hover:text-vs-activityActive transition-colors"></i>
             </button>
 
             <div class="mt-auto flex flex-col items-center w-full">
@@ -717,6 +768,44 @@
                 </div>
             </div>
 
+            <!-- Sidebar Content: EXCEL SHEET -->
+            <div id="sidebar-excel" class="hidden flex-1 overflow-y-auto flex flex-col">
+                <div class="p-4 flex flex-col gap-4">
+                    <div class="flex flex-col gap-1">
+                        <h3 class="text-xs font-bold text-vs-text uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-table text-vs-accent"></i> Excel Sheet
+                        </h3>
+                        <p class="text-[10px] text-vs-textMuted">A lightweight spreadsheet inside your workspace.</p>
+                    </div>
+                    
+                    <button onclick="toggleSpreadsheetView(true)" class="w-full bg-vs-accent hover:bg-vs-accentHover text-white text-xs py-2.5 rounded flex items-center justify-center gap-2 transition-colors border border-transparent shadow-sm font-medium mt-2">
+                        <i class="fa-solid fa-table-cells"></i> Open Spreadsheet View
+                    </button>
+                    <button onclick="toggleSpreadsheetView(false)" class="w-full bg-vs-editor hover:bg-vs-hover text-vs-text text-xs py-2.5 rounded flex items-center justify-center gap-2 transition-colors border border-vs-border shadow-sm font-medium">
+                        <i class="fa-solid fa-code"></i> Back to Code Editor
+                    </button>
+
+                    <div class="flex flex-col gap-3 mt-4 border-t border-vs-border/50 pt-4">
+                        <label class="text-[10px] text-vs-textMuted uppercase tracking-wider">Sheet Options</label>
+                        <div class="flex gap-2">
+                            <button onclick="exportSheetCSV()" class="flex-1 bg-vs-editor hover:bg-vs-hover border border-vs-border text-vs-textMuted hover:text-vs-text text-[10px] py-1.5 rounded transition-colors flex justify-center items-center gap-1">
+                                <i class="fa-solid fa-download"></i> CSV
+                            </button>
+                            <button onclick="copySheetToEditor()" class="flex-1 bg-vs-editor hover:bg-vs-hover border border-vs-border text-vs-textMuted hover:text-vs-text text-[10px] py-1.5 rounded transition-colors flex justify-center items-center gap-1">
+                                <i class="fa-solid fa-file-export"></i> To Editor
+                            </button>
+                        </div>
+                        <button onclick="initSpreadsheet()" class="w-full bg-vs-editor hover:bg-red-500/20 hover:text-red-400 border border-vs-border hover:border-red-500/50 text-vs-textMuted text-[10px] py-1.5 rounded transition-colors flex items-center justify-center gap-1 mt-2">
+                            <i class="fa-solid fa-trash-can"></i> Reset Grid
+                        </button>
+                    </div>
+
+                    <div class="mt-auto pt-6 pb-2 text-center border-t border-vs-border/50 mt-4">
+                        <p class="text-[10px] text-vs-textMuted font-mono">Developed by Santhosh_A</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Sidebar Content: SETTINGS -->
             <div id="sidebar-settings" class="hidden flex-1 overflow-y-auto flex flex-col">
                 <div class="p-4 flex flex-col gap-6">
@@ -776,10 +865,10 @@
             </div>
 
             <!-- Editor Core (Split view container) -->
-            <div class="flex-1 flex overflow-hidden">
+            <div class="flex-1 flex overflow-hidden relative">
                 
-                <!-- Code Editor -->
-                <div class="flex-1 flex flex-col relative h-full">
+                <!-- Text Editor Wrapper -->
+                <div id="text-editor-wrapper" class="flex-1 flex flex-col relative h-full">
                     <!-- Fake Line Numbers Gutter -->
                     <div class="absolute left-0 top-0 bottom-0 w-12 bg-vs-editor border-r border-vs-border/30 flex flex-col items-end py-4 pr-3 text-vs-textMuted/50 text-sm font-mono overflow-hidden pointer-events-none z-10" id="line-numbers">
                         <!-- Populated by JS -->
@@ -790,6 +879,13 @@
                         placeholder="Type, paste, or drop your code here..."
                         spellcheck="false"
                         onscroll="syncScroll(this)"></textarea>
+                </div>
+
+                <!-- Excel Editor Wrapper -->
+                <div id="excel-editor-wrapper" class="hidden flex-1 overflow-auto bg-white dark:bg-vs-editor relative">
+                    <div id="spreadsheet-container" class="min-w-max">
+                        <!-- Spreadsheet injected via JS -->
+                    </div>
                 </div>
 
                 <!-- HTML Live Preview (Split Pane Right) -->
@@ -867,15 +963,11 @@
 
     <!-- About Developer Modal -->
     <div id="about-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex-col items-center justify-center transition-opacity duration-300 opacity-0" onclick="closeAboutModal(event)">
-        <!-- Click inside stops propagation so it doesn't close -->
         <div class="relative group cursor-pointer animate-modal-bounce" onclick="event.stopPropagation(); window.open('https://a-santhosh-hub.github.io/in/', '_blank')">
-            <!-- Animated gradient border glow -->
             <div class="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl blur-md opacity-75 group-hover:opacity-100 transition duration-500 animate-gradient-xy"></div>
             
-            <!-- Main Card Content -->
             <div class="relative px-10 py-8 bg-vs-sidebar border border-vs-border/50 rounded-2xl shadow-2xl flex flex-col items-center text-center transform transition-all duration-300 group-hover:scale-[1.02]">
                 
-                <!-- Avatar / Logo -->
                 <div class="w-20 h-20 rounded-full bg-vs-editor flex items-center justify-center mb-5 border-2 border-vs-accent shadow-[0_0_15px_rgba(0,122,204,0.5)] group-hover:shadow-[0_0_25px_rgba(0,122,204,0.8)] transition-shadow duration-300">
                     <span class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-purple-500">SA</span>
                 </div>
@@ -898,7 +990,6 @@
             </div>
         </div>
         
-        <!-- Close Hint -->
         <div class="absolute bottom-10 text-vs-textMuted text-sm opacity-50 font-mono flex items-center gap-2 pointer-events-none">
             Click anywhere to close
         </div>
@@ -934,6 +1025,7 @@
             sidebarTab: 'explorer', // 'explorer' or 'tools'
             sidebarVisible: true,
             previewVisible: false,
+            excelVisible: false,
             settings: {
                 indentSize: '4',
                 minify: false,
@@ -952,6 +1044,8 @@
             sidebar: document.getElementById('sidebar'),
             htmlPreviewPane: document.getElementById('html-preview-pane'),
             liveIframe: document.getElementById('live-iframe'),
+            textEditorWrapper: document.getElementById('text-editor-wrapper'),
+            excelEditorWrapper: document.getElementById('excel-editor-wrapper'),
             
             // Displays
             fileNameDisplays: [
@@ -996,40 +1090,46 @@
             updateFileDisplay();
             generateLineNumbers();
             loadHistoryToSidebar();
+            initSpreadsheet();
             
             // Event Listeners
-            els.editor.addEventListener('input', () => {
-                state.content = els.editor.value;
-                updateStats();
-                generateLineNumbers();
-                if(state.previewVisible && state.format === 'html') debounceRefreshPreview();
-            });
+            if (els.editor) {
+                els.editor.addEventListener('input', () => {
+                    state.content = els.editor.value;
+                    updateStats();
+                    generateLineNumbers();
+                    if(state.previewVisible && state.format === 'html') debounceRefreshPreview();
+                });
 
-            els.editor.addEventListener('keyup', updateCursorPos);
-            els.editor.addEventListener('click', updateCursorPos);
-
-            els.editor.addEventListener('keydown', handleEditorKeydown);
+                els.editor.addEventListener('keyup', updateCursorPos);
+                els.editor.addEventListener('click', updateCursorPos);
+                els.editor.addEventListener('keydown', handleEditorKeydown);
+            }
             
-            els.formatSelect.addEventListener('change', (e) => {
-                state.format = e.target.value;
-                updateUIForFormat();
-                saveSettings();
-                updateStats();
-                updateFileDisplay();
-            });
+            if (els.formatSelect) {
+                els.formatSelect.addEventListener('change', (e) => {
+                    state.format = e.target.value;
+                    updateUIForFormat();
+                    saveSettings();
+                    updateStats();
+                    updateFileDisplay();
+                });
+            }
 
-            els.themeSelect.addEventListener('change', (e) => {
-                state.theme = e.target.value;
-                applyTheme();
-                saveSettings();
-            });
+            if (els.themeSelect) {
+                els.themeSelect.addEventListener('change', (e) => {
+                    state.theme = e.target.value;
+                    applyTheme();
+                    saveSettings();
+                });
+            }
 
             // Settings Listeners
-            els.indentSelect.addEventListener('change', (e) => { state.settings.indentSize = e.target.value; updateStatusSpaces(); saveSettings(); });
-            els.chkMinify.addEventListener('change', (e) => { state.settings.minify = e.target.checked; saveSettings(); });
-            els.chkTrim.addEventListener('change', (e) => { state.settings.trim = e.target.checked; saveSettings(); });
-            els.chkSpaces.addEventListener('change', (e) => { state.settings.removeSpaces = e.target.checked; saveSettings(); });
-            els.chkLines.addEventListener('change', (e) => { state.settings.removeLines = e.target.checked; saveSettings(); });
+            if (els.indentSelect) els.indentSelect.addEventListener('change', (e) => { state.settings.indentSize = e.target.value; updateStatusSpaces(); saveSettings(); });
+            if (els.chkMinify) els.chkMinify.addEventListener('change', (e) => { state.settings.minify = e.target.checked; saveSettings(); });
+            if (els.chkTrim) els.chkTrim.addEventListener('change', (e) => { state.settings.trim = e.target.checked; saveSettings(); });
+            if (els.chkSpaces) els.chkSpaces.addEventListener('change', (e) => { state.settings.removeSpaces = e.target.checked; saveSettings(); });
+            if (els.chkLines) els.chkLines.addEventListener('change', (e) => { state.settings.removeLines = e.target.checked; saveSettings(); });
 
             setupGlobalDragAndDrop();
         });
@@ -1038,23 +1138,23 @@
 
         function toggleSidebar() {
             state.sidebarVisible = !state.sidebarVisible;
-            const titleContainer = document.getElementById('sidebar-title').parentElement;
+            const titleContainer = document.getElementById('sidebar-title')?.parentElement;
             
             if (state.sidebarVisible) {
-                els.sidebar.classList.remove('w-0', 'border-none');
-                els.sidebar.classList.add('w-64', 'border-r');
-                if(titleContainer) titleContainer.style.display = 'flex';
+                if (els.sidebar) els.sidebar.classList.remove('w-0', 'border-none');
+                if (els.sidebar) els.sidebar.classList.add('w-64', 'border-r');
+                if (titleContainer) titleContainer.style.display = 'flex';
             } else {
-                els.sidebar.classList.remove('w-64', 'border-r');
-                els.sidebar.classList.add('w-0', 'border-none');
-                if(titleContainer) titleContainer.style.display = 'none';
+                if (els.sidebar) els.sidebar.classList.remove('w-64', 'border-r');
+                if (els.sidebar) els.sidebar.classList.add('w-0', 'border-none');
+                if (titleContainer) titleContainer.style.display = 'none';
                 
                 // Remove active states from activity bar with safety checks
-                ['explorer', 'tools', 'snippets', 'devkit', 'extractor', 'formatter', 'contact-links', 'drive-extractor', 'qr-generator', 'settings'].forEach(id => {
+                ['explorer', 'tools', 'snippets', 'devkit', 'extractor', 'formatter', 'contact-links', 'drive-extractor', 'qr-generator', 'excel', 'settings'].forEach(id => {
                     const btn = document.getElementById(`activity-${id}`);
                     const border = document.getElementById(`activity-${id}-border`);
-                    if(btn) btn.classList.replace('text-vs-activityActive', 'text-vs-activityInactive');
-                    if(border) border.classList.replace('bg-vs-accent', 'bg-transparent');
+                    if (btn && btn.classList) btn.classList.replace('text-vs-activityActive', 'text-vs-activityInactive');
+                    if (border && border.classList) border.classList.replace('bg-vs-accent', 'bg-transparent');
                 });
             }
         }
@@ -1071,7 +1171,7 @@
             
             state.sidebarTab = tab;
 
-            const tabs = ['explorer', 'tools', 'snippets', 'devkit', 'extractor', 'formatter', 'contact-links', 'drive-extractor', 'qr-generator', 'settings'];
+            const tabs = ['explorer', 'tools', 'snippets', 'devkit', 'extractor', 'formatter', 'contact-links', 'drive-extractor', 'qr-generator', 'excel', 'settings'];
             const titles = {
                 'explorer': 'Explorer',
                 'tools': 'Format Tools & Settings',
@@ -1082,6 +1182,7 @@
                 'contact-links': 'Contact Link Generator',
                 'drive-extractor': 'Google Drive ID Extractor',
                 'qr-generator': 'QR Code Generator',
+                'excel': 'Excel Sheet Workspace',
                 'settings': 'Settings'
             };
 
@@ -1091,9 +1192,9 @@
                 const border = document.getElementById(`activity-${t}-border`);
                 const panel = document.getElementById(`sidebar-${t}`);
                 
-                if (btn) btn.classList.replace('text-vs-activityActive', 'text-vs-activityInactive');
-                if (border) border.classList.replace('bg-vs-accent', 'bg-transparent');
-                if (panel) panel.classList.add('hidden');
+                if (btn && btn.classList) btn.classList.replace('text-vs-activityActive', 'text-vs-activityInactive');
+                if (border && border.classList) border.classList.replace('bg-vs-accent', 'bg-transparent');
+                if (panel && panel.classList) panel.classList.add('hidden');
             });
 
             // Activate Target securely
@@ -1102,38 +1203,38 @@
             const targetPanel = document.getElementById(`sidebar-${tab}`);
             const titleEl = document.getElementById('sidebar-title');
 
-            if (targetBtn) targetBtn.classList.replace('text-vs-activityInactive', 'text-vs-activityActive');
-            if (targetBorder) targetBorder.classList.replace('bg-transparent', 'bg-vs-accent');
-            if (targetPanel) targetPanel.classList.remove('hidden');
+            if (targetBtn && targetBtn.classList) targetBtn.classList.replace('text-vs-activityInactive', 'text-vs-activityActive');
+            if (targetBorder && targetBorder.classList) targetBorder.classList.replace('bg-transparent', 'bg-vs-accent');
+            if (targetPanel && targetPanel.classList) targetPanel.classList.remove('hidden');
             if (titleEl) titleEl.textContent = titles[tab] || tab;
         }
 
         function toggleAccordion(id) {
             const content = document.getElementById(id);
             const icon = document.getElementById('icon-' + id);
-            if (content.classList.contains('expanded')) {
+            if (content && content.classList.contains('expanded')) {
                 content.classList.remove('expanded');
-                icon.classList.add('-rotate-90');
-            } else {
+                if (icon) icon.classList.add('-rotate-90');
+            } else if (content) {
                 content.classList.add('expanded');
-                icon.classList.remove('-rotate-90');
+                if (icon) icon.classList.remove('-rotate-90');
             }
         }
 
         function toggleHtmlPreview() {
             state.previewVisible = !state.previewVisible;
             if (state.previewVisible) {
-                els.htmlPreviewPane.classList.remove('hidden');
+                if (els.htmlPreviewPane) els.htmlPreviewPane.classList.remove('hidden');
                 refreshPreview(); // Generate initial preview
                 // Switch format to HTML if it isn't already
-                if (state.format !== 'html') {
+                if (state.format !== 'html' && els.formatSelect) {
                     els.formatSelect.value = 'html';
                     els.formatSelect.dispatchEvent(new Event('change'));
                 }
             } else {
-                els.htmlPreviewPane.classList.add('hidden');
+                if (els.htmlPreviewPane) els.htmlPreviewPane.classList.add('hidden');
                 // Clear iframe to free memory
-                els.liveIframe.srcdoc = '';
+                if (els.liveIframe) els.liveIframe.srcdoc = '';
             }
         }
 
@@ -1144,8 +1245,8 @@
         }
 
         function refreshPreview() {
-            if(!state.previewVisible) return;
-            const code = els.editor.value;
+            if(!state.previewVisible || !els.liveIframe) return;
+            const code = els.editor ? els.editor.value : '';
             
             if (state.format === 'md' && typeof marked !== 'undefined') {
                 // Render Markdown styling with github-like CSS directly injected
@@ -1169,7 +1270,7 @@
         }
 
         function launchPreviewInNewTab() {
-            if (!els.editor.value.trim()) {
+            if (!els.editor || !els.editor.value.trim()) {
                 showToast('Editor is empty', 'error');
                 return;
             }
@@ -1206,10 +1307,11 @@
         // --- Editor Visuals (Sync, Line numbers) ---
 
         function syncScroll(textarea) {
-            els.lineNumbers.scrollTop = textarea.scrollTop;
+            if (els.lineNumbers) els.lineNumbers.scrollTop = textarea.scrollTop;
         }
 
         function generateLineNumbers() {
+            if (!els.editor || !els.lineNumbers) return;
             const lines = els.editor.value.split('\n').length;
             // Only regenerate if count changed to save performance
             if (els.lineNumbers.children.length === lines && lines !== 0) return;
@@ -1224,6 +1326,7 @@
 
         function updateCursorPos() {
             const el = els.editor;
+            if (!el) return;
             const text = el.value;
             const pos = el.selectionStart;
             
@@ -1231,12 +1334,12 @@
             const line = lines.length;
             const col = lines[lines.length - 1].length + 1;
             
-            els.statusLn.textContent = line;
-            els.statusCol.textContent = col;
+            if(els.statusLn) els.statusLn.textContent = line;
+            if(els.statusCol) els.statusCol.textContent = col;
         }
 
         function updateStatusSpaces() {
-            els.statusSpaces.textContent = state.settings.indentSize === 'tab' ? 'Tab' : state.settings.indentSize;
+            if(els.statusSpaces) els.statusSpaces.textContent = state.settings.indentSize === 'tab' ? 'Tab' : state.settings.indentSize;
         }
 
         function updateFileDisplay() {
@@ -1260,46 +1363,46 @@
             let fullName = `${baseName}.${ext}`;
 
             // Title bar
-            els.fileNameDisplays[0].textContent = `${fullName} - Text to All Text`;
+            if(els.fileNameDisplays[0]) els.fileNameDisplays[0].textContent = `${fullName} - Text to All Text`;
             
             // Sidebar & Tabs
-            els.fileNameDisplays[1].textContent = fullName;
-            els.fileNameDisplays[2].textContent = fullName;
-            els.fileNameDisplays[3].textContent = fullName;
+            if(els.fileNameDisplays[1]) els.fileNameDisplays[1].textContent = fullName;
+            if(els.fileNameDisplays[2]) els.fileNameDisplays[2].textContent = fullName;
+            if(els.fileNameDisplays[3]) els.fileNameDisplays[3].textContent = fullName;
 
             // Icons
             const iconClass = `fa-solid ${iconMap[state.format] || iconMap['txt']} text-sm mr-2`;
-            els.fileIcons[0].className = iconClass + ' text-xs';
-            els.fileIcons[1].className = iconClass;
+            if(els.fileIcons[0]) els.fileIcons[0].className = iconClass + ' text-xs';
+            if(els.fileIcons[1]) els.fileIcons[1].className = iconClass;
 
             // Breadcrumb
-            els.breadcrumbFormat.textContent = state.format;
+            if(els.breadcrumbFormat) els.breadcrumbFormat.textContent = state.format;
 
             // Status Bar
-            els.statusLanguage.textContent = nameMap[state.format] || 'Text';
+            if(els.statusLanguage) els.statusLanguage.textContent = nameMap[state.format] || 'Text';
         }
 
         function updateUIForFormat() {
             const isCode = ['json', 'html', 'css', 'js', 'c', 'py'].includes(state.format);
             const isPassage = state.format === 'passage';
             
-            els.optCode.classList.add('hidden');
-            els.optPassage.classList.add('hidden');
+            if (els.optCode) els.optCode.classList.add('hidden');
+            if (els.optPassage) els.optPassage.classList.add('hidden');
 
-            if (isCode) {
+            if (isCode && els.optCode) {
                 els.optCode.classList.remove('hidden');
                 els.optCode.classList.add('flex');
-            } else if (isPassage) {
+            } else if (isPassage && els.optPassage) {
                 els.optPassage.classList.remove('hidden');
                 els.optPassage.classList.add('flex');
             }
         }
 
         function updateStats() {
-            const text = els.editor.value;
+            const text = els.editor ? els.editor.value : '';
             const len = text.length;
-            els.charCount.textContent = `${len.toLocaleString()} Chars`;
-            els.wordCount.textContent = `${text.trim() === '' ? 0 : text.trim().split(/\s+/).length.toLocaleString()} Words`;
+            if (els.charCount) els.charCount.textContent = `${len.toLocaleString()} Chars`;
+            if (els.wordCount) els.wordCount.textContent = `${text.trim() === '' ? 0 : text.trim().split(/\s+/).length.toLocaleString()} Words`;
         }
 
 
@@ -1329,6 +1432,7 @@
         function loadHistoryToSidebar() {
             const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
             const listContainer = document.getElementById('history-list');
+            if (!listContainer) return;
             
             if (history.length === 0) {
                 listContainer.innerHTML = `<div class="px-4 py-2 text-xs text-vs-textMuted opacity-50 italic">No timeline history.</div>`;
@@ -1349,7 +1453,7 @@
             const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
             const item = history.find(i => i.id === id);
             
-            if (item) {
+            if (item && els.editor && els.formatSelect) {
                 els.editor.value = item.content;
                 state.content = item.content;
                 state.format = item.format;
@@ -1381,6 +1485,11 @@
                 const msgEl = document.getElementById('confirm-message');
                 const btnYes = document.getElementById('confirm-yes');
                 const btnNo = document.getElementById('confirm-no');
+
+                if (!modal || !msgEl || !btnYes || !btnNo) {
+                    resolve(confirm(message));
+                    return;
+                }
 
                 msgEl.textContent = message;
                 modal.classList.remove('hidden');
@@ -1417,16 +1526,16 @@
         // --- Core Formatting Logic ---
 
         async function createNewFile() {
-            if (els.editor.value.trim() !== '') {
+            if (els.editor && els.editor.value.trim() !== '') {
                 const proceed = await showConfirm('Create new file? Unsaved changes will be lost.');
                 if (!proceed) return;
             }
             
-            els.editor.value = '';
+            if (els.editor) els.editor.value = '';
             state.content = '';
             state.fileName = 'untitled';
             state.format = 'txt';
-            els.formatSelect.value = 'txt';
+            if (els.formatSelect) els.formatSelect.value = 'txt';
             
             updateUIForFormat();
             updateStats();
@@ -1438,6 +1547,7 @@
         }
 
         function formatContent() {
+            if (!els.editor) return;
             const text = els.editor.value;
             if (!text.trim()) {
                 showToast('Editor is empty', 'error');
@@ -1520,6 +1630,7 @@
         }
         
         function performLineOp(op) {
+            if (!els.editor) return;
             const text = els.editor.value;
             if (!text.trim()) return;
             
@@ -1545,6 +1656,7 @@
         }
 
         function formatPassage(text) {
+            if (!els.caseSelect) return text;
             const caseType = els.caseSelect.value;
             if (caseType === 'upper') return text.toUpperCase();
             if (caseType === 'lower') return text.toLowerCase();
@@ -1599,6 +1711,7 @@
         };
 
         async function insertSnippet(type) {
+            if (!els.editor) return;
             if (els.editor.value.trim() !== '') {
                 const proceed = await showConfirm('Insert snippet? This will overwrite your current code.');
                 if (!proceed) return;
@@ -1612,7 +1725,7 @@
             else if(type === 'fetch' || type === 'express') state.format = 'js';
             else if(type === 'json') state.format = 'json';
             
-            els.formatSelect.value = state.format;
+            if(els.formatSelect) els.formatSelect.value = state.format;
             state.fileName = `${type}_snippet`;
             
             updateUIForFormat();
@@ -1624,6 +1737,7 @@
         }
 
         async function generateDevKit(type) {
+            if (!els.editor) return;
             if (els.editor.value.trim() !== '') {
                 const proceed = await showConfirm('Generate tool data? This will overwrite your current editor content.');
                 if (!proceed) return;
@@ -1675,7 +1789,7 @@
             els.editor.value = result;
             state.content = result;
             state.format = formatTarget;
-            els.formatSelect.value = formatTarget;
+            if(els.formatSelect) els.formatSelect.value = formatTarget;
             state.fileName = label;
 
             updateUIForFormat();
@@ -1693,6 +1807,8 @@
             const proxyToggle = document.getElementById('cors-bypass');
             const btnText = document.getElementById('extract-text');
             const btnIcon = document.getElementById('extract-icon');
+
+            if (!urlInput || !btnText || !btnIcon || !proxyToggle || !els.editor) return;
 
             let url = urlInput.value.trim();
             if (!url) return showToast("Enter a URL first", "error");
@@ -1748,7 +1864,7 @@
                     
                     // Force state to HTML
                     state.format = 'html';
-                    els.formatSelect.value = 'html';
+                    if (els.formatSelect) els.formatSelect.value = 'html';
                     
                     // Parse URL for filename
                     try {
@@ -1783,7 +1899,7 @@
         }
 
         function handleFileUpload(file) {
-            if (!file) return;
+            if (!file || !els.editor) return;
             const reader = new FileReader();
             reader.onload = (e) => {
                 els.editor.value = e.target.result;
@@ -1795,13 +1911,13 @@
                 
                 if (supported.includes(ext)) {
                     state.format = ext;
-                    els.formatSelect.value = ext;
+                    if(els.formatSelect) els.formatSelect.value = ext;
                 } else if (ext === 'cpp' || ext === 'h') {
                     state.format = 'c';
-                    els.formatSelect.value = 'c';
+                    if(els.formatSelect) els.formatSelect.value = 'c';
                 } else {
                     state.format = 'txt';
-                    els.formatSelect.value = 'txt';
+                    if(els.formatSelect) els.formatSelect.value = 'txt';
                 }
                 
                 updateUIForFormat();
@@ -1851,18 +1967,20 @@
         // --- IN Number Formatter Logic ---
         
         function formatIndianNumbers() {
-            const rawInput = document.getElementById('num-input').value;
-            const addPrefix = document.getElementById('add-91-prefix').checked;
+            const rawInput = document.getElementById('num-input');
+            const addPrefix = document.getElementById('add-91-prefix');
             const outputEl = document.getElementById('num-output');
             const countEl = document.getElementById('num-count');
 
-            if (!rawInput.trim()) {
+            if (!rawInput || !addPrefix || !outputEl || !countEl) return;
+
+            if (!rawInput.value.trim()) {
                 showToast('Please paste some numbers first', 'error');
                 return;
             }
 
             // Split by newlines, commas, or spaces
-            const rawList = rawInput.split(/[\n,\s]+/);
+            const rawList = rawInput.value.split(/[\n,\s]+/);
             let cleanedNumbers = [];
 
             rawList.forEach(item => {
@@ -1891,7 +2009,7 @@
             cleanedNumbers = [...new Set(cleanedNumbers)];
 
             // Add prefix if requested
-            if (addPrefix) {
+            if (addPrefix.checked) {
                 cleanedNumbers = cleanedNumbers.map(num => '+91' + num);
             }
 
@@ -1904,7 +2022,7 @@
 
         function copyNumberOutput() {
             const outputEl = document.getElementById('num-output');
-            if (!outputEl.value) {
+            if (!outputEl || !outputEl.value) {
                 showToast('Nothing to copy', 'error');
                 return;
             }
@@ -1921,16 +2039,21 @@
         // --- Google Drive ID Extractor Logic ---
 
         function extractDriveIDs() {
-            const eventNameInput = document.getElementById('drive-event-name').value.trim() || 'Event';
-            const linksInput = document.getElementById('drive-links-input').value.trim();
+            const eventNameInput = document.getElementById('drive-event-name');
+            const linksInput = document.getElementById('drive-links-input');
             const outputEl = document.getElementById('drive-output');
+            
+            if(!eventNameInput || !linksInput || !outputEl) return;
 
-            if (!linksInput) {
+            const evName = eventNameInput.value.trim() || 'Event';
+            const linksValue = linksInput.value.trim();
+
+            if (!linksValue) {
                 showToast('Please paste Google Drive links first', 'error');
                 return;
             }
 
-            const lines = linksInput.split('\n');
+            const lines = linksValue.split('\n');
             const extractedData = [];
             let count = 1;
 
@@ -1945,7 +2068,7 @@
                 if (match && match[1]) {
                     extractedData.push({
                         id: match[1],
-                        name: `${eventNameInput} ${count}`
+                        name: `${evName} ${count}`
                     });
                     count++;
                 }
@@ -1965,7 +2088,7 @@
 
         function copyDriveOutput() {
             const outputEl = document.getElementById('drive-output');
-            if (!outputEl.value) {
+            if (!outputEl || !outputEl.value) {
                 showToast('Nothing to copy', 'error');
                 return;
             }
@@ -1981,7 +2104,10 @@
 
         function downloadDriveOutput(type) {
             const outputEl = document.getElementById('drive-output');
-            const eventName = document.getElementById('drive-event-name').value.trim() || 'gdrive_data';
+            const eventNameEl = document.getElementById('drive-event-name');
+            if(!outputEl || !eventNameEl) return;
+            
+            const eventName = eventNameEl.value.trim() || 'gdrive_data';
             
             if (!outputEl.value) {
                 showToast('No data to download', 'error');
@@ -2017,10 +2143,16 @@
         // --- Contact Link Generator Logic ---
 
         function generateContactLinks() {
-            const rawInput = document.getElementById('contact-numbers-input').value;
-            const waMsg = document.getElementById('contact-wa-msg').value.trim();
-            const remove91 = document.getElementById('contact-remove-91').checked;
+            const rawInputEl = document.getElementById('contact-numbers-input');
+            const waMsgEl = document.getElementById('contact-wa-msg');
+            const remove91El = document.getElementById('contact-remove-91');
             const outputEl = document.getElementById('contact-links-output');
+            
+            if (!rawInputEl || !waMsgEl || !remove91El || !outputEl) return;
+
+            const rawInput = rawInputEl.value;
+            const waMsg = waMsgEl.value.trim();
+            const remove91 = remove91El.checked;
 
             if (!rawInput.trim()) {
                 showToast('Please paste phone numbers first', 'error');
@@ -2077,7 +2209,7 @@
 
         function copyContactLinks() {
             const outputEl = document.getElementById('contact-links-output');
-            if (!outputEl.value) {
+            if (!outputEl || !outputEl.value) {
                 showToast('Nothing to copy', 'error');
                 return;
             }
@@ -2093,7 +2225,7 @@
 
         function downloadContactLinks() {
             const outputEl = document.getElementById('contact-links-output');
-            if (!outputEl.value) {
+            if (!outputEl || !outputEl.value) {
                 showToast('No links to download', 'error');
                 return;
             }
@@ -2132,12 +2264,20 @@
         }
 
         function generateQRCode() {
-            const input = document.getElementById('qr-input-text').value;
-            const isBulkWa = document.getElementById('qr-bulk-whatsapp').checked;
-            const fgColor = document.getElementById('qr-color-fg').value;
-            const bgColor = document.getElementById('qr-color-bg').value;
-            const size = parseInt(document.getElementById('qr-size').value);
+            const inputEl = document.getElementById('qr-input-text');
+            const isBulkWaEl = document.getElementById('qr-bulk-whatsapp');
+            const fgColorEl = document.getElementById('qr-color-fg');
+            const bgColorEl = document.getElementById('qr-color-bg');
+            const sizeEl = document.getElementById('qr-size');
             const previewContainer = document.getElementById('qr-preview-container');
+
+            if (!inputEl || !isBulkWaEl || !fgColorEl || !bgColorEl || !sizeEl || !previewContainer) return;
+
+            const input = inputEl.value;
+            const isBulkWa = isBulkWaEl.checked;
+            const fgColor = fgColorEl.value;
+            const bgColor = bgColorEl.value;
+            const size = parseInt(sizeEl.value);
 
             if (!input.trim()) {
                 showToast('Please enter text or numbers', 'error');
@@ -2287,6 +2427,171 @@
             }
         }
 
+        // --- Spreadsheet Logic ---
+
+        let sheetData = [];
+        const defaultRows = 100;
+        const defaultCols = 26;
+
+        function toggleSpreadsheetView(showExcel) {
+            state.excelVisible = showExcel;
+            const textEditor = document.getElementById('text-editor-wrapper');
+            const excelEditor = document.getElementById('excel-editor-wrapper');
+            const tabName = document.getElementById('tab-name');
+            const tabIcon = document.getElementById('tab-icon');
+
+            if (!textEditor || !excelEditor) return;
+
+            if (showExcel) {
+                textEditor.classList.add('hidden');
+                excelEditor.classList.remove('hidden');
+                excelEditor.classList.add('flex');
+                
+                if (tabName) tabName.textContent = 'spreadsheet.csv';
+                if (tabIcon) tabIcon.className = 'fa-solid fa-table text-green-500 text-sm mr-2';
+                if (els.statusLanguage) els.statusLanguage.textContent = 'CSV Spreadsheet';
+            } else {
+                textEditor.classList.remove('hidden');
+                excelEditor.classList.add('hidden');
+                excelEditor.classList.remove('flex');
+                
+                updateFileDisplay(); // Reverts icon, name, and status
+            }
+        }
+
+        function initSpreadsheet(rows = defaultRows, cols = defaultCols) {
+            const container = document.getElementById('spreadsheet-container');
+            if (!container) return;
+            
+            sheetData = Array.from({ length: rows }, () => Array(cols).fill(''));
+
+            let html = '<table class="spreadsheet-table"><thead><tr><th class="spreadsheet-th spreadsheet-th-corner"></th>';
+            
+            // Column Headers A-Z
+            for (let c = 0; c < cols; c++) {
+                html += `<th class="spreadsheet-th">${String.fromCharCode(65 + c)}</th>`;
+            }
+            html += '</tr></thead><tbody>';
+            
+            // Rows
+            for (let r = 0; r < rows; r++) {
+                html += `<tr><th class="spreadsheet-th spreadsheet-th-row">${r + 1}</th>`;
+                for (let c = 0; c < cols; c++) {
+                    html += `<td class="spreadsheet-td"><input type="text" class="spreadsheet-input" data-row="${r}" data-col="${c}" value="" oninput="updateSheetData(${r}, ${c}, this.value)"></td>`;
+                }
+                html += '</tr>';
+            }
+            html += '</tbody></table>';
+            container.innerHTML = html;
+            showToast('Spreadsheet grid initialized', 'info');
+        }
+
+        function updateSheetData(r, c, val) {
+            sheetData[r][c] = val;
+        }
+
+        function getCleanSheetData() {
+            let maxRow = -1;
+            let maxCol = -1;
+            
+            // Find boundaries of actual data
+            for (let r = 0; r < sheetData.length; r++) {
+                for (let c = 0; c < sheetData[r].length; c++) {
+                    if (sheetData[r][c].trim() !== '') {
+                        if (r > maxRow) maxRow = r;
+                        if (c > maxCol) maxCol = c;
+                    }
+                }
+            }
+            
+            if (maxRow === -1) return []; // Empty
+            
+            // Extract clean grid
+            let clean = [];
+            for (let r = 0; r <= maxRow; r++) {
+                clean.push(sheetData[r].slice(0, maxCol + 1));
+            }
+            return clean;
+        }
+
+        function exportSheetCSV() {
+            const cleanData = getCleanSheetData();
+            if (cleanData.length === 0) {
+                showToast('Spreadsheet is empty', 'error');
+                return;
+            }
+            
+            // Basic CSV escaping logic
+            let csv = cleanData.map(row => 
+                row.map(cell => {
+                    cell = cell.replace(/"/g, '""');
+                    if (cell.search(/("|,|\n)/g) >= 0) cell = `"${cell}"`;
+                    return cell;
+                }).join(',')
+            ).join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'spreadsheet.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Downloaded spreadsheet.csv', 'success');
+        }
+
+        function copySheetToEditor() {
+            const cleanData = getCleanSheetData();
+            if (cleanData.length === 0) {
+                showToast('Spreadsheet is empty', 'error');
+                return;
+            }
+            
+            let csv = cleanData.map(row => 
+                row.map(cell => {
+                    cell = cell.replace(/"/g, '""');
+                    if (cell.search(/("|,|\n)/g) >= 0) cell = `"${cell}"`;
+                    return cell;
+                }).join(',')
+            ).join('\n');
+
+            if (els.editor) els.editor.value = csv;
+            state.content = csv;
+            state.format = 'txt';
+            if (els.formatSelect) els.formatSelect.value = 'txt';
+            
+            toggleSpreadsheetView(false);
+            updateStats();
+            generateLineNumbers();
+            showToast('Data exported to code editor successfully', 'success');
+        }
+
+        // Spreadsheet Arrow Key Navigation
+        document.addEventListener('keydown', function(e) {
+            if (state.excelVisible && e.target.classList.contains('spreadsheet-input')) {
+                let r = parseInt(e.target.dataset.row);
+                let c = parseInt(e.target.dataset.col);
+                let nextInput;
+
+                if (e.key === 'ArrowDown') {
+                    nextInput = document.querySelector(`.spreadsheet-input[data-row="${r+1}"][data-col="${c}"]`);
+                } else if (e.key === 'ArrowUp') {
+                    nextInput = document.querySelector(`.spreadsheet-input[data-row="${r-1}"][data-col="${c}"]`);
+                } else if (e.key === 'ArrowRight' && e.target.selectionEnd === e.target.value.length) {
+                    nextInput = document.querySelector(`.spreadsheet-input[data-row="${r}"][data-col="${c+1}"]`);
+                } else if (e.key === 'ArrowLeft' && e.target.selectionStart === 0) {
+                    nextInput = document.querySelector(`.spreadsheet-input[data-row="${r}"][data-col="${c-1}"]`);
+                }
+
+                if (nextInput) {
+                    e.preventDefault();
+                    nextInput.focus();
+                }
+            }
+        });
+
         async function downloadZip() {
             if (!state.content) {
                 showToast('Editor is empty', 'error');
@@ -2340,7 +2645,7 @@
                 this.value = this.value.substring(0, start) + indent + this.value.substring(end);
                 this.selectionStart = this.selectionEnd = start + indent.length;
                 // Trigger input event to update state and line numbers
-                els.editor.dispatchEvent(new Event('input'));
+                if(els.editor) els.editor.dispatchEvent(new Event('input'));
             }
             if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                 e.preventDefault();
@@ -2367,6 +2672,7 @@
         // --- Drag & Drop ---
         function setupGlobalDragAndDrop() {
             const overlay = document.getElementById('drag-overlay');
+            if(!overlay) return;
             let dragCounter = 0;
 
             window.addEventListener('dragenter', (e) => {
@@ -2387,6 +2693,7 @@
         
         function openAboutModal() {
             const modal = document.getElementById('about-modal');
+            if(!modal) return;
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             
@@ -2400,6 +2707,7 @@
         function closeAboutModal(e) {
             if (e) e.stopPropagation();
             const modal = document.getElementById('about-modal');
+            if(!modal) return;
             modal.classList.remove('opacity-100');
             modal.classList.add('opacity-0');
             
@@ -2410,7 +2718,7 @@
         }
 
         function copyToClipboard() {
-            if (!els.editor.value) return;
+            if (!els.editor || !els.editor.value) return;
             els.editor.select();
             try {
                 document.execCommand('copy');
@@ -2436,16 +2744,16 @@
             if (saved) {
                 const parsed = JSON.parse(saved);
                 state.theme = parsed.theme || 'theme-dark';
-                els.themeSelect.value = state.theme;
+                if(els.themeSelect) els.themeSelect.value = state.theme;
                 state.format = parsed.format || 'txt';
-                els.formatSelect.value = state.format;
+                if(els.formatSelect) els.formatSelect.value = state.format;
                 if (parsed.settings) {
                     state.settings = parsed.settings;
-                    els.indentSelect.value = state.settings.indentSize || '4';
+                    if(els.indentSelect) els.indentSelect.value = state.settings.indentSize || '4';
                     if(els.chkMinify) els.chkMinify.checked = state.settings.minify || false;
-                    els.chkTrim.checked = state.settings.trim;
-                    els.chkSpaces.checked = state.settings.removeSpaces;
-                    els.chkLines.checked = state.settings.removeLines;
+                    if(els.chkTrim) els.chkTrim.checked = state.settings.trim;
+                    if(els.chkSpaces) els.chkSpaces.checked = state.settings.removeSpaces;
+                    if(els.chkLines) els.chkLines.checked = state.settings.removeLines;
                 }
                 updateStatusSpaces();
             }
@@ -2458,6 +2766,7 @@
 
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
+            if(!container) return;
             const toast = document.createElement('div');
             
             const colors = {
