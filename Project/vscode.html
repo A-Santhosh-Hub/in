@@ -24,6 +24,9 @@
     <!-- QR Code Styling Library -->
     <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
 
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -127,7 +130,7 @@
         }
         ::-webkit-scrollbar-thumb {
             background: #464646;
-            border: 2px solid #1e1e1e;
+            border: 2px solid #1e1e1e; /* Matches editor bg to make it look thinner */
             border-radius: 0px;
         }
         ::-webkit-scrollbar-thumb:hover {
@@ -142,7 +145,7 @@
             resize: none;
             outline: none;
             tab-size: 4;
-            color: var(--vs-text);
+            color: var(--vs-text); /* Ensure text respects theme */
         }
         
         textarea::selection {
@@ -203,6 +206,88 @@
             background-color: var(--vs-selection);
         }
 
+        /* Word Processor Styling */
+        .word-canvas-container {
+            background-color: #e5e7eb; /* Neutral grey background like a desk */
+            padding: 2rem 0;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            flex-grow: 1;
+        }
+        .dark .word-canvas-container {
+            background-color: #111827; /* Darker grey for dark mode desk */
+        }
+        .word-canvas {
+            width: 210mm; /* A4 width */
+            min-height: 297mm; /* A4 height */
+            background-color: white;
+            color: black;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 25.4mm; /* standard 1-inch margin */
+            outline: none;
+            font-family: 'Arial', sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+        }
+        .word-toolbar-btn {
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: var(--vs-text);
+            background: transparent;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .word-toolbar-btn:hover {
+            background-color: var(--vs-hover);
+        }
+        .word-toolbar-divider {
+            width: 1px;
+            height: 20px;
+            background-color: var(--vs-border);
+            margin: 0 4px;
+        }
+        .word-canvas ul { list-style-type: disc; padding-left: 20px; }
+        .word-canvas ol { list-style-type: decimal; padding-left: 20px; }
+        .word-canvas h1 { font-size: 24pt; font-weight: bold; margin-bottom: 12pt; }
+        .word-canvas h2 { font-size: 18pt; font-weight: bold; margin-bottom: 10pt; }
+        .word-canvas h3 { font-size: 14pt; font-weight: bold; margin-bottom: 8pt; }
+
+        /* Custom Scrollbar for Media Queue to be thin */
+        .video-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        /* Audio Visualizer Styling */
+        .visualizer {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            height: 40px;
+        }
+        .visualizer .bar {
+            width: 6px;
+            background-color: var(--vs-accent);
+            border-radius: 2px 2px 0 0;
+            animation: equalize 0.8s infinite alternate ease-in-out;
+        }
+        .visualizer.paused .bar {
+            animation-play-state: paused;
+        }
+        .visualizer .bar:nth-child(1) { animation-delay: -0.4s; }
+        .visualizer .bar:nth-child(2) { animation-delay: -0.2s; }
+        .visualizer .bar:nth-child(3) { animation-delay: -0.8s; }
+        .visualizer .bar:nth-child(4) { animation-delay: -0.1s; }
+        .visualizer .bar:nth-child(5) { animation-delay: -0.6s; }
+        .visualizer .bar:nth-child(6) { animation-delay: -0.3s; }
+        .visualizer .bar:nth-child(7) { animation-delay: -0.7s; }
+
+        @keyframes equalize {
+            0% { height: 5px; }
+            100% { height: 40px; }
+        }
+
         /* Accordion transition */
         .accordion-content {
             transition: max-height 0.2s ease-out, padding 0.2s ease-out;
@@ -244,7 +329,7 @@
             <nav class="hidden sm:flex items-center gap-3 text-vs-text">
                 <div class="relative group">
                     <div class="hover:bg-vs-hover px-2 py-0.5 rounded cursor-pointer transition-colors">File</div>
-                    <div class="absolute top-full left-0 w-full h-2"></div>
+                    <div class="absolute top-full left-0 w-full h-2 z-[100]"></div>
                     <!-- Dropdown Menu -->
                     <div class="absolute left-0 top-full mt-1 w-48 bg-vs-sidebar border border-vs-border shadow-2xl rounded hidden group-hover:flex flex-col py-1 z-[100]">
                         <div class="px-4 py-1.5 text-vs-text hover:bg-vs-selection hover:text-white cursor-pointer flex justify-between items-center transition-colors" onclick="createNewFile()">
@@ -291,6 +376,18 @@
                 <div id="activity-tools-border" class="absolute left-0 top-0 bottom-0 w-0.5 bg-transparent"></div>
                 <i class="fa-solid fa-wand-magic-sparkles text-xl group-hover:text-vs-activityActive transition-colors"></i>
             </button>
+            <button onclick="switchSidebarTab('video')" id="activity-video" class="w-12 h-12 flex items-center justify-center text-vs-activityInactive relative group mb-1" title="Mini Media Player">
+                <div id="activity-video-border" class="absolute left-0 top-0 bottom-0 w-0.5 bg-transparent"></div>
+                <i class="fa-solid fa-circle-play text-xl group-hover:text-vs-activityActive transition-colors"></i>
+            </button>
+            <button onclick="switchSidebarTab('word')" id="activity-word" class="w-12 h-12 flex items-center justify-center text-vs-activityInactive relative group mb-1" title="Word Processor">
+                <div id="activity-word-border" class="absolute left-0 top-0 bottom-0 w-0.5 bg-transparent"></div>
+                <i class="fa-solid fa-file-word text-xl group-hover:text-vs-activityActive transition-colors"></i>
+            </button>
+            <button onclick="switchSidebarTab('excel')" id="activity-excel" class="w-12 h-12 flex items-center justify-center text-vs-activityInactive relative group mb-1" title="Excel Sheet">
+                <div id="activity-excel-border" class="absolute left-0 top-0 bottom-0 w-0.5 bg-transparent"></div>
+                <i class="fa-solid fa-table text-xl group-hover:text-vs-activityActive transition-colors"></i>
+            </button>
             <button onclick="switchSidebarTab('snippets')" id="activity-snippets" class="w-12 h-12 flex items-center justify-center text-vs-activityInactive relative group mb-1" title="Code Snippets">
                 <div id="activity-snippets-border" class="absolute left-0 top-0 bottom-0 w-0.5 bg-transparent"></div>
                 <i class="fa-solid fa-puzzle-piece text-xl group-hover:text-vs-activityActive transition-colors"></i>
@@ -319,10 +416,6 @@
                 <div id="activity-qr-generator-border" class="absolute left-0 top-0 bottom-0 w-0.5 bg-transparent"></div>
                 <i class="fa-solid fa-qrcode text-xl group-hover:text-vs-activityActive transition-colors"></i>
             </button>
-            <button onclick="switchSidebarTab('excel')" id="activity-excel" class="w-12 h-12 flex items-center justify-center text-vs-activityInactive relative group mb-1" title="Excel Sheet">
-                <div id="activity-excel-border" class="absolute left-0 top-0 bottom-0 w-0.5 bg-transparent"></div>
-                <i class="fa-solid fa-table text-xl group-hover:text-vs-activityActive transition-colors"></i>
-            </button>
 
             <div class="mt-auto flex flex-col items-center w-full">
                 <button onclick="toggleHtmlPreview()" class="w-12 h-12 flex items-center justify-center text-vs-activityInactive relative group mb-1" title="Split Live Preview">
@@ -339,7 +432,7 @@
         </aside>
 
         <!-- Primary Sidebar -->
-        <aside id="sidebar" class="w-64 bg-vs-sidebar border-r border-vs-border flex flex-col shrink-0 transition-all duration-200 z-10">
+        <aside id="sidebar" style="width: 256px;" class="bg-vs-sidebar border-r border-vs-border flex flex-col shrink-0 z-10 overflow-hidden relative">
             
             <!-- Sidebar Header -->
             <div class="h-9 flex items-center px-4 text-[11px] font-semibold tracking-wider text-vs-textMuted uppercase shrink-0">
@@ -361,10 +454,8 @@
                         <span class="text-[11px] font-bold text-vs-textMuted group-hover:text-vs-text uppercase tracking-wider">Open Editors</span>
                     </div>
                     <div id="acc-editors" class="accordion-content expanded">
-                        <div class="flex items-center px-6 py-1 bg-vs-selection text-white cursor-pointer text-sm">
-                            <i id="sidebar-file-icon" class="fa-solid fa-file-code text-vs-accent mr-2 text-xs"></i>
-                            <span id="sidebar-file-name" class="truncate">untitled</span>
-                        </div>
+                        <!-- Dynamic Open Editors -->
+                        <div id="sidebar-open-editors" class="flex flex-col py-1"></div>
                     </div>
                 </div>
                 <div class="mt-4">
@@ -375,6 +466,74 @@
                     </div>
                     <div id="acc-history" class="accordion-content expanded pb-2">
                         <div id="history-list" class="flex flex-col text-sm"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Content: MINI MEDIA PLAYER -->
+            <div id="sidebar-video" class="hidden flex-1 overflow-y-auto flex flex-col">
+                <div class="p-4 flex flex-col gap-4">
+                    <div class="flex flex-col gap-1">
+                        <h3 class="text-xs font-bold text-vs-text uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-circle-play text-vs-accent"></i> Mini Media Player
+                        </h3>
+                        <p class="text-[10px] text-vs-textMuted">Watch or listen while you code.</p>
+                    </div>
+
+                    <!-- Media Player Container -->
+                    <div class="w-full bg-black rounded overflow-hidden shadow-md relative aspect-video flex flex-col group">
+                        
+                        <!-- Audio Visualizer Overlay -->
+                        <div id="audio-visualizer" class="absolute inset-0 flex-col items-center justify-center bg-vs-editor hidden z-0">
+                            <div class="visualizer mb-2" id="visualizer-bars">
+                                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                            </div>
+                            <span class="text-[10px] text-vs-accent font-medium uppercase tracking-widest"><i class="fa-solid fa-music mr-1"></i> Audio Track</span>
+                        </div>
+                        
+                        <!-- Empty State Placeholder -->
+                        <div id="video-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-vs-textMuted pointer-events-none z-20 bg-black">
+                            <i class="fa-solid fa-photo-film text-3xl mb-2 opacity-50"></i>
+                            <span class="text-[10px]">No media playing</span>
+                        </div>
+
+                        <!-- The Actual Player -->
+                        <video id="mini-video-player" class="w-full h-full object-contain z-10" controls></video>
+                        
+                        <!-- YouTube Player Container -->
+                        <div id="yt-player-wrapper" class="w-full h-full z-10 hidden bg-black">
+                            <div id="youtube-player"></div>
+                        </div>
+                    </div>
+
+                    <!-- YouTube Link Input -->
+                    <div class="flex items-center gap-1 mt-2">
+                        <input type="text" id="yt-url-input" placeholder="Paste YouTube link here..." class="w-full bg-vs-editor border border-vs-border text-vs-text text-[10px] p-1.5 rounded focus:border-vs-accent focus:outline-none">
+                        <button onclick="addYouTubeVideo()" class="bg-vs-editor hover:bg-vs-hover border border-vs-border text-vs-textMuted hover:text-vs-text text-[10px] px-2 py-1.5 rounded transition-colors shrink-0" title="Add YouTube Video">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+
+                    <!-- Upload / Drop Zone -->
+                    <div id="video-drop-zone" onclick="document.getElementById('video-input').click()" class="border border-dashed border-vs-border hover:border-vs-accent bg-vs-editor/50 rounded p-3 text-center cursor-pointer group transition-colors mt-2">
+                        <i class="fa-solid fa-folder-plus text-lg text-vs-textMuted group-hover:text-vs-accent mb-1 transition-colors"></i>
+                        <p class="text-[10px] text-vs-textMuted">Click or Drop media here (MP4, MP3, WAV, AVI...)</p>
+                        <input type="file" id="video-input" class="hidden" accept="video/*,audio/*,.mkv,.avi,.mov,.mp3,.wav,.flac" multiple onchange="handleVideoSelection(this.files)">
+                    </div>
+
+                    <!-- Playlist -->
+                    <div class="flex flex-col gap-1 mt-2">
+                        <div class="flex justify-between items-end">
+                            <label class="text-[10px] text-vs-textMuted uppercase tracking-wider">Media Queue</label>
+                            <button onclick="clearVideoQueue()" class="text-[10px] text-red-400 hover:text-red-300 transition-colors" title="Clear Queue">Clear</button>
+                        </div>
+                        <div id="video-queue-list" class="flex flex-col gap-1 max-h-[250px] overflow-y-auto pr-1 video-scroll">
+                            <div class="text-[10px] text-vs-textMuted italic p-2 text-center bg-vs-editor/50 rounded">Queue is empty</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-auto pt-6 pb-2 text-center border-t border-vs-border/50 mt-4">
+                        <p class="text-[10px] text-vs-textMuted font-mono">Developed by Santhosh_A</p>
                     </div>
                 </div>
             </div>
@@ -482,6 +641,79 @@
                 </div>
             </div>
 
+            <!-- Sidebar Content: WORD PROCESSOR -->
+            <div id="sidebar-word" class="hidden flex-1 overflow-y-auto flex flex-col">
+                <div class="p-4 flex flex-col gap-4">
+                    <div class="flex flex-col gap-1">
+                        <h3 class="text-xs font-bold text-vs-text uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-file-word text-vs-accent"></i> Word Processor
+                        </h3>
+                        <p class="text-[10px] text-vs-textMuted">A4 rich text editor inside your workspace.</p>
+                    </div>
+                    
+                    <button onclick="toggleWordView(true)" class="w-full bg-vs-accent hover:bg-vs-accentHover text-white text-xs py-2.5 rounded flex items-center justify-center gap-2 transition-colors border border-transparent shadow-sm font-medium mt-2">
+                        <i class="fa-solid fa-file-signature"></i> Open Word Workspace
+                    </button>
+                    <button onclick="toggleWordView(false)" class="w-full bg-vs-editor hover:bg-vs-hover text-vs-text text-xs py-2.5 rounded flex items-center justify-center gap-2 transition-colors border border-vs-border shadow-sm font-medium">
+                        <i class="fa-solid fa-code"></i> Back to Code Editor
+                    </button>
+
+                    <div class="flex flex-col gap-3 mt-4 border-t border-vs-border/50 pt-4">
+                        <label class="text-[10px] text-vs-textMuted uppercase tracking-wider">Document Options</label>
+                        <div class="flex gap-2">
+                            <button onclick="exportWordHtml()" class="flex-1 bg-vs-editor hover:bg-vs-hover border border-vs-border text-vs-textMuted hover:text-vs-text text-[10px] py-1.5 rounded transition-colors flex justify-center items-center gap-1">
+                                <i class="fa-solid fa-download"></i> Save HTML
+                            </button>
+                        </div>
+                        <button onclick="clearWordDoc()" class="w-full bg-vs-editor hover:bg-red-500/20 hover:text-red-400 border border-vs-border hover:border-red-500/50 text-vs-textMuted text-[10px] py-1.5 rounded transition-colors flex items-center justify-center gap-1 mt-2">
+                            <i class="fa-solid fa-trash-can"></i> Clear Document
+                        </button>
+                    </div>
+
+                    <div class="mt-auto pt-6 pb-2 text-center border-t border-vs-border/50 mt-4">
+                        <p class="text-[10px] text-vs-textMuted font-mono">Developed by Santhosh_A</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Content: EXCEL SHEET -->
+            <div id="sidebar-excel" class="hidden flex-1 overflow-y-auto flex flex-col">
+                <div class="p-4 flex flex-col gap-4">
+                    <div class="flex flex-col gap-1">
+                        <h3 class="text-xs font-bold text-vs-text uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-table text-vs-accent"></i> Excel Sheet
+                        </h3>
+                        <p class="text-[10px] text-vs-textMuted">A lightweight spreadsheet inside your workspace.</p>
+                    </div>
+                    
+                    <button onclick="toggleSpreadsheetView(true)" class="w-full bg-vs-accent hover:bg-vs-accentHover text-white text-xs py-2.5 rounded flex items-center justify-center gap-2 transition-colors border border-transparent shadow-sm font-medium mt-2">
+                        <i class="fa-solid fa-table-cells"></i> Open Spreadsheet View
+                    </button>
+                    <button onclick="toggleSpreadsheetView(false)" class="w-full bg-vs-editor hover:bg-vs-hover text-vs-text text-xs py-2.5 rounded flex items-center justify-center gap-2 transition-colors border border-vs-border shadow-sm font-medium">
+                        <i class="fa-solid fa-code"></i> Back to Code Editor
+                    </button>
+
+                    <div class="flex flex-col gap-3 mt-4 border-t border-vs-border/50 pt-4">
+                        <label class="text-[10px] text-vs-textMuted uppercase tracking-wider">Sheet Options</label>
+                        <div class="flex gap-2">
+                            <button onclick="exportSheetCSV()" class="flex-1 bg-vs-editor hover:bg-vs-hover border border-vs-border text-vs-textMuted hover:text-vs-text text-[10px] py-1.5 rounded transition-colors flex justify-center items-center gap-1">
+                                <i class="fa-solid fa-download"></i> CSV
+                            </button>
+                            <button onclick="copySheetToEditor()" class="flex-1 bg-vs-editor hover:bg-vs-hover border border-vs-border text-vs-textMuted hover:text-vs-text text-[10px] py-1.5 rounded transition-colors flex justify-center items-center gap-1">
+                                <i class="fa-solid fa-file-export"></i> To Editor
+                            </button>
+                        </div>
+                        <button onclick="initSpreadsheet()" class="w-full bg-vs-editor hover:bg-red-500/20 hover:text-red-400 border border-vs-border hover:border-red-500/50 text-vs-textMuted text-[10px] py-1.5 rounded transition-colors flex items-center justify-center gap-1 mt-2">
+                            <i class="fa-solid fa-trash-can"></i> Reset Grid
+                        </button>
+                    </div>
+
+                    <div class="mt-auto pt-6 pb-2 text-center border-t border-vs-border/50 mt-4">
+                        <p class="text-[10px] text-vs-textMuted font-mono">Developed by Santhosh_A</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Sidebar Content: SNIPPETS -->
             <div id="sidebar-snippets" class="hidden flex-1 overflow-y-auto flex flex-col">
                 <div class="p-4 flex flex-col gap-4">
@@ -536,10 +768,6 @@
                             <i class="fa-solid fa-align-left text-gray-400 w-4"></i> Lorem Ipsum Text
                         </button>
                     </div>
-                    <div class="mt-4 p-3 bg-vs-editor/50 border border-vs-border rounded text-[10px] text-vs-textMuted flex gap-2">
-                        <i class="fa-solid fa-triangle-exclamation mt-0.5 text-yellow-500"></i>
-                        <p>Warning: Using generators will overwrite your current editor content. Save your work first!</p>
-                    </div>
                 </div>
             </div>
 
@@ -563,12 +791,12 @@
                         </label>
                         <button onclick="extractWebsite()" id="extract-btn" class="w-full bg-vs-accent hover:bg-vs-accentHover text-white text-xs py-2.5 rounded flex items-center justify-center gap-2 transition-colors border border-transparent shadow-sm mt-2 font-medium">
                             <i id="extract-icon" class="fa-solid fa-cloud-arrow-down"></i>
-                            <span id="extract-text">Extract to Editor</span>
+                            <span id="extract-text">Extract to Tab</span>
                         </button>
                     </div>
                     <div class="mt-4 p-3 bg-vs-editor/50 border border-vs-border rounded text-[10px] text-vs-textMuted flex gap-2">
                         <i class="fa-solid fa-circle-info mt-0.5 text-vs-accent"></i>
-                        <p>The extracted HTML is parsed via DOMParser and loaded directly into the workspace.</p>
+                        <p>The extracted HTML is parsed via DOMParser and loaded directly into a new workspace tab.</p>
                     </div>
                 </div>
             </div>
@@ -684,7 +912,7 @@
                                     <i class="fa-regular fa-copy"></i> Copy
                                 </button>
                             </div>
-                            <textarea id="drive-output" rows="7" readonly placeholder="data = [&#10;  {...}&#10;]" class="w-full bg-vs-editor/50 border border-vs-border text-vs-text text-xs p-2 rounded focus:outline-none placeholder-vs-textMuted/40 resize-y font-mono whitespace-pre overflow-x-auto"></textarea>
+                            <textarea id="drive-output" rows="7" readonly placeholder="{ id: &quot;...&quot;, name: &quot;...&quot; }" class="w-full bg-vs-editor/50 border border-vs-border text-vs-text text-xs p-2 rounded focus:outline-none placeholder-vs-textMuted/40 resize-y font-mono whitespace-pre overflow-x-auto"></textarea>
                             <div class="flex gap-2 mt-1">
                                 <button onclick="downloadDriveOutput('js')" class="flex-1 bg-vs-editor hover:bg-vs-hover border border-vs-border text-vs-textMuted hover:text-vs-text text-[10px] py-1.5 rounded transition-colors">
                                     <i class="fa-brands fa-js mr-1"></i> Download JS
@@ -768,44 +996,6 @@
                 </div>
             </div>
 
-            <!-- Sidebar Content: EXCEL SHEET -->
-            <div id="sidebar-excel" class="hidden flex-1 overflow-y-auto flex flex-col">
-                <div class="p-4 flex flex-col gap-4">
-                    <div class="flex flex-col gap-1">
-                        <h3 class="text-xs font-bold text-vs-text uppercase tracking-wider flex items-center gap-2">
-                            <i class="fa-solid fa-table text-vs-accent"></i> Excel Sheet
-                        </h3>
-                        <p class="text-[10px] text-vs-textMuted">A lightweight spreadsheet inside your workspace.</p>
-                    </div>
-                    
-                    <button onclick="toggleSpreadsheetView(true)" class="w-full bg-vs-accent hover:bg-vs-accentHover text-white text-xs py-2.5 rounded flex items-center justify-center gap-2 transition-colors border border-transparent shadow-sm font-medium mt-2">
-                        <i class="fa-solid fa-table-cells"></i> Open Spreadsheet View
-                    </button>
-                    <button onclick="toggleSpreadsheetView(false)" class="w-full bg-vs-editor hover:bg-vs-hover text-vs-text text-xs py-2.5 rounded flex items-center justify-center gap-2 transition-colors border border-vs-border shadow-sm font-medium">
-                        <i class="fa-solid fa-code"></i> Back to Code Editor
-                    </button>
-
-                    <div class="flex flex-col gap-3 mt-4 border-t border-vs-border/50 pt-4">
-                        <label class="text-[10px] text-vs-textMuted uppercase tracking-wider">Sheet Options</label>
-                        <div class="flex gap-2">
-                            <button onclick="exportSheetCSV()" class="flex-1 bg-vs-editor hover:bg-vs-hover border border-vs-border text-vs-textMuted hover:text-vs-text text-[10px] py-1.5 rounded transition-colors flex justify-center items-center gap-1">
-                                <i class="fa-solid fa-download"></i> CSV
-                            </button>
-                            <button onclick="copySheetToEditor()" class="flex-1 bg-vs-editor hover:bg-vs-hover border border-vs-border text-vs-textMuted hover:text-vs-text text-[10px] py-1.5 rounded transition-colors flex justify-center items-center gap-1">
-                                <i class="fa-solid fa-file-export"></i> To Editor
-                            </button>
-                        </div>
-                        <button onclick="initSpreadsheet()" class="w-full bg-vs-editor hover:bg-red-500/20 hover:text-red-400 border border-vs-border hover:border-red-500/50 text-vs-textMuted text-[10px] py-1.5 rounded transition-colors flex items-center justify-center gap-1 mt-2">
-                            <i class="fa-solid fa-trash-can"></i> Reset Grid
-                        </button>
-                    </div>
-
-                    <div class="mt-auto pt-6 pb-2 text-center border-t border-vs-border/50 mt-4">
-                        <p class="text-[10px] text-vs-textMuted font-mono">Developed by Santhosh_A</p>
-                    </div>
-                </div>
-            </div>
-
             <!-- Sidebar Content: SETTINGS -->
             <div id="sidebar-settings" class="hidden flex-1 overflow-y-auto flex flex-col">
                 <div class="p-4 flex flex-col gap-6">
@@ -824,17 +1014,22 @@
             </div>
         </aside>
 
+        <!-- Sidebar Resizer -->
+        <div id="sidebar-resizer" class="w-[3px] bg-transparent hover:bg-vs-accent cursor-col-resize shrink-0 z-20 transition-colors" title="Resize Sidebar"></div>
+
         <!-- Main Editor Area -->
         <main class="flex-1 flex flex-col min-w-0 bg-vs-editor relative">
             
             <!-- Editor Tabs -->
             <div class="h-9 flex bg-vs-sidebar shrink-0 overflow-x-auto overflow-y-hidden hide-scrollbar select-none">
-                <!-- Active Tab -->
-                <div class="flex items-center h-full px-3 min-w-[120px] max-w-[200px] bg-vs-editor border-t border-vs-accent text-vs-activityActive relative group cursor-pointer border-r border-vs-border">
-                    <i id="tab-icon" class="fa-solid fa-file-lines text-vs-accent text-sm mr-2"></i>
-                    <span id="tab-name" class="text-[13px] truncate flex-1">untitled</span>
-                    <i class="fa-solid fa-xmark text-vs-textMuted hover:text-white hover:bg-vs-hover p-0.5 rounded ml-2 opacity-0 group-hover:opacity-100 transition-all"></i>
+                <!-- Dynamic Tabs Container -->
+                <div id="editor-tabs-container" class="flex h-full shrink-0">
+                    <!-- Tabs generated by JS -->
                 </div>
+                <button onclick="createNewFile()" class="w-8 h-9 flex items-center justify-center text-vs-textMuted hover:bg-vs-hover hover:text-vs-text transition-colors border-b border-vs-border shrink-0" title="New File (Ctrl+N)">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                </button>
+                
                 <!-- Empty Space right of tabs -->
                 <div class="flex-1 border-b border-vs-border flex justify-end items-center pr-2 gap-1">
                     <button onclick="copyToClipboard()" class="w-7 h-7 flex items-center justify-center rounded hover:bg-vs-hover text-vs-textMuted hover:text-vs-text transition-colors" title="Copy (Ctrl+C)">
@@ -885,6 +1080,62 @@
                 <div id="excel-editor-wrapper" class="hidden flex-1 overflow-auto bg-white dark:bg-vs-editor relative">
                     <div id="spreadsheet-container" class="min-w-max">
                         <!-- Spreadsheet injected via JS -->
+                    </div>
+                </div>
+                
+                <!-- Word Editor Wrapper -->
+                <div id="word-editor-wrapper" class="hidden flex-1 flex-col relative h-full bg-[#f3f3f3] dark:bg-[#1e1e1e]">
+                    <!-- Word Toolbar -->
+                    <div class="word-toolbar shrink-0 shadow-sm z-10 flex items-center bg-vs-editor p-1 border-b border-vs-border overflow-x-auto whitespace-nowrap">
+                        <select onchange="formatDoc('fontName', this.value); this.selectedIndex=0;" class="bg-vs-editor text-vs-text border border-vs-border rounded text-xs px-2 py-1 outline-none shrink-0">
+                            <option value="">Font Family</option>
+                            <option value="Arial">Arial</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Courier New">Courier New</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Verdana">Verdana</option>
+                        </select>
+                        <select onchange="formatDoc('fontSize', this.value); this.selectedIndex=0;" class="bg-vs-editor text-vs-text border border-vs-border rounded text-xs px-2 py-1 outline-none mr-2 ml-1 shrink-0">
+                            <option value="">Size</option>
+                            <option value="1">Small</option>
+                            <option value="3">Normal</option>
+                            <option value="5">Large</option>
+                            <option value="7">Huge</option>
+                        </select>
+                        
+                        <div class="word-toolbar-divider shrink-0"></div>
+                        
+                        <button onclick="formatDoc('bold')" class="word-toolbar-btn shrink-0" title="Bold"><i class="fa-solid fa-bold"></i></button>
+                        <button onclick="formatDoc('italic')" class="word-toolbar-btn shrink-0" title="Italic"><i class="fa-solid fa-italic"></i></button>
+                        <button onclick="formatDoc('underline')" class="word-toolbar-btn shrink-0" title="Underline"><i class="fa-solid fa-underline"></i></button>
+                        <button onclick="formatDoc('strikeThrough')" class="word-toolbar-btn shrink-0" title="Strikethrough"><i class="fa-solid fa-strikethrough"></i></button>
+                        
+                        <div class="word-toolbar-divider shrink-0"></div>
+                        
+                        <button onclick="formatDoc('justifyLeft')" class="word-toolbar-btn shrink-0" title="Align Left"><i class="fa-solid fa-align-left"></i></button>
+                        <button onclick="formatDoc('justifyCenter')" class="word-toolbar-btn shrink-0" title="Align Center"><i class="fa-solid fa-align-center"></i></button>
+                        <button onclick="formatDoc('justifyRight')" class="word-toolbar-btn shrink-0" title="Align Right"><i class="fa-solid fa-align-right"></i></button>
+                        <button onclick="formatDoc('justifyFull')" class="word-toolbar-btn shrink-0" title="Justify"><i class="fa-solid fa-align-justify"></i></button>
+                        
+                        <div class="word-toolbar-divider shrink-0"></div>
+                        
+                        <button onclick="formatDoc('insertUnorderedList')" class="word-toolbar-btn shrink-0" title="Bullet List"><i class="fa-solid fa-list-ul"></i></button>
+                        <button onclick="formatDoc('insertOrderedList')" class="word-toolbar-btn shrink-0" title="Numbered List"><i class="fa-solid fa-list-ol"></i></button>
+                        
+                        <div class="word-toolbar-divider shrink-0"></div>
+                        
+                        <label class="word-toolbar-btn flex items-center cursor-pointer shrink-0" title="Text Color">
+                            <i class="fa-solid fa-palette mr-1"></i>
+                            <input type="color" oninput="formatDoc('foreColor', this.value)" class="w-4 h-4 p-0 border-none rounded bg-transparent cursor-pointer">
+                        </label>
+                        
+                        <button onclick="formatDoc('removeFormat')" class="word-toolbar-btn ml-auto shrink-0" title="Clear Formatting"><i class="fa-solid fa-eraser"></i></button>
+                    </div>
+                    
+                    <!-- Word Canvas Background (Desk) -->
+                    <div class="word-canvas-container allow-select">
+                        <!-- Actual A4 Paper -->
+                        <div id="word-canvas" class="word-canvas" contenteditable="true" spellcheck="false" placeholder="Start typing your document here..."></div>
                     </div>
                 </div>
 
@@ -1019,13 +1270,17 @@
         // --- State Management ---
         const state = {
             theme: 'theme-dark',
-            content: '',
-            format: 'txt',
-            fileName: 'untitled',
-            sidebarTab: 'explorer', // 'explorer' or 'tools'
+            tabs: [], // Arrays of objects: { id, name, content, format }
+            activeTabId: null,
+            content: '', // Represents active tab content
+            format: 'txt', // Represents active tab format
+            fileName: 'untitled', // Represents active tab name
+            sidebarTab: 'explorer',
             sidebarVisible: true,
+            sidebarWidth: 256,
             previewVisible: false,
             excelVisible: false,
+            wordVisible: false,
             settings: {
                 indentSize: '4',
                 minify: false,
@@ -1034,6 +1289,22 @@
                 removeLines: false
             }
         };
+
+        // Video Player State
+        let videoQueue = [];
+        let currentVideoIndex = -1;
+        let ytPlayerReady = false;
+        let ytPlayer = null;
+
+        // YouTube API Ready Callback
+        window.onYouTubeIframeAPIReady = function() {
+            ytPlayerReady = true;
+        };
+
+        // Initialize first tab
+        const initialId = Date.now();
+        state.tabs.push({ id: initialId, name: 'untitled', content: '', format: 'txt' });
+        state.activeTabId = initialId;
 
         const HISTORY_KEY = 'vscode_sanstudio_history';
 
@@ -1046,17 +1317,13 @@
             liveIframe: document.getElementById('live-iframe'),
             textEditorWrapper: document.getElementById('text-editor-wrapper'),
             excelEditorWrapper: document.getElementById('excel-editor-wrapper'),
+            wordEditorWrapper: document.getElementById('word-editor-wrapper'),
+            wordCanvas: document.getElementById('word-canvas'),
             
             // Displays
             fileNameDisplays: [
                 document.getElementById('window-title'),
-                document.getElementById('sidebar-file-name'),
-                document.getElementById('tab-name'),
                 document.getElementById('breadcrumb-name')
-            ],
-            fileIcons: [
-                document.getElementById('sidebar-file-icon'),
-                document.getElementById('tab-icon')
             ],
             breadcrumbFormat: document.getElementById('breadcrumb-format'),
             statusLanguage: document.getElementById('status-language'),
@@ -1085,6 +1352,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadSettings();
             applyTheme();
+            
+            renderTabs(); // Init tabs
             updateUIForFormat();
             updateStats();
             updateFileDisplay();
@@ -1092,10 +1361,31 @@
             loadHistoryToSidebar();
             initSpreadsheet();
             
+            // Video Player Autoplay Next Setup & Visualizer sync
+            const videoPlayer = document.getElementById('mini-video-player');
+            const visualizerBars = document.getElementById('visualizer-bars');
+            
+            if (videoPlayer) {
+                videoPlayer.addEventListener('ended', () => {
+                    if (currentVideoIndex !== -1 && currentVideoIndex + 1 < videoQueue.length) {
+                        playVideo(currentVideoIndex + 1);
+                    }
+                });
+                
+                // Sync Visualizer state with play/pause
+                videoPlayer.addEventListener('play', () => {
+                    if (visualizerBars) visualizerBars.classList.remove('paused');
+                });
+                videoPlayer.addEventListener('pause', () => {
+                    if (visualizerBars) visualizerBars.classList.add('paused');
+                });
+            }
+
             // Event Listeners
             if (els.editor) {
                 els.editor.addEventListener('input', () => {
                     state.content = els.editor.value;
+                    syncActiveTab(); // Save back to tab
                     updateStats();
                     generateLineNumbers();
                     if(state.previewVisible && state.format === 'html') debounceRefreshPreview();
@@ -1109,6 +1399,7 @@
             if (els.formatSelect) {
                 els.formatSelect.addEventListener('change', (e) => {
                     state.format = e.target.value;
+                    syncActiveTab(); // Save back to tab
                     updateUIForFormat();
                     saveSettings();
                     updateStats();
@@ -1124,6 +1415,18 @@
                 });
             }
 
+            // Word Canvas stats updater
+            if (els.wordCanvas) {
+                els.wordCanvas.addEventListener('input', () => {
+                    if (state.wordVisible) {
+                        const text = els.wordCanvas.innerText || '';
+                        const len = text.length;
+                        if (els.charCount) els.charCount.textContent = `${len.toLocaleString()} Chars`;
+                        if (els.wordCount) els.wordCount.textContent = `${text.trim() === '' ? 0 : text.trim().split(/\s+/).length.toLocaleString()} Words`;
+                    }
+                });
+            }
+
             // Settings Listeners
             if (els.indentSelect) els.indentSelect.addEventListener('change', (e) => { state.settings.indentSize = e.target.value; updateStatusSpaces(); saveSettings(); });
             if (els.chkMinify) els.chkMinify.addEventListener('change', (e) => { state.settings.minify = e.target.checked; saveSettings(); });
@@ -1132,25 +1435,414 @@
             if (els.chkLines) els.chkLines.addEventListener('change', (e) => { state.settings.removeLines = e.target.checked; saveSettings(); });
 
             setupGlobalDragAndDrop();
+            initSidebarResizer();
         });
 
+        // --- Tabs Logic ---
+        
+        function syncActiveTab() {
+            const tab = state.tabs.find(t => t.id === state.activeTabId);
+            if (tab) {
+                tab.content = state.content;
+                tab.format = state.format;
+                tab.name = state.fileName;
+            }
+            renderTabs();
+        }
+
+        function renderTabs() {
+            const container = document.getElementById('editor-tabs-container');
+            const sidebarContainer = document.getElementById('sidebar-open-editors');
+            if (!container || !sidebarContainer) return;
+
+            let tabsHtml = '';
+            let sidebarHtml = '';
+
+            const extMap = { 'txt': 'txt', 'md': 'md', 'json': 'json', 'html': 'html', 'css': 'css', 'js': 'js', 'c': 'c', 'py': 'py', 'passage': 'txt', 'youtube': 'txt', 'hashtag': 'txt', 'base64-enc': 'txt', 'base64-dec': 'txt', 'url-enc': 'txt', 'url-dec': 'txt' };
+            const iconMap = {
+                'txt': 'fa-file-lines text-vs-textMuted',
+                'md': 'fa-markdown text-blue-400',
+                'json': 'fa-code text-yellow-500',
+                'html': 'fa-html5 text-orange-500',
+                'css': 'fa-css3 text-blue-400',
+                'js': 'fa-js text-yellow-400',
+                'c': 'fa-c text-blue-600',
+                'py': 'fa-python text-blue-500'
+            };
+
+            state.tabs.forEach(tab => {
+                const isActive = tab.id === state.activeTabId;
+                
+                let baseName = tab.name.includes('.') ? tab.name.split('.').slice(0, -1).join('.') : tab.name;
+                let ext = extMap[tab.format] || 'txt';
+                let fullName = `${baseName}.${ext}`;
+                let iconClass = `fa-solid ${iconMap[tab.format] || iconMap['txt']}`;
+
+                // Top Tab
+                tabsHtml += `
+                    <div onclick="switchEditorTab(${tab.id})" class="flex items-center h-full px-3 min-w-[120px] max-w-[200px] ${isActive ? 'bg-vs-editor border-t border-vs-accent text-vs-activityActive' : 'bg-vs-tabInactive border-t border-transparent text-vs-textMuted hover:bg-vs-editor/50'} cursor-pointer border-r border-vs-border group">
+                        <i class="${iconClass} text-sm mr-2 ${isActive ? '' : 'opacity-70'}"></i>
+                        <span class="text-[13px] truncate flex-1 ${isActive ? 'italic' : ''}" title="${fullName}">${fullName}</span>
+                        <button onclick="closeEditorTab(${tab.id}, event)" class="flex items-center justify-center w-5 h-5 rounded ml-1 ${isActive ? 'opacity-100 text-vs-text' : 'opacity-0 group-hover:opacity-100 text-vs-textMuted'} hover:bg-vs-hover hover:text-white transition-all"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                `;
+
+                // Sidebar Open Editors
+                sidebarHtml += `
+                    <div onclick="switchEditorTab(${tab.id})" class="flex items-center px-6 py-1 ${isActive ? 'bg-vs-selection text-white' : 'text-vs-textMuted hover:bg-vs-hover hover:text-vs-text'} cursor-pointer text-sm group relative">
+                        <i class="${iconClass} mr-2 text-xs"></i>
+                        <span class="truncate flex-1">${fullName}</span>
+                        <button onclick="closeEditorTab(${tab.id}, event)" class="flex items-center justify-center w-5 h-5 rounded absolute right-2 opacity-0 group-hover:opacity-100 hover:bg-vs-hover hover:text-white transition-all"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = tabsHtml;
+            sidebarContainer.innerHTML = sidebarHtml;
+            updateFileDisplay(); // Update breadcrumbs/title based on new active
+        }
+
+        function switchEditorTab(id) {
+            const targetTab = state.tabs.find(t => t.id === id);
+            if (!targetTab) return;
+
+            // Make target active
+            state.activeTabId = id;
+            
+            // Load target into global state
+            state.content = targetTab.content;
+            state.format = targetTab.format;
+            state.fileName = targetTab.name;
+
+            // Apply to UI
+            if (els.editor) els.editor.value = state.content;
+            if (els.formatSelect) els.formatSelect.value = state.format;
+
+            // Hide specific workspaces if open
+            if (state.excelVisible) toggleSpreadsheetView(false);
+            if (state.wordVisible) toggleWordView(false);
+
+            updateUIForFormat();
+            updateStats();
+            updateFileDisplay();
+            generateLineNumbers();
+            renderTabs();
+
+            if (state.previewVisible && state.format === 'html') refreshPreview();
+        }
+
+        function closeEditorTab(id, e) {
+            if(e) e.stopPropagation();
+            
+            // Don't close if it's the only tab, just reset it
+            if (state.tabs.length === 1) {
+                state.tabs[0] = { id: Date.now(), name: 'untitled', content: '', format: 'txt' };
+                switchEditorTab(state.tabs[0].id);
+                return;
+            }
+
+            const index = state.tabs.findIndex(t => t.id === id);
+            if (index === -1) return;
+
+            state.tabs.splice(index, 1);
+
+            // If we closed the active tab, switch to the adjacent one
+            if (state.activeTabId === id) {
+                const newIndex = index > 0 ? index - 1 : 0;
+                switchEditorTab(state.tabs[newIndex].id);
+            } else {
+                renderTabs();
+            }
+        }
+
+        async function createNewFile() {
+            if (state.wordVisible) toggleWordView(false);
+            if (state.excelVisible) toggleSpreadsheetView(false);
+            
+            const newId = Date.now();
+            state.tabs.push({ id: newId, name: 'untitled', content: '', format: 'txt' });
+            switchEditorTab(newId);
+            
+            showToast('Created new tab', 'info');
+        }
+
+        // --- Mini Media Player Logic ---
+        
+        function handleVideoSelection(files) {
+            if (!files || files.length === 0) return;
+            
+            // Support video and audio extensions
+            const newMedia = Array.from(files).filter(f => 
+                f.type.startsWith('video/') || 
+                f.type.startsWith('audio/') || 
+                f.name.match(/\.(mp4|webm|ogg|mov|mkv|avi|mp3|wav|flac|m4a|aac)$/i)
+            );
+            
+            if (newMedia.length === 0) {
+                showToast('Please select valid video or audio files', 'error');
+                return;
+            }
+
+            newMedia.forEach(file => {
+                videoQueue.push({
+                    type: 'local',
+                    file: file,
+                    url: URL.createObjectURL(file),
+                    name: file.name,
+                    isAudio: file.type.startsWith('audio/') || file.name.match(/\.(mp3|wav|ogg|flac|m4a|aac)$/i)
+                });
+            });
+
+            renderVideoQueue();
+            
+            // Auto play if nothing is playing
+            if (currentVideoIndex === -1 && videoQueue.length > 0) {
+                playVideo(videoQueue.length - newMedia.length); // Play the first of the newly added ones
+            } else if (currentVideoIndex === -1) {
+                 playVideo(0);
+            }
+            showToast(`Added ${newMedia.length} media file(s) to queue`, 'success');
+        }
+
+        function addYouTubeVideo() {
+            const input = document.getElementById('yt-url-input');
+            if (!input) return;
+            const url = input.value.trim();
+            if (!url) {
+                showToast('Please paste a YouTube link', 'error');
+                return;
+            }
+
+            const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+            const match = url.match(ytRegex);
+
+            if (match && match[1]) {
+                const videoId = match[1];
+                videoQueue.push({
+                    type: 'youtube',
+                    ytId: videoId,
+                    name: `YouTube Video (${videoId})`,
+                    isAudio: false
+                });
+                
+                input.value = '';
+                renderVideoQueue();
+                
+                if (currentVideoIndex === -1) {
+                    playVideo(videoQueue.length - 1);
+                }
+                showToast('Added YouTube video to queue', 'success');
+            } else {
+                showToast('Invalid YouTube URL', 'error');
+            }
+        }
+
+        function renderVideoQueue() {
+            const listEl = document.getElementById('video-queue-list');
+            if (!listEl) return;
+
+            if (videoQueue.length === 0) {
+                listEl.innerHTML = `<div class="text-[10px] text-vs-textMuted italic p-2 text-center bg-vs-editor/50 rounded">Queue is empty</div>`;
+                return;
+            }
+
+            listEl.innerHTML = videoQueue.map((media, idx) => {
+                const isActive = idx === currentVideoIndex;
+                let icon = media.isAudio ? '<i class="fa-solid fa-music"></i>' : '<i class="fa-solid fa-film"></i>';
+                if (media.type === 'youtube') icon = '<i class="fa-brands fa-youtube text-red-500"></i>';
+
+                return `
+                    <div class="flex items-center justify-between p-2 rounded text-[10px] ${isActive ? 'bg-vs-selection text-white border border-vs-accent' : 'bg-vs-editor text-vs-textMuted hover:bg-vs-hover cursor-pointer border border-vs-border'}" onclick="playVideo(${idx})">
+                        <div class="flex items-center gap-2 truncate flex-1 pr-2">
+                            ${isActive ? '<i class="fa-solid fa-play text-vs-accent"></i>' : `<span class="opacity-50 w-3 text-center">${icon}</span>`}
+                            <span class="truncate" title="${media.name}">${media.name}</span>
+                        </div>
+                        <button onclick="removeVideo(${idx}, event)" class="w-5 h-5 flex items-center justify-center hover:text-red-400 hover:bg-black/20 rounded transition-colors shrink-0">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function playVideo(index) {
+            const player = document.getElementById('mini-video-player');
+            const ytWrapper = document.getElementById('yt-player-wrapper');
+            const placeholder = document.getElementById('video-placeholder');
+            const visualizer = document.getElementById('audio-visualizer');
+            
+            if (!player || !placeholder || !visualizer || !ytWrapper) return;
+
+            if (index < 0 || index >= videoQueue.length) {
+                // Stop playback entirely
+                player.src = '';
+                if (ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
+                
+                placeholder.classList.remove('hidden');
+                visualizer.classList.add('hidden');
+                visualizer.classList.remove('flex');
+                player.classList.remove('hidden');
+                ytWrapper.classList.add('hidden');
+                
+                player.style.backgroundColor = 'black';
+                player.style.height = '100%';
+                
+                currentVideoIndex = -1;
+                renderVideoQueue();
+                return;
+            }
+
+            currentVideoIndex = index;
+            const currentMedia = videoQueue[index];
+            placeholder.classList.add('hidden');
+
+            if (currentMedia.type === 'youtube') {
+                // Handle YouTube Playback
+                player.pause();
+                player.classList.add('hidden');
+                visualizer.classList.add('hidden');
+                visualizer.classList.remove('flex');
+                ytWrapper.classList.remove('hidden');
+
+                if (!ytPlayer && ytPlayerReady) {
+                    ytPlayer = new YT.Player('youtube-player', {
+                        height: '100%',
+                        width: '100%',
+                        videoId: currentMedia.ytId,
+                        playerVars: { 'autoplay': 1, 'controls': 1 },
+                        events: {
+                            'onStateChange': function(event) {
+                                if (event.data == YT.PlayerState.ENDED) {
+                                    if (currentVideoIndex !== -1 && currentVideoIndex + 1 < videoQueue.length) {
+                                        playVideo(currentVideoIndex + 1);
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+                    ytPlayer.loadVideoById(currentMedia.ytId);
+                }
+            } else {
+                // Handle Local File Playback
+                if (ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
+                ytWrapper.classList.add('hidden');
+                player.classList.remove('hidden');
+                
+                player.src = currentMedia.url;
+                
+                // Adjust UI based on if it's Audio or Video
+                if (currentMedia.isAudio) {
+                    visualizer.classList.remove('hidden');
+                    visualizer.classList.add('flex');
+                    
+                    player.style.height = '40px'; 
+                    player.style.marginTop = 'auto';
+                    player.style.backgroundColor = 'transparent';
+                } else {
+                    visualizer.classList.add('hidden');
+                    visualizer.classList.remove('flex');
+                    
+                    player.style.height = '100%';
+                    player.style.marginTop = '0';
+                    player.style.backgroundColor = 'black';
+                }
+
+                player.play().catch(e => console.error("Autoplay prevented:", e));
+            }
+            renderVideoQueue();
+        }
+
+        function removeVideo(index, event) {
+            if (event) event.stopPropagation();
+            
+            if (videoQueue[index].type === 'local') {
+                URL.revokeObjectURL(videoQueue[index].url);
+            }
+            
+            videoQueue.splice(index, 1);
+            
+            if (index === currentVideoIndex) {
+                // If we removed the currently playing video, play the next one (which now has the same index)
+                playVideo(index < videoQueue.length ? index : -1);
+            } else if (index < currentVideoIndex) {
+                // Shift index if a previous video was removed
+                currentVideoIndex--;
+            }
+            
+            renderVideoQueue();
+        }
+
+        function clearVideoQueue() {
+            videoQueue.forEach(v => {
+                if (v.type === 'local') URL.revokeObjectURL(v.url);
+            });
+            videoQueue = [];
+            playVideo(-1);
+            showToast('Media queue cleared', 'info');
+        }
+
         // --- UI Interactions ---
+
+        function initSidebarResizer() {
+            const resizer = document.getElementById('sidebar-resizer');
+            if (!resizer || !els.sidebar) return;
+
+            let isResizing = false;
+
+            resizer.addEventListener('mousedown', (e) => {
+                isResizing = true;
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none'; // Prevent text selection while dragging
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isResizing) return;
+                
+                // Calculate new width (Mouse X minus Sidebar Left Position)
+                let newWidth = e.clientX - els.sidebar.getBoundingClientRect().left;
+                
+                // Constrain the width between 160px and 600px
+                if (newWidth < 160) newWidth = 160;
+                if (newWidth > 600) newWidth = 600;
+                
+                els.sidebar.style.width = newWidth + 'px';
+                state.sidebarWidth = newWidth;
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isResizing) {
+                    isResizing = false;
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                    saveSettings(); // Save new width to localStorage
+                }
+            });
+            
+            // Set initial width from state
+            if (state.sidebarVisible) {
+                els.sidebar.style.width = state.sidebarWidth + 'px';
+            }
+        }
 
         function toggleSidebar() {
             state.sidebarVisible = !state.sidebarVisible;
             const titleContainer = document.getElementById('sidebar-title')?.parentElement;
+            const resizer = document.getElementById('sidebar-resizer');
             
             if (state.sidebarVisible) {
-                if (els.sidebar) els.sidebar.classList.remove('w-0', 'border-none');
-                if (els.sidebar) els.sidebar.classList.add('w-64', 'border-r');
+                if (els.sidebar) els.sidebar.style.width = state.sidebarWidth + 'px';
+                if (els.sidebar) els.sidebar.classList.add('border-r');
+                if (resizer) resizer.style.display = 'block';
                 if (titleContainer) titleContainer.style.display = 'flex';
             } else {
-                if (els.sidebar) els.sidebar.classList.remove('w-64', 'border-r');
-                if (els.sidebar) els.sidebar.classList.add('w-0', 'border-none');
+                if (els.sidebar) els.sidebar.style.width = '0px';
+                if (els.sidebar) els.sidebar.classList.remove('border-r');
+                if (resizer) resizer.style.display = 'none';
                 if (titleContainer) titleContainer.style.display = 'none';
                 
                 // Remove active states from activity bar with safety checks
-                ['explorer', 'tools', 'snippets', 'devkit', 'extractor', 'formatter', 'contact-links', 'drive-extractor', 'qr-generator', 'excel', 'settings'].forEach(id => {
+                ['explorer', 'tools', 'word', 'snippets', 'devkit', 'extractor', 'formatter', 'contact-links', 'drive-extractor', 'qr-generator', 'excel', 'video', 'settings'].forEach(id => {
                     const btn = document.getElementById(`activity-${id}`);
                     const border = document.getElementById(`activity-${id}-border`);
                     if (btn && btn.classList) btn.classList.replace('text-vs-activityActive', 'text-vs-activityInactive');
@@ -1171,10 +1863,11 @@
             
             state.sidebarTab = tab;
 
-            const tabs = ['explorer', 'tools', 'snippets', 'devkit', 'extractor', 'formatter', 'contact-links', 'drive-extractor', 'qr-generator', 'excel', 'settings'];
+            const tabs = ['explorer', 'tools', 'word', 'snippets', 'devkit', 'extractor', 'formatter', 'contact-links', 'drive-extractor', 'qr-generator', 'excel', 'video', 'settings'];
             const titles = {
                 'explorer': 'Explorer',
                 'tools': 'Format Tools & Settings',
+                'word': 'Word Processor',
                 'snippets': 'Code Snippets',
                 'devkit': 'Developer Kit',
                 'extractor': 'Pro Web Extractor',
@@ -1183,6 +1876,7 @@
                 'drive-extractor': 'Google Drive ID Extractor',
                 'qr-generator': 'QR Code Generator',
                 'excel': 'Excel Sheet Workspace',
+                'video': 'Mini Media Player',
                 'settings': 'Settings'
             };
 
@@ -1317,7 +2011,6 @@
             if (els.lineNumbers.children.length === lines && lines !== 0) return;
             
             let html = '';
-            // Make sure there's always at least one line, and add a few extra to account for scrolling padding
             for (let i = 1; i <= Math.max(lines, 1); i++) {
                 html += `<div>${i}</div>`;
             }
@@ -1325,6 +2018,8 @@
         }
 
         function updateCursorPos() {
+            if (state.wordVisible) return; // Managed separately
+            
             const el = els.editor;
             if (!el) return;
             const text = el.value;
@@ -1344,16 +2039,6 @@
 
         function updateFileDisplay() {
             const extMap = { 'txt': 'txt', 'md': 'md', 'json': 'json', 'html': 'html', 'css': 'css', 'js': 'js', 'c': 'c', 'py': 'py', 'passage': 'txt', 'youtube': 'txt', 'hashtag': 'txt', 'base64-enc': 'txt', 'base64-dec': 'txt', 'url-enc': 'txt', 'url-dec': 'txt' };
-            const iconMap = {
-                'txt': 'fa-file-lines text-vs-textMuted',
-                'md': 'fa-markdown text-blue-400',
-                'json': 'fa-code text-yellow-500',
-                'html': 'fa-html5 text-orange-500',
-                'css': 'fa-css3 text-blue-400',
-                'js': 'fa-js text-yellow-400',
-                'c': 'fa-c text-blue-600',
-                'py': 'fa-python text-blue-500'
-            };
             const nameMap = {
                 'txt': 'Plain Text', 'md': 'Markdown', 'json': 'JSON', 'html': 'HTML', 'css': 'CSS', 'js': 'JavaScript', 'c': 'C/C++', 'py': 'Python', 'passage': 'Text Passage', 'youtube': 'YouTube Title', 'hashtag': 'Hashtags', 'base64-enc': 'Base64 Encoded', 'base64-dec': 'Base64 Decoded', 'url-enc': 'URL Encoded', 'url-dec': 'URL Decoded'
             };
@@ -1362,24 +2047,18 @@
             let ext = extMap[state.format] || 'txt';
             let fullName = `${baseName}.${ext}`;
 
+            if (state.excelVisible) fullName = 'spreadsheet.csv';
+            if (state.wordVisible) fullName = 'document.html';
+
             // Title bar
             if(els.fileNameDisplays[0]) els.fileNameDisplays[0].textContent = `${fullName} - Text to All Text`;
             
-            // Sidebar & Tabs
-            if(els.fileNameDisplays[1]) els.fileNameDisplays[1].textContent = fullName;
-            if(els.fileNameDisplays[2]) els.fileNameDisplays[2].textContent = fullName;
-            if(els.fileNameDisplays[3]) els.fileNameDisplays[3].textContent = fullName;
-
-            // Icons
-            const iconClass = `fa-solid ${iconMap[state.format] || iconMap['txt']} text-sm mr-2`;
-            if(els.fileIcons[0]) els.fileIcons[0].className = iconClass + ' text-xs';
-            if(els.fileIcons[1]) els.fileIcons[1].className = iconClass;
-
             // Breadcrumb
-            if(els.breadcrumbFormat) els.breadcrumbFormat.textContent = state.format;
+            if(els.breadcrumbFormat) els.breadcrumbFormat.textContent = state.wordVisible ? 'html' : (state.excelVisible ? 'csv' : state.format);
+            if(els.fileNameDisplays[1]) els.fileNameDisplays[1].textContent = fullName;
 
             // Status Bar
-            if(els.statusLanguage) els.statusLanguage.textContent = nameMap[state.format] || 'Text';
+            if(els.statusLanguage) els.statusLanguage.textContent = state.wordVisible ? 'Rich Text' : (state.excelVisible ? 'CSV Spreadsheet' : (nameMap[state.format] || 'Text'));
         }
 
         function updateUIForFormat() {
@@ -1399,10 +2078,17 @@
         }
 
         function updateStats() {
-            const text = els.editor ? els.editor.value : '';
-            const len = text.length;
-            if (els.charCount) els.charCount.textContent = `${len.toLocaleString()} Chars`;
-            if (els.wordCount) els.wordCount.textContent = `${text.trim() === '' ? 0 : text.trim().split(/\s+/).length.toLocaleString()} Words`;
+            if (state.wordVisible) {
+                const text = els.wordCanvas ? els.wordCanvas.innerText || '' : '';
+                const len = text.length;
+                if (els.charCount) els.charCount.textContent = `${len.toLocaleString()} Chars`;
+                if (els.wordCount) els.wordCount.textContent = `${text.trim() === '' ? 0 : text.trim().split(/\s+/).length.toLocaleString()} Words`;
+            } else {
+                const text = els.editor ? els.editor.value : '';
+                const len = text.length;
+                if (els.charCount) els.charCount.textContent = `${len.toLocaleString()} Chars`;
+                if (els.wordCount) els.wordCount.textContent = `${text.trim() === '' ? 0 : text.trim().split(/\s+/).length.toLocaleString()} Words`;
+            }
         }
 
 
@@ -1453,28 +2139,15 @@
             const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
             const item = history.find(i => i.id === id);
             
-            if (item && els.editor && els.formatSelect) {
-                els.editor.value = item.content;
-                state.content = item.content;
-                state.format = item.format;
-                els.formatSelect.value = item.format;
-                
-                // Set filename based on label if possible
-                state.fileName = item.label.replace('Formatted ', '').replace('Saved ', '').replace('Opened ', '').replace(' Snippet', '').toLowerCase().replace(/\s+/g, '_');
-                if(state.fileName === '') state.fileName = 'restored_file';
+            if (item) {
+                const newId = Date.now();
+                let baseName = item.label.replace('Formatted ', '').replace('Saved ', '').replace('Opened ', '').replace(' Snippet', '').toLowerCase().replace(/\s+/g, '_');
+                if(baseName === '') baseName = 'restored_file';
 
-                updateUIForFormat();
-                updateStats();
-                updateFileDisplay();
-                generateLineNumbers();
+                state.tabs.push({ id: newId, name: baseName, content: item.content, format: item.format });
+                switchEditorTab(newId);
                 
-                if (state.format === 'html' && !state.previewVisible) {
-                    toggleHtmlPreview();
-                } else if (state.previewVisible) {
-                    refreshPreview();
-                }
-
-                showToast(`Restored: ${item.label}`, 'success');
+                showToast(`Restored to new tab: ${item.label}`, 'success');
             }
         }
 
@@ -1525,27 +2198,6 @@
 
         // --- Core Formatting Logic ---
 
-        async function createNewFile() {
-            if (els.editor && els.editor.value.trim() !== '') {
-                const proceed = await showConfirm('Create new file? Unsaved changes will be lost.');
-                if (!proceed) return;
-            }
-            
-            if (els.editor) els.editor.value = '';
-            state.content = '';
-            state.fileName = 'untitled';
-            state.format = 'txt';
-            if (els.formatSelect) els.formatSelect.value = 'txt';
-            
-            updateUIForFormat();
-            updateStats();
-            updateFileDisplay();
-            generateLineNumbers();
-            if (state.previewVisible) refreshPreview();
-            
-            showToast('Created new file', 'info');
-        }
-
         function formatContent() {
             if (!els.editor) return;
             const text = els.editor.value;
@@ -1581,8 +2233,9 @@
 
                 els.editor.value = formatted;
                 state.content = formatted;
+                syncActiveTab();
                 
-                saveToHistory(formatted, fmt, `Formatted ${state.fileName}`);
+                saveToHistory(state.content, fmt, `Formatted ${state.fileName}`);
                 
                 updateStats();
                 generateLineNumbers();
@@ -1648,6 +2301,7 @@
             
             els.editor.value = lines.join('\n');
             state.content = els.editor.value;
+            syncActiveTab();
             
             updateStats();
             generateLineNumbers();
@@ -1710,39 +2364,21 @@
             json: `[\n    {\n        "id": 1,\n        "name": "Item One",\n        "active": true\n    },\n    {\n        "id": 2,\n        "name": "Item Two",\n        "active": false\n    }\n]`
         };
 
-        async function insertSnippet(type) {
-            if (!els.editor) return;
-            if (els.editor.value.trim() !== '') {
-                const proceed = await showConfirm('Insert snippet? This will overwrite your current code.');
-                if (!proceed) return;
-            }
+        function insertSnippet(type) {
+            const newId = Date.now();
+            let format = 'txt';
+            if(type === 'html5' || type === 'tailwind') format = 'html';
+            else if(type === 'fetch' || type === 'express') format = 'js';
+            else if(type === 'json') format = 'json';
+
+            state.tabs.push({ id: newId, name: `${type}_snippet`, content: codeSnippets[type], format: format });
+            switchEditorTab(newId);
             
-            els.editor.value = codeSnippets[type];
-            state.content = codeSnippets[type];
-            
-            // Auto-detect format based on snippet
-            if(type === 'html5' || type === 'tailwind') state.format = 'html';
-            else if(type === 'fetch' || type === 'express') state.format = 'js';
-            else if(type === 'json') state.format = 'json';
-            
-            if(els.formatSelect) els.formatSelect.value = state.format;
-            state.fileName = `${type}_snippet`;
-            
-            updateUIForFormat();
-            updateStats();
-            updateFileDisplay();
-            generateLineNumbers();
-            saveToHistory(state.content, state.format, `Inserted ${type} snippet`);
-            showToast('Snippet inserted successfully', 'success');
+            saveToHistory(codeSnippets[type], format, `Inserted ${type} snippet`);
+            showToast('Snippet inserted into new tab', 'success');
         }
 
-        async function generateDevKit(type) {
-            if (!els.editor) return;
-            if (els.editor.value.trim() !== '') {
-                const proceed = await showConfirm('Generate tool data? This will overwrite your current editor content.');
-                if (!proceed) return;
-            }
-
+        function generateDevKit(type) {
             let result = '';
             let formatTarget = 'txt';
             let label = '';
@@ -1786,18 +2422,12 @@
                 label = 'mock_users';
             }
 
-            els.editor.value = result;
-            state.content = result;
-            state.format = formatTarget;
-            if(els.formatSelect) els.formatSelect.value = formatTarget;
-            state.fileName = label;
+            const newId = Date.now();
+            state.tabs.push({ id: newId, name: label, content: result, format: formatTarget });
+            switchEditorTab(newId);
 
-            updateUIForFormat();
-            updateStats();
-            updateFileDisplay();
-            generateLineNumbers();
-            saveToHistory(state.content, state.format, `Generated ${label}`);
-            showToast(`Generated ${label} successfully`, 'success');
+            saveToHistory(result, formatTarget, `Generated ${label}`);
+            showToast(`Generated ${label} into new tab`, 'success');
         }
 
         // --- File I/O ---
@@ -1857,29 +2487,20 @@
                     
                     // Reconstruct clean outerHTML
                     const parsedHTML = "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
-
-                    // Success! Put it in the editor
-                    els.editor.value = parsedHTML;
-                    state.content = parsedHTML;
-                    
-                    // Force state to HTML
-                    state.format = 'html';
-                    if (els.formatSelect) els.formatSelect.value = 'html';
                     
                     // Parse URL for filename
+                    let safeName = 'extracted_source';
                     try {
                         const host = new URL(url).hostname;
-                        state.fileName = host.replace('www.', '');
-                    } catch(e) {
-                        state.fileName = 'extracted_source';
-                    }
+                        safeName = host.replace('www.', '');
+                    } catch(e) {}
 
-                    updateUIForFormat();
-                    updateStats();
-                    updateFileDisplay();
-                    generateLineNumbers();
-                    saveToHistory(state.content, state.format, `Extracted ${state.fileName}`);
-                    
+                    // Open into new Tab safely
+                    const newId = Date.now();
+                    state.tabs.push({ id: newId, name: safeName, content: parsedHTML, format: 'html' });
+                    switchEditorTab(newId);
+
+                    saveToHistory(parsedHTML, 'html', `Extracted ${safeName}`);
                     showToast(`Extracted source from ${url}`, "success");
                     
                     // Auto-open preview
@@ -1899,34 +2520,27 @@
         }
 
         function handleFileUpload(file) {
-            if (!file || !els.editor) return;
+            if (!file) return;
             const reader = new FileReader();
             reader.onload = (e) => {
-                els.editor.value = e.target.result;
-                state.content = e.target.result;
-                state.fileName = file.name;
-                
                 const ext = file.name.split('.').pop().toLowerCase();
                 const supported = ['json', 'html', 'css', 'js', 'c', 'py', 'txt', 'md'];
                 
+                let formatTarget = 'txt';
                 if (supported.includes(ext)) {
-                    state.format = ext;
-                    if(els.formatSelect) els.formatSelect.value = ext;
+                    formatTarget = ext;
                 } else if (ext === 'cpp' || ext === 'h') {
-                    state.format = 'c';
-                    if(els.formatSelect) els.formatSelect.value = 'c';
-                } else {
-                    state.format = 'txt';
-                    if(els.formatSelect) els.formatSelect.value = 'txt';
+                    formatTarget = 'c';
                 }
+
+                // Add to new tab
+                const newId = Date.now();
+                state.tabs.push({ id: newId, name: file.name, content: e.target.result, format: formatTarget });
+                switchEditorTab(newId);
+
+                saveToHistory(e.target.result, formatTarget, `Opened ${file.name}`);
                 
-                updateUIForFormat();
-                updateStats();
-                updateFileDisplay();
-                generateLineNumbers();
-                saveToHistory(state.content, state.format, `Opened ${file.name}`);
-                
-                if (ext === 'html' || ext === 'md') {
+                if (formatTarget === 'html' || formatTarget === 'md') {
                     if(!state.previewVisible) toggleHtmlPreview();
                     refreshPreview();
                 }
@@ -2053,7 +2667,8 @@
                 return;
             }
 
-            const lines = linksValue.split('\n');
+            // Split by newlines, commas, or spaces to support all paste formats
+            const lines = linksValue.split(/[\n,\s]+/);
             const extractedData = [];
             let count = 1;
 
@@ -2066,10 +2681,10 @@
 
                 const match = url.match(idRegex);
                 if (match && match[1]) {
-                    extractedData.push({
-                        id: match[1],
-                        name: `${evName} ${count}`
-                    });
+                    // Zero-pad the count (e.g., 01, 02, 03... 10)
+                    const paddedCount = count.toString().padStart(2, '0');
+                    
+                    extractedData.push(`{ id: "${match[1]}", name: "${evName} ${paddedCount}" }`);
                     count++;
                 }
             });
@@ -2080,8 +2695,8 @@
                 return;
             }
 
-            const jsonString = JSON.stringify(extractedData, null, 4);
-            outputEl.value = `data = ${jsonString}`;
+            // Join with commas and newlines
+            outputEl.value = extractedData.join(',\n');
             
             showToast(`Extracted ${extractedData.length} IDs successfully`, 'success');
         }
@@ -2118,9 +2733,12 @@
             let ext = 'js';
             
             if (type === 'json') {
-                // Strip the "data = " prefix to create valid raw JSON for download
-                content = content.replace(/^data\s*=\s*/, '');
+                // Convert to valid JSON format by quoting keys and wrapping in array
+                content = `[\n${content}\n]`.replace(/\{ id:/g, '{ "id":').replace(/, name:/g, ', "name":');
                 ext = 'json';
+            } else {
+                // Format as a valid JS array variable
+                content = `const data = [\n${content}\n];`;
             }
 
             const safeFileName = eventName.toLowerCase().replace(/[^a-z0-9]+/g, '_');
@@ -2435,28 +3053,29 @@
 
         function toggleSpreadsheetView(showExcel) {
             state.excelVisible = showExcel;
+            state.wordVisible = false; // Turn off word view
+            
             const textEditor = document.getElementById('text-editor-wrapper');
             const excelEditor = document.getElementById('excel-editor-wrapper');
-            const tabName = document.getElementById('tab-name');
-            const tabIcon = document.getElementById('tab-icon');
+            const wordEditor = document.getElementById('word-editor-wrapper');
 
-            if (!textEditor || !excelEditor) return;
+            if (!textEditor || !excelEditor || !wordEditor) return;
 
             if (showExcel) {
                 textEditor.classList.add('hidden');
+                wordEditor.classList.add('hidden');
+                wordEditor.classList.remove('flex');
+                
                 excelEditor.classList.remove('hidden');
                 excelEditor.classList.add('flex');
-                
-                if (tabName) tabName.textContent = 'spreadsheet.csv';
-                if (tabIcon) tabIcon.className = 'fa-solid fa-table text-green-500 text-sm mr-2';
-                if (els.statusLanguage) els.statusLanguage.textContent = 'CSV Spreadsheet';
             } else {
                 textEditor.classList.remove('hidden');
                 excelEditor.classList.add('hidden');
                 excelEditor.classList.remove('flex');
-                
-                updateFileDisplay(); // Reverts icon, name, and status
+                wordEditor.classList.add('hidden');
+                wordEditor.classList.remove('flex');
             }
+            updateFileDisplay();
         }
 
         function initSpreadsheet(rows = defaultRows, cols = defaultCols) {
@@ -2557,15 +3176,12 @@
                 }).join(',')
             ).join('\n');
 
-            if (els.editor) els.editor.value = csv;
-            state.content = csv;
-            state.format = 'txt';
-            if (els.formatSelect) els.formatSelect.value = 'txt';
+            // Open CSV in a new tab!
+            const newId = Date.now();
+            state.tabs.push({ id: newId, name: 'spreadsheet_data', content: csv, format: 'txt' });
+            switchEditorTab(newId);
             
-            toggleSpreadsheetView(false);
-            updateStats();
-            generateLineNumbers();
-            showToast('Data exported to code editor successfully', 'success');
+            showToast('Data exported to new code editor tab successfully', 'success');
         }
 
         // Spreadsheet Arrow Key Navigation
@@ -2591,6 +3207,98 @@
                 }
             }
         });
+        
+        // --- Word Processor Logic ---
+        
+        function toggleWordView(showWord) {
+            state.wordVisible = showWord;
+            state.excelVisible = false; // Turn off excel view
+            
+            const textEditor = document.getElementById('text-editor-wrapper');
+            const excelEditor = document.getElementById('excel-editor-wrapper');
+            const wordEditor = document.getElementById('word-editor-wrapper');
+
+            if (!textEditor || !wordEditor) return;
+
+            if (showWord) {
+                textEditor.classList.add('hidden');
+                if (excelEditor) {
+                    excelEditor.classList.add('hidden');
+                    excelEditor.classList.remove('flex');
+                }
+                
+                wordEditor.classList.remove('hidden');
+                wordEditor.classList.add('flex');
+            } else {
+                textEditor.classList.remove('hidden');
+                wordEditor.classList.add('hidden');
+                wordEditor.classList.remove('flex');
+                if (excelEditor) {
+                    excelEditor.classList.add('hidden');
+                    excelEditor.classList.remove('flex');
+                }
+            }
+            updateFileDisplay();
+        }
+
+        function formatDoc(cmd, value = null) {
+            if (els.wordCanvas) {
+                els.wordCanvas.focus();
+                document.execCommand(cmd, false, value);
+            }
+        }
+        
+        async function clearWordDoc() {
+            if (els.wordCanvas && els.wordCanvas.innerHTML.trim() !== '') {
+                const proceed = await showConfirm('Clear document? Unsaved changes will be lost.');
+                if (proceed) {
+                    els.wordCanvas.innerHTML = '';
+                    updateStats();
+                    showToast('Document cleared', 'info');
+                }
+            }
+        }
+        
+        function exportWordHtml() {
+            if (!els.wordCanvas) return;
+            const content = els.wordCanvas.innerHTML;
+            if (!content.trim()) {
+                showToast('Document is empty', 'error');
+                return;
+            }
+            
+            const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Document</title>
+<style>
+    body { font-family: 'Arial', sans-serif; font-size: 11pt; line-height: 1.5; max-width: 210mm; margin: 0 auto; padding: 25.4mm; }
+    ul { list-style-type: disc; padding-left: 20px; }
+    ol { list-style-type: decimal; padding-left: 20px; }
+    h1 { font-size: 24pt; font-weight: bold; margin-bottom: 12pt; }
+    h2 { font-size: 18pt; font-weight: bold; margin-bottom: 10pt; }
+    h3 { font-size: 14pt; font-weight: bold; margin-bottom: 8pt; }
+</style>
+</head>
+<body>
+${content}
+</body>
+</html>`;
+            
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'document.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Downloaded document.html', 'success');
+        }
+
+        // --- Common Export Logic ---
 
         async function downloadZip() {
             if (!state.content) {
@@ -2653,11 +3361,23 @@
             }
             if ((e.ctrlKey || e.metaKey) && e.key === 's') {
                 e.preventDefault();
-                downloadFile();
+                if (state.wordVisible) {
+                    exportWordHtml();
+                } else if (state.excelVisible) {
+                    exportSheetCSV();
+                } else {
+                    downloadFile();
+                }
             }
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'n') {
                 e.preventDefault();
-                createNewFile();
+                if (state.wordVisible) {
+                    clearWordDoc();
+                } else if (state.excelVisible) {
+                    initSpreadsheet();
+                } else {
+                    createNewFile();
+                }
             }
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'o') {
                 e.preventDefault();
@@ -2685,7 +3405,19 @@
             window.addEventListener('dragover', (e) => e.preventDefault());
             window.addEventListener('drop', (e) => {
                 e.preventDefault(); dragCounter = 0; overlay.classList.add('hidden'); overlay.classList.remove('flex');
-                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) handleFileUpload(e.dataTransfer.files[0]);
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    const files = Array.from(e.dataTransfer.files);
+                    const mediaFiles = files.filter(f => f.type.startsWith('video/') || f.type.startsWith('audio/') || f.name.match(/\.(mp4|webm|ogg|mov|mkv|avi|mp3|wav|flac|m4a|aac)$/i));
+                    const others = files.filter(f => !mediaFiles.includes(f));
+                    
+                    if (mediaFiles.length > 0) {
+                        handleVideoSelection(mediaFiles);
+                        if (!state.sidebarVisible || state.sidebarTab !== 'video') switchSidebarTab('video');
+                    }
+                    if (others.length > 0) {
+                        handleFileUpload(others[0]);
+                    }
+                }
             });
         }
 
@@ -2718,6 +3450,10 @@
         }
 
         function copyToClipboard() {
+            if (state.wordVisible) {
+                showToast('Use standard copy (Ctrl+C) for rich text', 'info');
+                return;
+            }
             if (!els.editor || !els.editor.value) return;
             els.editor.select();
             try {
@@ -2734,6 +3470,7 @@
             const dataToSave = { 
                 theme: state.theme,
                 format: state.format, 
+                sidebarWidth: state.sidebarWidth,
                 settings: state.settings 
             };
             localStorage.setItem('sanstudio_vscode_config', JSON.stringify(dataToSave));
@@ -2747,6 +3484,8 @@
                 if(els.themeSelect) els.themeSelect.value = state.theme;
                 state.format = parsed.format || 'txt';
                 if(els.formatSelect) els.formatSelect.value = state.format;
+                if (parsed.sidebarWidth) state.sidebarWidth = parsed.sidebarWidth;
+                
                 if (parsed.settings) {
                     state.settings = parsed.settings;
                     if(els.indentSelect) els.indentSelect.value = state.settings.indentSize || '4';
