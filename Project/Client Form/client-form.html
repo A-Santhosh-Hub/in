@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Client Details Form — SanStudio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* ── ANDROID 2026 / OS 6 DESIGN SYSTEM ── */
+    :root {
+      --bg: #0a0f1e;
+      --surface: #111827;
+      --surface2: #1c2537;
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: #4f9ef8;
+      --accent2: #a78bfa;
+      --success: #34d399;
+      --error: #f87171;
+      --text: #f1f5f9;
+      --muted: #64748b;
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+      --font-head: 'Space Grotesk', sans-serif;
+      --font-body: 'Nunito', sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 24px 16px 48px;
+      overflow-x: hidden;
+    }
+
+    /* Ambient glow background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -20%;
+      left: -10%;
+      width: 60vw;
+      height: 60vw;
+      background: radial-gradient(circle, rgba(79, 158, 248, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -10%;
+      right: -10%;
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, rgba(167, 139, 250, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 520px;
+      padding: 36px 32px;
+      box-shadow: var(--shadow);
+      animation: slideUp 0.6s cubic-bezier(.16, 1, .3, 1) both;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(32px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* ── HEADER ── */
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .header-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 28px;
+      box-shadow: 0 4px 24px rgba(79, 158, 248, 0.35);
+      animation: iconPop 0.7s cubic-bezier(.34, 1.56, .64, 1) 0.3s both;
+    }
+
+    @keyframes iconPop {
+      from {
+        opacity: 0;
+        transform: scale(0.5) rotate(-10deg);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    .header h1 {
+      font-family: var(--font-head);
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--text) 30%, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    /* ── FORM FIELDS ── */
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .field {
+      position: relative;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+      transition: color 0.2s;
+    }
+
+    .field:focus-within label {
+      color: var(--accent);
+    }
+
+    .field-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .field-icon {
+      position: absolute;
+      left: 16px;
+      font-size: 18px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .field:focus-within .field-icon {
+      opacity: 1;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 14px 16px 14px 48px;
+      outline: none;
+      transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+      -webkit-appearance: none;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      background: rgba(79, 158, 248, 0.04);
+      box-shadow: 0 0 0 4px rgba(79, 158, 248, 0.12);
+    }
+
+    input:disabled,
+    textarea:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 110px;
+      padding-top: 14px;
+      line-height: 1.6;
+    }
+
+    /* Validation states */
+    input.valid {
+      border-color: var(--success);
+    }
+
+    input.invalid {
+      border-color: var(--error);
+    }
+
+    .field-error {
+      font-size: 0.75rem;
+      color: var(--error);
+      margin-top: 5px;
+      display: none;
+      padding-left: 4px;
+    }
+
+    .field-error.show {
+      display: block;
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(.16, 1, .3, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.08);
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .btn:hover::after {
+      opacity: 1;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, #3b82f6 100%);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(79, 158, 248, 0.35);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-edit {
+      background: var(--surface2);
+      color: var(--accent2);
+      border: 1.5px solid rgba(167, 139, 250, 0.3);
+      margin-top: 10px;
+    }
+
+    .btn-edit:hover {
+      border-color: var(--accent2);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Spinner inside button */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2.5px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── STATES ── */
+    #state-submitted,
+    #state-alreadyDone,
+    #state-success {
+      display: none;
+    }
+
+    .status-box {
+      text-align: center;
+      padding: 8px 0 16px;
+    }
+
+    .status-emoji {
+      font-size: 56px;
+      display: block;
+      margin-bottom: 16px;
+      animation: bounce 0.7s cubic-bezier(.34, 1.56, .64, 1) both;
+    }
+
+    @keyframes bounce {
+      from {
+        transform: scale(0);
+      }
+
+      to {
+        transform: scale(1);
+      }
+    }
+
+    .status-box h2 {
+      font-family: var(--font-head);
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .status-box p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .status-box .highlight {
+      display: inline-block;
+      background: rgba(79, 158, 248, 0.12);
+      color: var(--accent);
+      border-radius: 8px;
+      padding: 2px 10px;
+      font-weight: 700;
+      font-size: 0.875rem;
+    }
+
+    /* Review summary */
+    .review-card {
+      background: var(--surface2);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 18px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .review-card.show {
+      display: block;
+    }
+
+    .review-title {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .review-row {
+      display: flex;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .review-row:last-child {
+      border-bottom: none;
+    }
+
+    .review-row .rl {
+      color: var(--muted);
+      min-width: 90px;
+      font-weight: 500;
+    }
+
+    .review-row .rv {
+      color: var(--text);
+      font-weight: 600;
+      word-break: break-word;
+      flex: 1;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 20px;
+      border-radius: 50px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      transition: transform 0.4s cubic-bezier(.16, 1, .3, 1);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.err {
+      border-color: rgba(248, 113, 113, 0.4);
+    }
+
+    .toast.ok {
+      border-color: rgba(52, 211, 153, 0.4);
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      position: relative;
+      z-index: 1;
+      margin-top: 24px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      height: 3px;
+      background: var(--surface2);
+      border-radius: 2px;
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.4s cubic-bezier(.16, 1, .3, 1);
+    }
+
+    @media(max-width:480px) {
+      .card {
+        padding: 28px 20px;
+      }
+
+      .header h1 {
+        font-size: 1.35rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── MAIN FORM CARD ── -->
+  <div class="card" id="main-card">
+    <div class="header">
+      <div class="header-icon">📋</div>
+      <h1>Client Details</h1>
+      <p>Fill in your details once. Secure & private.</p>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress"></div>
+    </div>
+
+    <!-- FORM STATE -->
+    <div id="state-form">
+      <div class="field-group">
+
+        <div class="field">
+          <label>Full Name</label>
+          <div class="field-wrap">
+            <span class="field-icon">👤</span>
+            <input type="text" id="f-name" placeholder="e.g. Santhosh A" autocomplete="name" inputmode="text" />
+          </div>
+          <div class="field-error" id="err-name">Please enter your full name.</div>
+        </div>
+
+        <div class="field">
+          <label>Mobile Number</label>
+          <div class="field-wrap">
+            <span class="field-icon">📱</span>
+            <input type="tel" id="f-mobile" placeholder="+91 98765 43210" autocomplete="tel" inputmode="tel" />
+          </div>
+          <div class="field-error" id="err-mobile">Enter a valid 10-digit mobile number.</div>
+        </div>
+
+        <div class="field">
+          <label>WhatsApp Number</label>
+          <div class="field-wrap">
+            <span class="field-icon">💬</span>
+            <input type="tel" id="f-whatsapp" placeholder="Same as mobile or different" inputmode="tel" />
+          </div>
+          <div class="field-error" id="err-whatsapp">Enter a valid WhatsApp number.</div>
+        </div>
+
+        <div class="field">
+          <label>Gmail Address</label>
+          <div class="field-wrap">
+            <span class="field-icon">✉️</span>
+            <input type="email" id="f-gmail" placeholder="you@gmail.com" autocomplete="email" inputmode="email" />
+          </div>
+          <div class="field-error" id="err-gmail">Enter a valid Gmail address.</div>
+        </div>
+
+        <div class="field">
+          <label>Your Question / Message</label>
+          <div class="field-wrap" style="align-items:flex-start">
+            <span class="field-icon" style="top:14px; position:absolute;">💡</span>
+            <textarea id="f-question" placeholder="Type your question or message here…"></textarea>
+          </div>
+          <div class="field-error" id="err-question">Please write your question or message.</div>
+        </div>
+      </div>
+
+      <!-- Review Card (shown before submit) -->
+      <div class="review-card" id="review-card">
+        <div class="review-title">📝 Review Your Details</div>
+        <div class="review-row"><span class="rl">Name</span><span class="rv" id="rv-name"></span></div>
+        <div class="review-row"><span class="rl">Mobile</span><span class="rv" id="rv-mobile"></span></div>
+        <div class="review-row"><span class="rl">WhatsApp</span><span class="rv" id="rv-whatsapp"></span></div>
+        <div class="review-row"><span class="rl">Gmail</span><span class="rv" id="rv-gmail"></span></div>
+        <div class="review-row"><span class="rl">Question</span><span class="rv" id="rv-question"></span></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btn-submit" onclick="handleSubmit()">
+          <span id="btn-label">✦ Preview & Submit</span>
+          <div class="spinner" id="spinner"></div>
+        </button>
+        <button class="btn btn-edit" id="btn-edit" onclick="editForm()" style="display:none">
+          ✏️ Edit Details
+        </button>
+      </div>
+    </div>
+
+    <!-- ALREADY SUBMITTED STATE -->
+    <div id="state-alreadyDone">
+      <div class="status-box">
+        <span class="status-emoji">✅</span>
+        <h2>Already Submitted</h2>
+        <p>You've already filled this form.<br />Your details have been recorded.</p>
+      </div>
+      <button class="btn btn-edit" onclick="allowEdit()">✏️ Edit My Details</button>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div id="state-success">
+      <div class="status-box">
+        <span class="status-emoji">🎉</span>
+        <h2>Submitted Successfully!</h2>
+        <p>Thank you! Your details have been saved.<br />
+          We'll reach out to <span class="highlight" id="success-name"></span> soon.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Developed by <a href="https://a-santhosh-hub.github.io/in/" target="_blank">Santhosh A</a> · SanStudio
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzeQpjbq3BQW0N3x26CgHobWXCMysaIuIa8fwQukO0wMLnjbAIDN_KIjytKjvOi3Hhs/exec";
+    // ─────────────────────────────────────────────────────────────
+
+    const STORAGE_KEY = "sanstudio_client_submitted";
+    let isPreviewMode = false;
+
+    // ── INIT ──────────────────────────────────────────────────────
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        showState('alreadyDone');
+      } else {
+        showState('form');
+        bindProgress();
+      }
+    });
+
+    function bindProgress() {
+      const fields = ['f-name', 'f-mobile', 'f-whatsapp', 'f-gmail', 'f-question'];
+      fields.forEach(id => {
+        document.getElementById(id).addEventListener('input', updateProgress);
+      });
+    }
+
+    function updateProgress() {
+      const fields = ['f-name', 'f-mobile', 'f-whatsapp', 'f-gmail', 'f-question'];
+      let filled = 0;
+      fields.forEach(id => {
+        if (document.getElementById(id).value.trim()) filled++;
+      });
+      document.getElementById('progress').style.width = (filled / fields.length * 100) + '%';
+    }
+
+    // ── STATE MANAGER ──────────────────────────────────────────────
+    function showState(state) {
+      document.getElementById('state-form').style.display = state === 'form' ? 'block' : 'none';
+      document.getElementById('state-alreadyDone').style.display = state === 'alreadyDone' ? 'block' : 'none';
+      document.getElementById('state-success').style.display = state === 'success' ? 'block' : 'none';
+    }
+
+    // ── VALIDATION ─────────────────────────────────────────────────
+    function validatePhone(v) { return /^[\+]?[\d\s\-]{10,15}$/.test(v.trim()); }
+    function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }
+
+    function showErr(id, msg, show) {
+      const el = document.getElementById('err-' + id);
+      const inp = document.getElementById('f-' + id);
+      if (show) {
+        el.textContent = msg;
+        el.classList.add('show');
+        inp.classList.add('invalid');
+        inp.classList.remove('valid');
+      } else {
+        el.classList.remove('show');
+        inp.classList.remove('invalid');
+        inp.classList.add('valid');
+      }
+    }
+
+    function validate() {
+      let ok = true;
+      const name = document.getElementById('f-name').value.trim();
+      const mobile = document.getElementById('f-mobile').value.trim();
+      const whatsapp = document.getElementById('f-whatsapp').value.trim();
+      const gmail = document.getElementById('f-gmail').value.trim();
+      const question = document.getElementById('f-question').value.trim();
+
+      if (name.length < 2) { showErr('name', 'Please enter your full name.', true); ok = false; } else showErr('name', '', false);
+      if (!validatePhone(mobile)) { showErr('mobile', 'Enter a valid 10-digit number.', true); ok = false; } else showErr('mobile', '', false);
+      if (!validatePhone(whatsapp)) { showErr('whatsapp', 'Enter a valid WhatsApp number.', true); ok = false; } else showErr('whatsapp', '', false);
+      if (!validateEmail(gmail)) { showErr('gmail', 'Enter a valid Gmail address.', true); ok = false; } else showErr('gmail', '', false);
+      if (question.length < 5) { showErr('question', 'Please write your message.', true); ok = false; } else showErr('question', '', false);
+
+      return ok;
+    }
+
+    // ── HANDLE SUBMIT (2-STEP: Preview → Confirm) ────────────────
+    function handleSubmit() {
+      if (!isPreviewMode) {
+        // Step 1: Validate and show review
+        if (!validate()) { showToast('⚠️ Please fix the errors above.', 'err'); return; }
+        showReview();
+      } else {
+        // Step 2: Actually send
+        confirmSend();
+      }
+    }
+
+    function showReview() {
+      const get = id => document.getElementById('f-' + id).value.trim();
+      document.getElementById('rv-name').textContent = get('name');
+      document.getElementById('rv-mobile').textContent = get('mobile');
+      document.getElementById('rv-whatsapp').textContent = get('whatsapp');
+      document.getElementById('rv-gmail').textContent = get('gmail');
+      document.getElementById('rv-question').textContent = get('question');
+
+      document.getElementById('review-card').classList.add('show');
+      document.getElementById('btn-label').textContent = '🚀 Confirm & Submit';
+      document.getElementById('btn-edit').style.display = 'flex';
+
+      // Disable input fields
+      ['f-name', 'f-mobile', 'f-whatsapp', 'f-gmail', 'f-question'].forEach(id => {
+        document.getElementById(id).disabled = true;
+      });
+
+      isPreviewMode = true;
+      showToast('✅ Review your details below.', 'ok');
+    }
+
+    function editForm() {
+      document.getElementById('review-card').classList.remove('show');
+      document.getElementById('btn-label').textContent = '✦ Preview & Submit';
+      document.getElementById('btn-edit').style.display = 'none';
+      ['f-name', 'f-mobile', 'f-whatsapp', 'f-gmail', 'f-question'].forEach(id => {
+        document.getElementById(id).disabled = false;
+        document.getElementById(id).classList.remove('valid', 'invalid');
+      });
+      isPreviewMode = false;
+    }
+
+    async function confirmSend() {
+      const btn = document.getElementById('btn-submit');
+      const label = document.getElementById('btn-label');
+      const spinner = document.getElementById('spinner');
+
+      btn.disabled = true;
+      label.style.display = 'none';
+      spinner.style.display = 'block';
+
+      const payload = {
+        action: 'submit',
+        name: document.getElementById('f-name').value.trim(),
+        mobile: document.getElementById('f-mobile').value.trim(),
+        whatsapp: document.getElementById('f-whatsapp').value.trim(),
+        gmail: document.getElementById('f-gmail').value.trim(),
+        question: document.getElementById('f-question').value.trim()
+      };
+
+      try {
+        // Use URLSearchParams + no-cors to avoid CORS preflight issues with Google Apps Script
+        const formData = new URLSearchParams();
+        Object.entries(payload).forEach(([k, v]) => formData.append(k, v));
+
+        await fetch(GAS_URL, {
+          method: 'POST',
+          mode: 'no-cors',   // GAS doesn't support preflight; no-cors bypasses it
+          body: formData
+        });
+
+        // With no-cors we can't read the response, so assume success after the request completes
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          submittedAt: new Date().toISOString(),
+          name: payload.name
+        }));
+        document.getElementById('success-name').textContent = payload.name;
+        showState('success');
+
+      } catch (err) {
+        showToast('❌ Failed to connect. Please try again.', 'err');
+        btn.disabled = false;
+        label.style.display = 'inline';
+        spinner.style.display = 'none';
+      }
+    }
+
+    // ── ALLOW EDIT (from already-done state) ─────────────────────
+    function allowEdit() {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      localStorage.removeItem(STORAGE_KEY);
+      isPreviewMode = false;
+      showState('form');
+      updateProgress();
+      bindProgress();
+      showToast('✏️ You can now update your details.', 'ok');
+    }
+
+    // ── TOAST ─────────────────────────────────────────────────────
+    let toastTimer;
+    function showToast(msg, type = 'ok') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast ' + type + ' show';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+  </script>
+</body>
+
+</html>
