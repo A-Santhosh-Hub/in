@@ -75,4 +75,4 @@ Every pixel of image processing happens via the JavaScript engine running direct
 
 
 
-![3D Model Viewer Screenshot](https://github.com/A-Santhosh-Hub/WEB_APPLICATION-S/blob/main/SanStudioToolkit/Screenshot%202026-04-13%20215859.png)
+![Viewer Screenshot](https://github.com/A-Santhosh-Hub/WEB_APPLICATION-S/blob/main/SanStudioToolkit/Screenshot%202026-04-13%20215859.png)
