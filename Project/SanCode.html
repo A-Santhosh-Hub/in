@@ -20,7 +20,10 @@
     
     <!-- JSZip for Downloading ZIP files -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    
+
+    <!-- Logo-->
+     <link rel="icon" type="image/png" href="https://sanstudio2026.neocities.org/San.png">
+
     <!-- QR Code Styling Library -->
     <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
 
@@ -130,7 +133,7 @@
         }
         ::-webkit-scrollbar-thumb {
             background: #464646;
-            border: 2px solid #1e1e1e; /* Matches editor bg to make it look thinner */
+            border: 2px solid #1e1e1e;
             border-radius: 0px;
         }
         ::-webkit-scrollbar-thumb:hover {
@@ -140,141 +143,38 @@
             background: #1e1e1e;
         }
 
-        /* Editor textarea styling */
         textarea {
             resize: none;
             outline: none;
             tab-size: 4;
-            color: var(--vs-text); /* Ensure text respects theme */
-        }
-        
-        textarea::selection {
-            background: var(--vs-selection);
-        }
-
-        /* Spreadsheet Styling */
-        .spreadsheet-table {
-            border-collapse: collapse;
-            font-size: 13px;
-            font-family: 'Inter', sans-serif;
             color: var(--vs-text);
-            min-width: 100%;
         }
-        .spreadsheet-th {
-            background-color: var(--vs-sidebar);
-            border: 1px solid var(--vs-border);
-            text-align: center;
-            font-weight: 500;
-            padding: 4px 8px;
-            user-select: none;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            color: var(--vs-textMuted);
-        }
-        .spreadsheet-th-row {
-            position: sticky;
-            left: 0;
-            z-index: 11;
-            background-color: var(--vs-sidebar);
-            min-width: 40px;
-        }
-        .spreadsheet-th-corner {
-            z-index: 12;
-            left: 0;
-            top: 0;
-        }
-        .spreadsheet-td {
-            border: 1px solid var(--vs-border);
-            padding: 0;
-            min-width: 100px;
-            height: 28px;
-            background-color: var(--vs-editor);
-        }
-        .spreadsheet-input {
-            width: 100%;
-            height: 100%;
-            border: none;
-            outline: none;
-            padding: 4px 8px;
-            background: transparent;
-            color: inherit;
-        }
-        .spreadsheet-input:focus {
-            outline: 2px solid var(--vs-accent);
-            outline-offset: -2px;
-            background-color: var(--vs-selection);
-        }
+        textarea::selection { background: var(--vs-selection); }
 
-        /* Word Processor Styling */
-        .word-canvas-container {
-            background-color: #e5e7eb; /* Neutral grey background like a desk */
-            padding: 2rem 0;
-            overflow-y: auto;
-            display: flex;
-            justify-content: center;
-            flex-grow: 1;
-        }
-        .dark .word-canvas-container {
-            background-color: #111827; /* Darker grey for dark mode desk */
-        }
-        .word-canvas {
-            width: 210mm; /* A4 width */
-            min-height: 297mm; /* A4 height */
-            background-color: white;
-            color: black;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            padding: 25.4mm; /* standard 1-inch margin */
-            outline: none;
-            font-family: 'Arial', sans-serif;
-            font-size: 11pt;
-            line-height: 1.5;
-        }
-        .word-toolbar-btn {
-            padding: 4px 8px;
-            border-radius: 4px;
-            color: var(--vs-text);
-            background: transparent;
-            border: 1px solid transparent;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .word-toolbar-btn:hover {
-            background-color: var(--vs-hover);
-        }
-        .word-toolbar-divider {
-            width: 1px;
-            height: 20px;
-            background-color: var(--vs-border);
-            margin: 0 4px;
-        }
+        .spreadsheet-table { border-collapse: collapse; font-size: 13px; font-family: 'Inter', sans-serif; color: var(--vs-text); min-width: 100%; }
+        .spreadsheet-th { background-color: var(--vs-sidebar); border: 1px solid var(--vs-border); text-align: center; font-weight: 500; padding: 4px 8px; user-select: none; position: sticky; top: 0; z-index: 10; color: var(--vs-textMuted); }
+        .spreadsheet-th-row { position: sticky; left: 0; z-index: 11; background-color: var(--vs-sidebar); min-width: 40px; }
+        .spreadsheet-th-corner { z-index: 12; left: 0; top: 0; }
+        .spreadsheet-td { border: 1px solid var(--vs-border); padding: 0; min-width: 100px; height: 28px; background-color: var(--vs-editor); }
+        .spreadsheet-input { width: 100%; height: 100%; border: none; outline: none; padding: 4px 8px; background: transparent; color: inherit; }
+        .spreadsheet-input:focus { outline: 2px solid var(--vs-accent); outline-offset: -2px; background-color: var(--vs-selection); }
+
+        .word-canvas-container { background-color: #e5e7eb; padding: 2rem 0; overflow-y: auto; display: flex; justify-content: center; flex-grow: 1; }
+        .dark .word-canvas-container { background-color: #111827; }
+        .word-canvas { width: 210mm; min-height: 297mm; background-color: white; color: black; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); padding: 25.4mm; outline: none; font-family: 'Arial', sans-serif; font-size: 11pt; line-height: 1.5; }
+        .word-toolbar-btn { padding: 4px 8px; border-radius: 4px; color: var(--vs-text); background: transparent; border: 1px solid transparent; cursor: pointer; transition: all 0.2s; }
+        .word-toolbar-btn:hover { background-color: var(--vs-hover); }
+        .word-toolbar-divider { width: 1px; height: 20px; background-color: var(--vs-border); margin: 0 4px; }
         .word-canvas ul { list-style-type: disc; padding-left: 20px; }
         .word-canvas ol { list-style-type: decimal; padding-left: 20px; }
         .word-canvas h1 { font-size: 24pt; font-weight: bold; margin-bottom: 12pt; }
         .word-canvas h2 { font-size: 18pt; font-weight: bold; margin-bottom: 10pt; }
         .word-canvas h3 { font-size: 14pt; font-weight: bold; margin-bottom: 8pt; }
 
-        /* Custom Scrollbar for Media Queue to be thin */
-        .video-scroll::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        /* Audio Visualizer Styling */
-        .visualizer {
-            display: flex;
-            align-items: flex-end;
-            gap: 4px;
-            height: 40px;
-        }
-        .visualizer .bar {
-            width: 6px;
-            background-color: var(--vs-accent);
-            border-radius: 2px 2px 0 0;
-            animation: equalize 0.8s infinite alternate ease-in-out;
-        }
-        .visualizer.paused .bar {
-            animation-play-state: paused;
-        }
+        .video-scroll::-webkit-scrollbar { width: 4px; }
+        .visualizer { display: flex; align-items: flex-end; gap: 4px; height: 40px; }
+        .visualizer .bar { width: 6px; background-color: var(--vs-accent); border-radius: 2px 2px 0 0; animation: equalize 0.8s infinite alternate ease-in-out; }
+        .visualizer.paused .bar { animation-play-state: paused; }
         .visualizer .bar:nth-child(1) { animation-delay: -0.4s; }
         .visualizer .bar:nth-child(2) { animation-delay: -0.2s; }
         .visualizer .bar:nth-child(3) { animation-delay: -0.8s; }
@@ -282,68 +182,54 @@
         .visualizer .bar:nth-child(5) { animation-delay: -0.6s; }
         .visualizer .bar:nth-child(6) { animation-delay: -0.3s; }
         .visualizer .bar:nth-child(7) { animation-delay: -0.7s; }
+        @keyframes equalize { 0% { height: 5px; } 100% { height: 40px; } }
 
-        @keyframes equalize {
-            0% { height: 5px; }
-            100% { height: 40px; }
-        }
+        .accordion-content { transition: max-height 0.2s ease-out, padding 0.2s ease-out; max-height: 0; overflow: hidden; }
+        .accordion-content.expanded { max-height: 500px; }
+        
+        /* Tree View Details/Summary styling */
+        details.tree-node > summary { list-style: none; cursor: pointer; user-select: none; display: flex; items: center; }
+        details.tree-node > summary::-webkit-details-marker { display: none; }
+        details.tree-node > summary::before { content: '\f0da'; font-family: 'Font Awesome 6 Free'; font-weight: 900; display: inline-block; width: 14px; transition: transform 0.2s; font-size: 10px; color: var(--vs-textMuted); }
+        details.tree-node[open] > summary::before { transform: rotate(90deg); }
 
-        /* Accordion transition */
-        .accordion-content {
-            transition: max-height 0.2s ease-out, padding 0.2s ease-out;
-            max-height: 0;
-            overflow: hidden;
-        }
-        .accordion-content.expanded {
-            max-height: 500px;
-        }
-
-        /* About Modal Animations */
-        @keyframes gradient-xy {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .animate-gradient-xy {
-            background-size: 200% 200%;
-            animation: gradient-xy 3s ease infinite;
-        }
-        @keyframes modalBounce {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .animate-modal-bounce {
-            animation: modalBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
+        @keyframes gradient-xy { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .animate-gradient-xy { background-size: 200% 200%; animation: gradient-xy 3s ease infinite; }
+        @keyframes modalBounce { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .animate-modal-bounce { animation: modalBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     </style>
 </head>
 <body class="bg-vs-editor text-vs-text h-screen w-screen flex flex-col font-sans overflow-hidden select-none theme-dark">
 
     <!-- Title Bar -->
-    <header class="h-8 bg-vs-activity flex items-center justify-between px-3 shrink-0 text-xs text-vs-text">
+    <header class="h-8 bg-vs-activity flex items-center justify-between px-3 shrink-0 text-xs text-vs-text z-50">
         <div class="flex items-center gap-4">
             <div class="flex items-center gap-2 text-vs-activityActive">
                 <i class="fa-solid fa-code text-vs-accent"></i>
             </div>
-            <!-- Fake Menus -->
             <nav class="hidden sm:flex items-center gap-3 text-vs-text">
                 <div class="relative group">
                     <div class="hover:bg-vs-hover px-2 py-0.5 rounded cursor-pointer transition-colors">File</div>
                     <div class="absolute top-full left-0 w-full h-2 z-[100]"></div>
-                    <!-- Dropdown Menu -->
-                    <div class="absolute left-0 top-full mt-1 w-48 bg-vs-sidebar border border-vs-border shadow-2xl rounded hidden group-hover:flex flex-col py-1 z-[100]">
+                    <div class="absolute left-0 top-full mt-1 w-56 bg-vs-sidebar border border-vs-border shadow-2xl rounded hidden group-hover:flex flex-col py-1 z-[100]">
                         <div class="px-4 py-1.5 text-vs-text hover:bg-vs-selection hover:text-white cursor-pointer flex justify-between items-center transition-colors" onclick="createNewFile()">
                             <span>New File</span><span class="text-vs-textMuted text-[10px]">Ctrl+N</span>
                         </div>
                         <div class="px-4 py-1.5 text-vs-text hover:bg-vs-selection hover:text-white cursor-pointer flex justify-between items-center transition-colors" onclick="document.getElementById('file-input').click()">
                             <span>Open File...</span><span class="text-vs-textMuted text-[10px]">Ctrl+O</span>
                         </div>
+                        <div class="px-4 py-1.5 text-vs-text hover:bg-vs-selection hover:text-white cursor-pointer flex justify-between items-center transition-colors" onclick="document.getElementById('folder-input').click()">
+                            <span>Open Folder Workspace...</span>
+                        </div>
                         <div class="h-px bg-vs-border my-1 mx-2"></div>
                         <div class="px-4 py-1.5 text-vs-text hover:bg-vs-selection hover:text-white cursor-pointer flex justify-between items-center transition-colors" onclick="downloadFile()">
-                            <span>Save</span><span class="text-vs-textMuted text-[10px]">Ctrl+S</span>
+                            <span>Save File</span><span class="text-vs-textMuted text-[10px]">Ctrl+S</span>
                         </div>
                         <div class="px-4 py-1.5 text-vs-text hover:bg-vs-selection hover:text-white cursor-pointer flex justify-between items-center transition-colors" onclick="downloadZip()">
-                            <span>Download ZIP</span><span class="text-vs-textMuted text-[10px]"></span>
+                            <span>Download Active as ZIP</span>
+                        </div>
+                        <div class="px-4 py-1.5 text-vs-text hover:bg-vs-selection hover:text-white cursor-pointer flex justify-between items-center transition-colors" onclick="downloadWorkspaceZip()">
+                            <span>Download Workspace ZIP</span>
                         </div>
                     </div>
                 </div>
@@ -368,9 +254,13 @@
         
         <!-- Activity Bar (Far Left) -->
         <aside class="w-12 bg-vs-activity flex flex-col items-center py-2 shrink-0 z-20 border-r border-vs-border overflow-y-auto hide-scrollbar">
-            <button onclick="switchSidebarTab('explorer')" id="activity-explorer" class="w-12 h-12 flex items-center justify-center text-vs-activityActive relative group mb-1" title="Explorer">
-                <div id="activity-explorer-border" class="absolute left-0 top-0 bottom-0 w-0.5 bg-vs-accent"></div>
-                <i class="fa-regular fa-copy text-2xl group-hover:text-vs-activityActive transition-colors"></i>
+            <button onclick="switchSidebarTab('workspace')" id="activity-workspace" class="w-12 h-12 flex items-center justify-center text-vs-activityActive relative group mb-1" title="Project Workspace">
+                <div id="activity-workspace-border" class="absolute left-0 top-0 bottom-0 w-0.5 bg-vs-accent"></div>
+                <i class="fa-regular fa-folder-open text-2xl group-hover:text-vs-activityActive transition-colors"></i>
+            </button>
+            <button onclick="switchSidebarTab('explorer')" id="activity-explorer" class="w-12 h-12 flex items-center justify-center text-vs-activityInactive relative group mb-1" title="History & Single Files">
+                <div id="activity-explorer-border" class="absolute left-0 top-0 bottom-0 w-0.5 bg-transparent"></div>
+                <i class="fa-regular fa-clock text-xl group-hover:text-vs-activityActive transition-colors"></i>
             </button>
             <button onclick="switchSidebarTab('tools')" id="activity-tools" class="w-12 h-12 flex items-center justify-center text-vs-activityInactive relative group mb-1" title="Format & Clean">
                 <div id="activity-tools-border" class="absolute left-0 top-0 bottom-0 w-0.5 bg-transparent"></div>
@@ -432,19 +322,50 @@
         </aside>
 
         <!-- Primary Sidebar -->
-        <aside id="sidebar" style="width: 256px;" class="bg-vs-sidebar border-r border-vs-border flex flex-col shrink-0 z-10 overflow-hidden relative">
+        <aside id="sidebar" style="width: 256px;" class="bg-vs-sidebar border-r border-vs-border flex flex-col shrink-0 z-10 overflow-hidden relative transition-none">
             
             <!-- Sidebar Header -->
             <div class="h-9 flex items-center px-4 text-[11px] font-semibold tracking-wider text-vs-textMuted uppercase shrink-0">
-                <span id="sidebar-title">Explorer</span>
+                <span id="sidebar-title">Project Workspace</span>
             </div>
 
-            <!-- Sidebar Content: EXPLORER -->
-            <div id="sidebar-explorer" class="flex-1 overflow-y-auto flex flex-col">
+            <!-- Sidebar Content: WORKSPACE (Folder Explorer) -->
+            <div id="sidebar-workspace" class="flex-1 overflow-y-auto flex flex-col">
+                <div class="p-3 shrink-0">
+                    <div onclick="document.getElementById('folder-input').click()" class="bg-vs-accent hover:bg-vs-accentHover text-white text-xs py-2 rounded flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm">
+                        <i class="fa-solid fa-folder-plus"></i> Open Folder
+                    </div>
+                    <input type="file" id="folder-input" class="hidden" webkitdirectory directory multiple onchange="handleFolderSelection(this.files)">
+                </div>
+
+                <div id="workspace-empty-state" class="px-4 py-8 flex flex-col items-center justify-center text-vs-textMuted text-center">
+                    <i class="fa-solid fa-folder-tree text-3xl mb-3 opacity-50"></i>
+                    <p class="text-xs">You have not yet opened a folder.</p>
+                    <p class="text-[10px] mt-2 opacity-70">Drag and drop a folder here, or click the button above.</p>
+                </div>
+
+                <div id="workspace-tree-container" class="hidden flex-col pb-4">
+                    <div class="flex items-center px-4 py-2 bg-vs-editor border-y border-vs-border/50">
+                        <i class="fa-solid fa-cube text-vs-accent mr-2 text-xs"></i>
+                        <span id="workspace-root-name" class="text-xs font-bold uppercase tracking-wider truncate">Project</span>
+                    </div>
+                    <!-- Tree injected via JS -->
+                    <div id="workspace-tree-content" class="px-2 py-2 text-[13px] font-mono leading-relaxed"></div>
+                    
+                    <div class="p-3 mt-auto">
+                        <button onclick="downloadWorkspaceZip()" class="w-full bg-vs-editor hover:bg-vs-hover border border-vs-border text-vs-textMuted hover:text-vs-text text-[10px] py-2 rounded transition-colors flex items-center justify-center gap-1 mt-4">
+                            <i class="fa-solid fa-file-zipper"></i> Download Workspace ZIP
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Content: EXPLORER (Timeline & Editors) -->
+            <div id="sidebar-explorer" class="hidden flex-1 overflow-y-auto flex flex-col">
                 <div class="p-3">
-                    <div id="upload-zone" onclick="document.getElementById('file-input').click()" class="border border-dashed border-vs-border hover:border-vs-accent bg-vs-editor/50 rounded p-4 text-center cursor-pointer group transition-colors">
+                    <div onclick="document.getElementById('file-input').click()" class="border border-dashed border-vs-border hover:border-vs-accent bg-vs-editor/50 rounded p-4 text-center cursor-pointer group transition-colors">
                         <i class="fa-solid fa-cloud-arrow-up text-xl text-vs-textMuted group-hover:text-vs-accent mb-2 transition-colors"></i>
-                        <p class="text-xs text-vs-textMuted">Drop files or click to open</p>
+                        <p class="text-xs text-vs-textMuted">Drop single file to open</p>
                         <input type="file" id="file-input" class="hidden" onchange="handleFileUpload(this.files[0])">
                     </div>
                 </div>
@@ -454,7 +375,6 @@
                         <span class="text-[11px] font-bold text-vs-textMuted group-hover:text-vs-text uppercase tracking-wider">Open Editors</span>
                     </div>
                     <div id="acc-editors" class="accordion-content expanded">
-                        <!-- Dynamic Open Editors -->
                         <div id="sidebar-open-editors" class="flex flex-col py-1"></div>
                     </div>
                 </div>
@@ -482,7 +402,6 @@
 
                     <!-- Media Player Container -->
                     <div class="w-full bg-black rounded overflow-hidden shadow-md relative aspect-video flex flex-col group">
-                        
                         <!-- Audio Visualizer Overlay -->
                         <div id="audio-visualizer" class="absolute inset-0 flex-col items-center justify-center bg-vs-editor hidden z-0">
                             <div class="visualizer mb-2" id="visualizer-bars">
@@ -517,7 +436,7 @@
                     <!-- Upload / Drop Zone -->
                     <div id="video-drop-zone" onclick="document.getElementById('video-input').click()" class="border border-dashed border-vs-border hover:border-vs-accent bg-vs-editor/50 rounded p-3 text-center cursor-pointer group transition-colors mt-2">
                         <i class="fa-solid fa-folder-plus text-lg text-vs-textMuted group-hover:text-vs-accent mb-1 transition-colors"></i>
-                        <p class="text-[10px] text-vs-textMuted">Click or Drop media here (MP4, MP3, WAV, AVI...)</p>
+                        <p class="text-[10px] text-vs-textMuted">Click or Drop media here</p>
                         <input type="file" id="video-input" class="hidden" accept="video/*,audio/*,.mkv,.avi,.mov,.mp3,.wav,.flac" multiple onchange="handleVideoSelection(this.files)">
                     </div>
 
@@ -527,13 +446,11 @@
                             <label class="text-[10px] text-vs-textMuted uppercase tracking-wider">Media Queue</label>
                             <button onclick="clearVideoQueue()" class="text-[10px] text-red-400 hover:text-red-300 transition-colors" title="Clear Queue">Clear</button>
                         </div>
-                        <div id="video-queue-list" class="flex flex-col gap-1 max-h-[250px] overflow-y-auto pr-1 video-scroll">
-                            <div class="text-[10px] text-vs-textMuted italic p-2 text-center bg-vs-editor/50 rounded">Queue is empty</div>
-                        </div>
+                        <div id="video-queue-list" class="flex flex-col gap-1 max-h-[250px] overflow-y-auto pr-1 video-scroll"></div>
                     </div>
                     
                     <div class="mt-auto pt-6 pb-2 text-center border-t border-vs-border/50 mt-4">
-                        <p class="text-[10px] text-vs-textMuted font-mono">Developed by Santhosh_A</p>
+                        <a href="https://sanstudio-hub.github.io/SanStudio-Hub/in" target="_blank" class="text-[10px] text-vs-textMuted hover:text-vs-accent font-mono transition-colors block">Developed By SanStudio Developer Team</a>
                     </div>
                 </div>
             </div>
@@ -619,26 +536,6 @@
                         </label>
                     </div>
                 </div>
-                <div>
-                    <div class="flex items-center px-1 py-1 cursor-pointer hover:bg-vs-hover group" onclick="toggleAccordion('acc-line-ops')">
-                        <i id="icon-acc-line-ops" class="fa-solid fa-chevron-down text-[10px] w-4 text-center text-vs-textMuted transition-transform"></i>
-                        <span class="text-[11px] font-bold text-vs-textMuted group-hover:text-vs-text uppercase tracking-wider">Line Operations</span>
-                    </div>
-                    <div id="acc-line-ops" class="accordion-content expanded px-4 py-2 flex flex-col gap-2">
-                        <button onclick="performLineOp('sort-asc')" class="w-full bg-vs-editor hover:bg-vs-hover border border-vs-border text-vs-text text-xs py-1.5 rounded transition-colors text-left px-2">
-                            <i class="fa-solid fa-arrow-down-a-z w-5 text-center text-vs-textMuted"></i> Sort A to Z
-                        </button>
-                        <button onclick="performLineOp('sort-desc')" class="w-full bg-vs-editor hover:bg-vs-hover border border-vs-border text-vs-text text-xs py-1.5 rounded transition-colors text-left px-2">
-                            <i class="fa-solid fa-arrow-up-z-a w-5 text-center text-vs-textMuted"></i> Sort Z to A
-                        </button>
-                        <button onclick="performLineOp('reverse')" class="w-full bg-vs-editor hover:bg-vs-hover border border-vs-border text-vs-text text-xs py-1.5 rounded transition-colors text-left px-2">
-                            <i class="fa-solid fa-arrows-up-down w-5 text-center text-vs-textMuted"></i> Reverse Lines
-                        </button>
-                        <button onclick="performLineOp('unique')" class="w-full bg-vs-editor hover:bg-vs-hover border border-vs-border text-vs-text text-xs py-1.5 rounded transition-colors text-left px-2">
-                            <i class="fa-solid fa-filter w-5 text-center text-vs-textMuted"></i> Remove Duplicates
-                        </button>
-                    </div>
-                </div>
             </div>
 
             <!-- Sidebar Content: WORD PROCESSOR -->
@@ -650,14 +547,12 @@
                         </h3>
                         <p class="text-[10px] text-vs-textMuted">A4 rich text editor inside your workspace.</p>
                     </div>
-                    
                     <button onclick="toggleWordView(true)" class="w-full bg-vs-accent hover:bg-vs-accentHover text-white text-xs py-2.5 rounded flex items-center justify-center gap-2 transition-colors border border-transparent shadow-sm font-medium mt-2">
                         <i class="fa-solid fa-file-signature"></i> Open Word Workspace
                     </button>
                     <button onclick="toggleWordView(false)" class="w-full bg-vs-editor hover:bg-vs-hover text-vs-text text-xs py-2.5 rounded flex items-center justify-center gap-2 transition-colors border border-vs-border shadow-sm font-medium">
                         <i class="fa-solid fa-code"></i> Back to Code Editor
                     </button>
-
                     <div class="flex flex-col gap-3 mt-4 border-t border-vs-border/50 pt-4">
                         <label class="text-[10px] text-vs-textMuted uppercase tracking-wider">Document Options</label>
                         <div class="flex gap-2">
@@ -671,7 +566,7 @@
                     </div>
 
                     <div class="mt-auto pt-6 pb-2 text-center border-t border-vs-border/50 mt-4">
-                        <p class="text-[10px] text-vs-textMuted font-mono">Developed by Santhosh_A</p>
+                        <a href="https://sanstudio-hub.github.io/SanStudio-Hub/in" target="_blank" class="text-[10px] text-vs-textMuted hover:text-vs-accent font-mono transition-colors block">Developed By SanStudio Developer Team</a>
                     </div>
                 </div>
             </div>
@@ -685,14 +580,12 @@
                         </h3>
                         <p class="text-[10px] text-vs-textMuted">A lightweight spreadsheet inside your workspace.</p>
                     </div>
-                    
                     <button onclick="toggleSpreadsheetView(true)" class="w-full bg-vs-accent hover:bg-vs-accentHover text-white text-xs py-2.5 rounded flex items-center justify-center gap-2 transition-colors border border-transparent shadow-sm font-medium mt-2">
                         <i class="fa-solid fa-table-cells"></i> Open Spreadsheet View
                     </button>
                     <button onclick="toggleSpreadsheetView(false)" class="w-full bg-vs-editor hover:bg-vs-hover text-vs-text text-xs py-2.5 rounded flex items-center justify-center gap-2 transition-colors border border-vs-border shadow-sm font-medium">
                         <i class="fa-solid fa-code"></i> Back to Code Editor
                     </button>
-
                     <div class="flex flex-col gap-3 mt-4 border-t border-vs-border/50 pt-4">
                         <label class="text-[10px] text-vs-textMuted uppercase tracking-wider">Sheet Options</label>
                         <div class="flex gap-2">
@@ -709,7 +602,7 @@
                     </div>
 
                     <div class="mt-auto pt-6 pb-2 text-center border-t border-vs-border/50 mt-4">
-                        <p class="text-[10px] text-vs-textMuted font-mono">Developed by Santhosh_A</p>
+                        <a href="https://sanstudio-hub.github.io/SanStudio-Hub/in" target="_blank" class="text-[10px] text-vs-textMuted hover:text-vs-accent font-mono transition-colors block">Developed By SanStudio Developer Team</a>
                     </div>
                 </div>
             </div>
@@ -794,10 +687,6 @@
                             <span id="extract-text">Extract to Tab</span>
                         </button>
                     </div>
-                    <div class="mt-4 p-3 bg-vs-editor/50 border border-vs-border rounded text-[10px] text-vs-textMuted flex gap-2">
-                        <i class="fa-solid fa-circle-info mt-0.5 text-vs-accent"></i>
-                        <p>The extracted HTML is parsed via DOMParser and loaded directly into a new workspace tab.</p>
-                    </div>
                 </div>
             </div>
 
@@ -832,10 +721,6 @@
                             <textarea id="num-output" rows="5" readonly placeholder="Output will appear here..." class="w-full bg-vs-editor/50 border border-vs-border text-vs-text text-xs p-2 rounded focus:outline-none placeholder-vs-textMuted/40 resize-y font-mono"></textarea>
                             <div class="text-[9px] text-vs-textMuted text-right font-mono" id="num-count">0 valid numbers</div>
                         </div>
-                    </div>
-                    <div class="mt-2 p-3 bg-vs-editor/50 border border-vs-border rounded text-[10px] text-vs-textMuted flex gap-2">
-                        <i class="fa-solid fa-circle-check mt-0.5 text-green-500"></i>
-                        <p>Automatically removes duplicates, spaces, dashes, and invalid lengths.</p>
                     </div>
                 </div>
             </div>
@@ -879,7 +764,7 @@
                         </div>
                     </div>
                     <div class="mt-auto pt-6 pb-2 text-center border-t border-vs-border/50 mt-4">
-                        <p class="text-[10px] text-vs-textMuted font-mono">Developed by Santhosh_A</p>
+                        <a href="https://sanstudio-hub.github.io/SanStudio-Hub/in" target="_blank" class="text-[10px] text-vs-textMuted hover:text-vs-accent font-mono transition-colors block">Developed By SanStudio Developer Team</a>
                     </div>
                 </div>
             </div>
@@ -924,7 +809,7 @@
                         </div>
                     </div>
                     <div class="mt-auto pt-6 pb-2 text-center border-t border-vs-border/50 mt-4">
-                        <p class="text-[10px] text-vs-textMuted font-mono">Developed by Santhosh_A</p>
+                        <a href="https://sanstudio-hub.github.io/SanStudio-Hub/in" target="_blank" class="text-[10px] text-vs-textMuted hover:text-vs-accent font-mono transition-colors block">Developed By SanStudio Developer Team</a>
                     </div>
                 </div>
             </div>
@@ -991,7 +876,7 @@
                         </div>
                     </div>
                     <div class="mt-auto pt-6 pb-2 text-center border-t border-vs-border/50 mt-4">
-                        <p class="text-[10px] text-vs-textMuted font-mono">Developed by Santhosh_A</p>
+                        <a href="https://sanstudio-hub.github.io/SanStudio-Hub/in" target="_blank" class="text-[10px] text-vs-textMuted hover:text-vs-accent font-mono transition-colors block">Developed By SanStudio Developer Team</a>
                     </div>
                 </div>
             </div>
@@ -1010,8 +895,26 @@
                             </select>
                         </div>
                     </div>
+
+                    <div class="flex flex-col gap-3 border-t border-vs-border/50 pt-4">
+                        <h3 class="text-xs font-bold text-vs-text uppercase tracking-wider">Keyboard Shortcuts</h3>
+                        <div class="grid grid-cols-2 gap-2 text-[10px] text-vs-textMuted font-mono">
+                            <div class="text-vs-text">Ctrl + S</div><div>Save File</div>
+                            <div class="text-vs-text">Ctrl + N</div><div>New Tab</div>
+                            <div class="text-vs-text">Ctrl + O</div><div>Open File</div>
+                            <div class="text-vs-text">Ctrl + B</div><div>Toggle Sidebar</div>
+                            <div class="text-vs-text">Ctrl + Enter</div><div>Format Code</div>
+                            <div class="text-vs-text">Alt + Z</div><div>Toggle Word Wrap</div>
+                            <div class="text-vs-text">Alt + W</div><div>Close Active Tab</div>
+                            <div class="text-vs-text">Alt + P</div><div>Toggle Live Preview</div>
+                            <div class="text-vs-text">Alt + 1..9</div><div>Switch Tabs</div>
+                            <div class="text-vs-text">Ctrl+Shift+E</div><div>Focus Explorer</div>
+                            <div class="text-vs-text">Ctrl+Shift+F</div><div>Focus Tools</div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            
         </aside>
 
         <!-- Sidebar Resizer -->
@@ -1069,7 +972,7 @@
                         <!-- Populated by JS -->
                     </div>
                     
-                    <textarea id="editor" 
+                    <textarea id="editor" wrap="off"
                         class="flex-1 w-full h-full bg-transparent pl-14 pr-4 py-4 font-mono text-[14px] leading-6 border-none focus:ring-0 z-0 allow-select" 
                         placeholder="Type, paste, or drop your code here..."
                         spellcheck="false"
@@ -1134,13 +1037,19 @@
                     
                     <!-- Word Canvas Background (Desk) -->
                     <div class="word-canvas-container allow-select">
-                        <!-- Actual A4 Paper -->
                         <div id="word-canvas" class="word-canvas" contenteditable="true" spellcheck="false" placeholder="Start typing your document here..."></div>
                     </div>
                 </div>
 
+                <!-- Media Viewer Wrapper -->
+                <div id="media-viewer-wrapper" class="hidden flex-1 flex-col items-center justify-center bg-vs-editor relative p-4 overflow-hidden">
+                    <img id="media-preview-img" class="max-w-full max-h-full object-contain hidden shadow-lg rounded" />
+                    <video id="media-preview-video" class="max-w-full max-h-full object-contain hidden shadow-lg rounded" controls></video>
+                    <div id="media-preview-info" class="mt-4 text-vs-textMuted text-xs font-mono"></div>
+                </div>
+
                 <!-- HTML Live Preview (Split Pane Right) -->
-                <div id="html-preview-pane" class="hidden flex-1 border-l border-vs-border bg-white flex flex-col relative">
+                <div id="html-preview-pane" class="hidden flex-1 border-l border-vs-border bg-vs-editor flex flex-col relative">
                     <!-- Preview Toolbar -->
                     <div class="h-9 bg-vs-sidebar flex items-center justify-between px-3 shrink-0 border-b border-vs-border text-vs-text">
                         <div class="flex items-center gap-2 text-xs">
@@ -1148,20 +1057,25 @@
                             <span>Live HTML Preview</span>
                         </div>
                         <div class="flex gap-1">
-                            <button onclick="launchPreviewInNewTab()" class="w-7 h-7 flex items-center justify-center rounded hover:bg-vs-hover text-vs-textMuted transition-colors" title="Open in New Tab">
+                            <button onclick="toggleDevicePreview()" id="device-toggle-btn" class="w-7 h-7 flex items-center justify-center rounded hover:bg-vs-hover text-vs-textMuted hover:text-white transition-colors" title="Toggle Mobile View">
+                                <i class="fa-solid fa-mobile-screen text-xs"></i>
+                            </button>
+                            <button onclick="launchPreviewInNewTab()" class="w-7 h-7 flex items-center justify-center rounded hover:bg-vs-hover text-vs-textMuted hover:text-white transition-colors" title="Open in New Tab">
                                 <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
                             </button>
-                            <button onclick="refreshPreview()" class="w-7 h-7 flex items-center justify-center rounded hover:bg-vs-hover text-vs-textMuted transition-colors" title="Refresh">
+                            <button onclick="refreshPreview()" class="w-7 h-7 flex items-center justify-center rounded hover:bg-vs-hover text-vs-textMuted hover:text-white transition-colors" title="Refresh">
                                 <i class="fa-solid fa-rotate-right text-xs"></i>
                             </button>
-                            <button onclick="toggleHtmlPreview()" class="w-7 h-7 flex items-center justify-center rounded hover:bg-vs-hover text-vs-textMuted transition-colors" title="Close Pane">
+                            <button onclick="toggleHtmlPreview()" class="w-7 h-7 flex items-center justify-center rounded hover:bg-vs-hover text-vs-textMuted hover:text-white transition-colors" title="Close Pane">
                                 <i class="fa-solid fa-xmark text-sm"></i>
                             </button>
                         </div>
                     </div>
                     <!-- Iframe container -->
-                    <div class="flex-1 relative bg-white">
-                        <iframe id="live-iframe" class="w-full h-full border-none absolute inset-0"></iframe>
+                    <div class="flex-1 relative bg-vs-editor flex items-center justify-center overflow-auto p-0" id="preview-bg-wrapper">
+                        <div id="iframe-device-container" class="w-full h-full bg-white transition-all duration-300 relative shadow-2xl">
+                            <iframe id="live-iframe" class="w-full h-full border-none absolute inset-0 bg-white"></iframe>
+                        </div>
                     </div>
                 </div>
 
@@ -1195,6 +1109,9 @@
             <div class="hidden sm:flex items-center cursor-pointer hover:bg-white/20 px-1.5 h-full transition-colors">
                 UTF-8
             </div>
+            <div id="status-word-wrap" onclick="toggleWordWrap()" class="hidden sm:flex items-center cursor-pointer hover:bg-white/20 px-1.5 h-full transition-colors" title="Toggle Word Wrap (Alt+Z)">
+                Wrap: Off
+            </div>
             <div id="status-language" class="flex items-center cursor-pointer hover:bg-white/20 px-1.5 h-full transition-colors font-semibold uppercase">
                 Plain Text
             </div>
@@ -1214,13 +1131,13 @@
 
     <!-- About Developer Modal -->
     <div id="about-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex-col items-center justify-center transition-opacity duration-300 opacity-0" onclick="closeAboutModal(event)">
-        <div class="relative group cursor-pointer animate-modal-bounce" onclick="event.stopPropagation(); window.open('https://a-santhosh-hub.github.io/in/', '_blank')">
+        <div class="relative group cursor-pointer animate-modal-bounce" onclick="event.stopPropagation(); window.open('https://sanstudio-hub.github.io/SanStudio-Hub/in', '_blank')">
             <div class="absolute -inset-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl blur-md opacity-75 group-hover:opacity-100 transition duration-500 animate-gradient-xy"></div>
             
             <div class="relative px-10 py-8 bg-vs-sidebar border border-vs-border/50 rounded-2xl shadow-2xl flex flex-col items-center text-center transform transition-all duration-300 group-hover:scale-[1.02]">
                 
                 <div class="w-20 h-20 rounded-full bg-vs-editor flex items-center justify-center mb-5 border-2 border-vs-accent shadow-[0_0_15px_rgba(0,122,204,0.5)] group-hover:shadow-[0_0_25px_rgba(0,122,204,0.8)] transition-shadow duration-300">
-                    <span class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-purple-500">SA</span>
+                    <span class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-purple-500">SS</span>
                 </div>
                 
                 <h3 class="text-vs-text text-2xl font-bold mb-1 tracking-tight">Text to All Text</h3>
@@ -1229,8 +1146,8 @@
                 <div class="h-px w-full bg-gradient-to-r from-transparent via-vs-border to-transparent my-2"></div>
                 
                 <p class="text-vs-textMuted text-xs mt-4 uppercase tracking-widest font-semibold">Developed By</p>
-                <p class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500 font-extrabold text-2xl mt-1 tracking-wide">
-                    Santhosh A
+                <p class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500 font-extrabold text-xl mt-1 tracking-wide">
+                    SanStudio Developer Team
                 </p>
                 
                 <div class="mt-6 flex items-center gap-2 text-sm text-vs-textMuted group-hover:text-blue-400 transition-colors bg-vs-editor/50 px-4 py-2 rounded-full border border-vs-border">
@@ -1270,23 +1187,26 @@
         // --- State Management ---
         const state = {
             theme: 'theme-dark',
-            tabs: [], // Arrays of objects: { id, name, content, format }
+            tabs: [], // Arrays of objects: { id, name, content, format, isMedia, mediaType }
             activeTabId: null,
-            content: '', // Represents active tab content
-            format: 'txt', // Represents active tab format
-            fileName: 'untitled', // Represents active tab name
-            sidebarTab: 'explorer',
+            content: '',
+            format: 'txt',
+            fileName: 'untitled',
+            sidebarTab: 'workspace', // Changed default to workspace
             sidebarVisible: true,
             sidebarWidth: 256,
             previewVisible: false,
+            previewMode: 'desktop',
             excelVisible: false,
             wordVisible: false,
+            workspace: null, // { name: string, files: { path: { file, isText, blobUrl, content } } }
             settings: {
                 indentSize: '4',
                 minify: false,
                 trim: true,
                 removeSpaces: false,
-                removeLines: false
+                removeLines: false,
+                wordWrap: false
             }
         };
 
@@ -1303,7 +1223,7 @@
 
         // Initialize first tab
         const initialId = Date.now();
-        state.tabs.push({ id: initialId, name: 'untitled', content: '', format: 'txt' });
+        state.tabs.push({ id: initialId, name: 'untitled', content: '', format: 'txt', isMedia: false });
         state.activeTabId = initialId;
 
         const HISTORY_KEY = 'vscode_sanstudio_history';
@@ -1319,6 +1239,10 @@
             excelEditorWrapper: document.getElementById('excel-editor-wrapper'),
             wordEditorWrapper: document.getElementById('word-editor-wrapper'),
             wordCanvas: document.getElementById('word-canvas'),
+            mediaViewerWrapper: document.getElementById('media-viewer-wrapper'),
+            mediaPreviewImg: document.getElementById('media-preview-img'),
+            mediaPreviewVideo: document.getElementById('media-preview-video'),
+            mediaPreviewInfo: document.getElementById('media-preview-info'),
             
             // Displays
             fileNameDisplays: [
@@ -1352,14 +1276,19 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadSettings();
             applyTheme();
+            applyWordWrap(); // Apply wrap state on load
             
-            renderTabs(); // Init tabs
+            renderTabs();
             updateUIForFormat();
             updateStats();
             updateFileDisplay();
             generateLineNumbers();
             loadHistoryToSidebar();
             initSpreadsheet();
+            switchSidebarTab('workspace'); // default
+            
+            // Global Keyboard Shortcuts
+            document.addEventListener('keydown', handleGlobalKeydown);
             
             // Video Player Autoplay Next Setup & Visualizer sync
             const videoPlayer = document.getElementById('mini-video-player');
@@ -1372,7 +1301,6 @@
                     }
                 });
                 
-                // Sync Visualizer state with play/pause
                 videoPlayer.addEventListener('play', () => {
                     if (visualizerBars) visualizerBars.classList.remove('paused');
                 });
@@ -1385,7 +1313,7 @@
             if (els.editor) {
                 els.editor.addEventListener('input', () => {
                     state.content = els.editor.value;
-                    syncActiveTab(); // Save back to tab
+                    syncActiveTab();
                     updateStats();
                     generateLineNumbers();
                     if(state.previewVisible && state.format === 'html') debounceRefreshPreview();
@@ -1399,7 +1327,7 @@
             if (els.formatSelect) {
                 els.formatSelect.addEventListener('change', (e) => {
                     state.format = e.target.value;
-                    syncActiveTab(); // Save back to tab
+                    syncActiveTab();
                     updateUIForFormat();
                     saveSettings();
                     updateStats();
@@ -1415,7 +1343,6 @@
                 });
             }
 
-            // Word Canvas stats updater
             if (els.wordCanvas) {
                 els.wordCanvas.addEventListener('input', () => {
                     if (state.wordVisible) {
@@ -1427,7 +1354,6 @@
                 });
             }
 
-            // Settings Listeners
             if (els.indentSelect) els.indentSelect.addEventListener('change', (e) => { state.settings.indentSize = e.target.value; updateStatusSpaces(); saveSettings(); });
             if (els.chkMinify) els.chkMinify.addEventListener('change', (e) => { state.settings.minify = e.target.checked; saveSettings(); });
             if (els.chkTrim) els.chkTrim.addEventListener('change', (e) => { state.settings.trim = e.target.checked; saveSettings(); });
@@ -1446,6 +1372,11 @@
                 tab.content = state.content;
                 tab.format = state.format;
                 tab.name = state.fileName;
+                
+                // Sync to workspace if applicable
+                if (tab.workspacePath && state.workspace && state.workspace.files[tab.workspacePath]) {
+                    state.workspace.files[tab.workspacePath].content = state.content;
+                }
             }
             renderTabs();
         }
@@ -1475,8 +1406,12 @@
                 
                 let baseName = tab.name.includes('.') ? tab.name.split('.').slice(0, -1).join('.') : tab.name;
                 let ext = extMap[tab.format] || 'txt';
-                let fullName = `${baseName}.${ext}`;
+                if(tab.isMedia) ext = tab.name.split('.').pop();
+                let fullName = tab.name; // Keep true filename for workspaces
+
                 let iconClass = `fa-solid ${iconMap[tab.format] || iconMap['txt']}`;
+                if (tab.isMedia && tab.mediaType.startsWith('image/')) iconClass = 'fa-solid fa-image text-green-400';
+                if (tab.isMedia && tab.mediaType.startsWith('video/')) iconClass = 'fa-solid fa-film text-purple-400';
 
                 // Top Tab
                 tabsHtml += `
@@ -1499,28 +1434,29 @@
 
             container.innerHTML = tabsHtml;
             sidebarContainer.innerHTML = sidebarHtml;
-            updateFileDisplay(); // Update breadcrumbs/title based on new active
+            updateFileDisplay(); 
         }
 
         function switchEditorTab(id) {
             const targetTab = state.tabs.find(t => t.id === id);
             if (!targetTab) return;
 
-            // Make target active
             state.activeTabId = id;
-            
-            // Load target into global state
             state.content = targetTab.content;
             state.format = targetTab.format;
             state.fileName = targetTab.name;
 
-            // Apply to UI
             if (els.editor) els.editor.value = state.content;
-            if (els.formatSelect) els.formatSelect.value = state.format;
+            if (els.formatSelect && !targetTab.isMedia) els.formatSelect.value = state.format;
 
-            // Hide specific workspaces if open
             if (state.excelVisible) toggleSpreadsheetView(false);
             if (state.wordVisible) toggleWordView(false);
+            
+            if (targetTab.isMedia) {
+                toggleMediaView(true, targetTab.mediaType, targetTab.content);
+            } else {
+                toggleMediaView(false);
+            }
 
             updateUIForFormat();
             updateStats();
@@ -1528,15 +1464,14 @@
             generateLineNumbers();
             renderTabs();
 
-            if (state.previewVisible && state.format === 'html') refreshPreview();
+            if (state.previewVisible && state.format === 'html' && !targetTab.isMedia) refreshPreview();
         }
 
         function closeEditorTab(id, e) {
             if(e) e.stopPropagation();
             
-            // Don't close if it's the only tab, just reset it
             if (state.tabs.length === 1) {
-                state.tabs[0] = { id: Date.now(), name: 'untitled', content: '', format: 'txt' };
+                state.tabs[0] = { id: Date.now(), name: 'untitled', content: '', format: 'txt', isMedia: false };
                 switchEditorTab(state.tabs[0].id);
                 return;
             }
@@ -1546,7 +1481,6 @@
 
             state.tabs.splice(index, 1);
 
-            // If we closed the active tab, switch to the adjacent one
             if (state.activeTabId === id) {
                 const newIndex = index > 0 ? index - 1 : 0;
                 switchEditorTab(state.tabs[newIndex].id);
@@ -1558,12 +1492,267 @@
         async function createNewFile() {
             if (state.wordVisible) toggleWordView(false);
             if (state.excelVisible) toggleSpreadsheetView(false);
+            toggleMediaView(false);
             
             const newId = Date.now();
-            state.tabs.push({ id: newId, name: 'untitled', content: '', format: 'txt' });
+            state.tabs.push({ id: newId, name: 'untitled', content: '', format: 'txt', isMedia: false });
             switchEditorTab(newId);
             
             showToast('Created new tab', 'info');
+        }
+        
+        // --- Media Viewer Tab Logic ---
+        
+        function toggleMediaView(show, type = '', url = '') {
+            if (show) {
+                els.textEditorWrapper.classList.add('hidden');
+                els.mediaViewerWrapper.classList.remove('hidden');
+                els.mediaViewerWrapper.classList.add('flex');
+                
+                els.mediaPreviewImg.classList.add('hidden');
+                els.mediaPreviewVideo.classList.add('hidden');
+                
+                els.mediaPreviewVideo.pause();
+                
+                if (type.startsWith('image/')) {
+                    els.mediaPreviewImg.src = url;
+                    els.mediaPreviewImg.classList.remove('hidden');
+                } else if (type.startsWith('video/') || type.startsWith('audio/')) {
+                    els.mediaPreviewVideo.src = url;
+                    els.mediaPreviewVideo.classList.remove('hidden');
+                }
+                
+                els.mediaPreviewInfo.textContent = `${state.fileName} (${type})`;
+            } else {
+                els.mediaViewerWrapper.classList.add('hidden');
+                els.mediaViewerWrapper.classList.remove('flex');
+                els.textEditorWrapper.classList.remove('hidden');
+                els.mediaPreviewVideo.pause();
+            }
+        }
+
+        // --- Workspace Logic (Folder Explorer) ---
+        
+        async function handleFolderSelection(files) {
+            if (!files || files.length === 0) return;
+            
+            const fileArray = Array.from(files);
+            if (fileArray.length === 0) return;
+            
+            // Determine root name from the first file's path, supporting the custom drag-and-drop path
+            const firstPath = fileArray[0].customPath || fileArray[0].webkitRelativePath || fileArray[0].name;
+            const rootName = firstPath.includes('/') ? firstPath.split('/')[0] : 'Project';
+            
+            state.workspace = { name: rootName, files: {} };
+            
+            showToast('Loading workspace...', 'info');
+            
+            for (let i = 0; i < fileArray.length; i++) {
+                const file = fileArray[i];
+                // Use customPath from drag&drop, or webkitRelativePath from folder select button
+                const filePath = file.customPath || file.webkitRelativePath || file.name;
+                
+                let path = filePath;
+                // Remove root folder from path
+                if (path.startsWith(rootName + '/')) {
+                    path = path.substring(rootName.length + 1);
+                }
+                if (!path) continue;
+                
+                const isText = file.type.startsWith('text/') || 
+                               file.type === 'application/json' || 
+                               file.type === 'application/javascript' || 
+                               file.name.match(/\.(txt|md|json|html|css|js|c|cpp|py|svg|env|xml|csv)$/i);
+                               
+                const isMedia = file.type.startsWith('image/') || file.type.startsWith('video/') || file.type.startsWith('audio/');
+                
+                const blobUrl = URL.createObjectURL(file);
+                
+                state.workspace.files[path] = {
+                    file: file,
+                    isText: !!isText,
+                    isMedia: !!isMedia,
+                    type: file.type,
+                    blobUrl: blobUrl,
+                    content: null
+                };
+                
+                // Preload small text files for instant access
+                if (isText && file.size < 5000000) { // < 5MB
+                    state.workspace.files[path].content = await file.text();
+                }
+            }
+            
+            document.getElementById('workspace-empty-state').classList.add('hidden');
+            document.getElementById('workspace-tree-container').classList.remove('hidden');
+            document.getElementById('workspace-tree-container').classList.add('flex');
+            document.getElementById('workspace-root-name').textContent = rootName;
+            
+            renderWorkspaceTree();
+            showToast(`Loaded workspace: ${rootName} (${Object.keys(state.workspace.files).length} files)`, 'success');
+        }
+        
+        function renderWorkspaceTree() {
+            if (!state.workspace) return;
+            const treeContent = document.getElementById('workspace-tree-content');
+            
+            // Build tree object from paths
+            const tree = {};
+            for (const path of Object.keys(state.workspace.files).sort()) {
+                const parts = path.split('/');
+                let current = tree;
+                for (let i = 0; i < parts.length; i++) {
+                    const part = parts[i];
+                    if (!current[part]) {
+                        current[part] = (i === parts.length - 1) ? path : {};
+                    }
+                    current = current[part];
+                }
+            }
+            
+            function buildHtml(node, pathPrefix = "") {
+                let html = '';
+                
+                // Separate folders and files for sorting (folders first)
+                const folders = [];
+                const files = [];
+                
+                for (const key in node) {
+                    if (typeof node[key] === 'string') files.push(key);
+                    else folders.push(key);
+                }
+                
+                folders.sort().forEach(folder => {
+                    html += `
+                        <details class="tree-node ml-2" open>
+                            <summary class="hover:bg-vs-hover py-0.5 px-1 rounded flex items-center text-vs-textMuted hover:text-vs-text transition-colors">
+                                <i class="fa-solid fa-folder text-blue-400 mx-1 text-xs"></i> ${folder}
+                            </summary>
+                            <div class="ml-1 border-l border-vs-border/50 pl-1">
+                                ${buildHtml(node[folder], pathPrefix + folder + '/')}
+                            </div>
+                        </details>
+                    `;
+                });
+                
+                files.sort().forEach(file => {
+                    const fullPath = node[file];
+                    const fileObj = state.workspace.files[fullPath];
+                    let icon = 'fa-file-lines text-vs-textMuted';
+                    if (file.endsWith('.js')) icon = 'fa-brands fa-js text-yellow-400';
+                    else if (file.endsWith('.html')) icon = 'fa-brands fa-html5 text-orange-500';
+                    else if (file.endsWith('.css')) icon = 'fa-brands fa-css3 text-blue-400';
+                    else if (file.endsWith('.json')) icon = 'fa-solid fa-code text-yellow-500';
+                    else if (fileObj.isMedia && fileObj.type.startsWith('image/')) icon = 'fa-solid fa-image text-green-400';
+                    else if (fileObj.isMedia && fileObj.type.startsWith('video/')) icon = 'fa-solid fa-film text-purple-400';
+
+                    html += `
+                        <div onclick="openWorkspaceFile('${fullPath}')" class="ml-2 hover:bg-vs-hover py-0.5 px-1 rounded flex items-center cursor-pointer text-vs-textMuted hover:text-vs-text transition-colors truncate">
+                            <i class="${icon} mx-1 text-xs w-4 text-center"></i> ${file}
+                        </div>
+                    `;
+                });
+                
+                return html;
+            }
+            
+            treeContent.innerHTML = buildHtml(tree);
+        }
+        
+        async function openWorkspaceFile(path) {
+            if (!state.workspace || !state.workspace.files[path]) return;
+            const fileData = state.workspace.files[path];
+            
+            // Check if tab already exists
+            const existingTab = state.tabs.find(t => t.workspacePath === path);
+            if (existingTab) {
+                switchEditorTab(existingTab.id);
+                return;
+            }
+            
+            // Need to read content if not pre-loaded (large files)
+            if (fileData.isText && fileData.content === null) {
+                showToast('Loading file...', 'info');
+                fileData.content = await fileData.file.text();
+            }
+            
+            let format = 'txt';
+            const ext = path.split('.').pop().toLowerCase();
+            if (['json', 'html', 'css', 'js', 'c', 'py', 'md'].includes(ext)) format = ext;
+            
+            const newId = Date.now();
+            const tabObj = { 
+                id: newId, 
+                name: fileData.file.name, 
+                content: fileData.isText ? fileData.content : fileData.blobUrl, 
+                format: format,
+                workspacePath: path,
+                isMedia: !fileData.isText,
+                mediaType: fileData.type
+            };
+            
+            state.tabs.push(tabObj);
+            switchEditorTab(newId);
+        }
+        
+        function resolveRelativePath(currentPath, relativePath) {
+            if(relativePath.startsWith('http') || relativePath.startsWith('data:') || relativePath.startsWith('blob:') || relativePath.startsWith('//')) return relativePath;
+            
+            const currentParts = currentPath.split('/');
+            currentParts.pop(); // remove current filename
+            
+            const relParts = relativePath.split('/');
+            for (const part of relParts) {
+                if (part === '.') continue;
+                if (part === '..') {
+                    if (currentParts.length > 0) currentParts.pop();
+                } else {
+                    currentParts.push(part);
+                }
+            }
+            return currentParts.join('/').replace(/^\//, ''); // strip leading slash
+        }
+
+        async function downloadWorkspaceZip() {
+            if (!state.workspace) {
+                showToast('No workspace loaded', 'error');
+                return;
+            }
+            
+            if (typeof JSZip === 'undefined') {
+                showToast('ZIP library is loading...', 'error');
+                return;
+            }
+
+            syncActiveTab(); // Save current editor state back to workspace memory
+            showToast('Packaging workspace...', 'info');
+            
+            try {
+                const zip = new JSZip();
+                
+                for (const [path, fileData] of Object.entries(state.workspace.files)) {
+                    if (fileData.isText && fileData.content !== null) {
+                        zip.file(path, fileData.content);
+                    } else {
+                        // For binaries or unloaded text, use the original File object
+                        zip.file(path, fileData.file);
+                    }
+                }
+                
+                const content = await zip.generateAsync({ type: "blob" });
+                const url = URL.createObjectURL(content);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${state.workspace.name}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('Workspace downloaded successfully', 'success');
+            } catch(e) {
+                console.error(e);
+                showToast('Failed to create Workspace ZIP', 'error');
+            }
         }
 
         // --- Mini Media Player Logic ---
@@ -1571,7 +1760,6 @@
         function handleVideoSelection(files) {
             if (!files || files.length === 0) return;
             
-            // Support video and audio extensions
             const newMedia = Array.from(files).filter(f => 
                 f.type.startsWith('video/') || 
                 f.type.startsWith('audio/') || 
@@ -1595,9 +1783,8 @@
 
             renderVideoQueue();
             
-            // Auto play if nothing is playing
             if (currentVideoIndex === -1 && videoQueue.length > 0) {
-                playVideo(videoQueue.length - newMedia.length); // Play the first of the newly added ones
+                playVideo(videoQueue.length - newMedia.length); 
             } else if (currentVideoIndex === -1) {
                  playVideo(0);
             }
@@ -1674,7 +1861,6 @@
             if (!player || !placeholder || !visualizer || !ytWrapper) return;
 
             if (index < 0 || index >= videoQueue.length) {
-                // Stop playback entirely
                 player.src = '';
                 if (ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
                 
@@ -1697,7 +1883,6 @@
             placeholder.classList.add('hidden');
 
             if (currentMedia.type === 'youtube') {
-                // Handle YouTube Playback
                 player.pause();
                 player.classList.add('hidden');
                 visualizer.classList.add('hidden');
@@ -1724,25 +1909,21 @@
                     ytPlayer.loadVideoById(currentMedia.ytId);
                 }
             } else {
-                // Handle Local File Playback
                 if (ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
                 ytWrapper.classList.add('hidden');
                 player.classList.remove('hidden');
                 
                 player.src = currentMedia.url;
                 
-                // Adjust UI based on if it's Audio or Video
                 if (currentMedia.isAudio) {
                     visualizer.classList.remove('hidden');
                     visualizer.classList.add('flex');
-                    
                     player.style.height = '40px'; 
                     player.style.marginTop = 'auto';
                     player.style.backgroundColor = 'transparent';
                 } else {
                     visualizer.classList.add('hidden');
                     visualizer.classList.remove('flex');
-                    
                     player.style.height = '100%';
                     player.style.marginTop = '0';
                     player.style.backgroundColor = 'black';
@@ -1755,21 +1936,14 @@
 
         function removeVideo(index, event) {
             if (event) event.stopPropagation();
-            
-            if (videoQueue[index].type === 'local') {
-                URL.revokeObjectURL(videoQueue[index].url);
-            }
-            
+            if (videoQueue[index].type === 'local') URL.revokeObjectURL(videoQueue[index].url);
             videoQueue.splice(index, 1);
             
             if (index === currentVideoIndex) {
-                // If we removed the currently playing video, play the next one (which now has the same index)
                 playVideo(index < videoQueue.length ? index : -1);
             } else if (index < currentVideoIndex) {
-                // Shift index if a previous video was removed
                 currentVideoIndex--;
             }
-            
             renderVideoQueue();
         }
 
@@ -1782,7 +1956,7 @@
             showToast('Media queue cleared', 'info');
         }
 
-        // --- UI Interactions ---
+        // --- Layout & Resize UI Interactions ---
 
         function initSidebarResizer() {
             const resizer = document.getElementById('sidebar-resizer');
@@ -1793,19 +1967,14 @@
             resizer.addEventListener('mousedown', (e) => {
                 isResizing = true;
                 document.body.style.cursor = 'col-resize';
-                document.body.style.userSelect = 'none'; // Prevent text selection while dragging
+                document.body.style.userSelect = 'none';
             });
 
             document.addEventListener('mousemove', (e) => {
                 if (!isResizing) return;
-                
-                // Calculate new width (Mouse X minus Sidebar Left Position)
                 let newWidth = e.clientX - els.sidebar.getBoundingClientRect().left;
-                
-                // Constrain the width between 160px and 600px
                 if (newWidth < 160) newWidth = 160;
                 if (newWidth > 600) newWidth = 600;
-                
                 els.sidebar.style.width = newWidth + 'px';
                 state.sidebarWidth = newWidth;
             });
@@ -1815,11 +1984,10 @@
                     isResizing = false;
                     document.body.style.cursor = '';
                     document.body.style.userSelect = '';
-                    saveSettings(); // Save new width to localStorage
+                    saveSettings();
                 }
             });
             
-            // Set initial width from state
             if (state.sidebarVisible) {
                 els.sidebar.style.width = state.sidebarWidth + 'px';
             }
@@ -1841,8 +2009,7 @@
                 if (resizer) resizer.style.display = 'none';
                 if (titleContainer) titleContainer.style.display = 'none';
                 
-                // Remove active states from activity bar with safety checks
-                ['explorer', 'tools', 'word', 'snippets', 'devkit', 'extractor', 'formatter', 'contact-links', 'drive-extractor', 'qr-generator', 'excel', 'video', 'settings'].forEach(id => {
+                ['workspace', 'explorer', 'tools', 'word', 'snippets', 'devkit', 'extractor', 'formatter', 'contact-links', 'drive-extractor', 'qr-generator', 'excel', 'video', 'settings'].forEach(id => {
                     const btn = document.getElementById(`activity-${id}`);
                     const border = document.getElementById(`activity-${id}-border`);
                     if (btn && btn.classList) btn.classList.replace('text-vs-activityActive', 'text-vs-activityInactive');
@@ -1852,19 +2019,17 @@
         }
 
         function switchSidebarTab(tab) {
-            // If clicking active tab, toggle sidebar
             if (state.sidebarTab === tab && state.sidebarVisible) {
                 toggleSidebar();
                 return;
             }
-            
-            // Make sure sidebar is visible
             if (!state.sidebarVisible) toggleSidebar();
             
             state.sidebarTab = tab;
 
-            const tabs = ['explorer', 'tools', 'word', 'snippets', 'devkit', 'extractor', 'formatter', 'contact-links', 'drive-extractor', 'qr-generator', 'excel', 'video', 'settings'];
+            const tabs = ['workspace', 'explorer', 'tools', 'word', 'snippets', 'devkit', 'extractor', 'formatter', 'contact-links', 'drive-extractor', 'qr-generator', 'excel', 'video', 'settings'];
             const titles = {
+                'workspace': 'Project Workspace',
                 'explorer': 'Explorer',
                 'tools': 'Format Tools & Settings',
                 'word': 'Word Processor',
@@ -1880,7 +2045,6 @@
                 'settings': 'Settings'
             };
 
-            // Reset all tabs safely
             tabs.forEach(t => {
                 const btn = document.getElementById(`activity-${t}`);
                 const border = document.getElementById(`activity-${t}-border`);
@@ -1891,7 +2055,6 @@
                 if (panel && panel.classList) panel.classList.add('hidden');
             });
 
-            // Activate Target securely
             const targetBtn = document.getElementById(`activity-${tab}`);
             const targetBorder = document.getElementById(`activity-${tab}-border`);
             const targetPanel = document.getElementById(`sidebar-${tab}`);
@@ -1915,35 +2078,98 @@
             }
         }
 
+        // --- Previews & Tabs ---
+
         function toggleHtmlPreview() {
             state.previewVisible = !state.previewVisible;
             if (state.previewVisible) {
                 if (els.htmlPreviewPane) els.htmlPreviewPane.classList.remove('hidden');
-                refreshPreview(); // Generate initial preview
-                // Switch format to HTML if it isn't already
+                refreshPreview(); 
                 if (state.format !== 'html' && els.formatSelect) {
                     els.formatSelect.value = 'html';
                     els.formatSelect.dispatchEvent(new Event('change'));
                 }
             } else {
                 if (els.htmlPreviewPane) els.htmlPreviewPane.classList.add('hidden');
-                // Clear iframe to free memory
                 if (els.liveIframe) els.liveIframe.srcdoc = '';
+            }
+        }
+
+        function toggleDevicePreview() {
+            state.previewMode = state.previewMode === 'desktop' ? 'mobile' : 'desktop';
+            const container = document.getElementById('iframe-device-container');
+            const bgWrapper = document.getElementById('preview-bg-wrapper');
+            const btnIcon = document.querySelector('#device-toggle-btn i');
+
+            if (!container || !bgWrapper || !btnIcon) return;
+
+            if (state.previewMode === 'mobile') {
+                btnIcon.className = 'fa-solid fa-desktop text-xs';
+                document.getElementById('device-toggle-btn').title = 'Switch to Desktop View';
+                container.className = 'w-[375px] h-[812px] bg-white transition-all duration-300 relative rounded-[2rem] border-[14px] border-[#1a1a1a] shadow-2xl overflow-hidden shrink-0 mx-auto my-auto';
+                bgWrapper.className = 'flex-1 relative bg-vs-editor flex items-center justify-center overflow-auto p-8';
+            } else {
+                btnIcon.className = 'fa-solid fa-mobile-screen text-xs';
+                document.getElementById('device-toggle-btn').title = 'Switch to Mobile View';
+                container.className = 'w-full h-full bg-white transition-all duration-300 relative shadow-2xl';
+                bgWrapper.className = 'flex-1 relative bg-vs-editor flex items-center justify-center overflow-auto p-0';
             }
         }
 
         let previewTimeout;
         function debounceRefreshPreview() {
             clearTimeout(previewTimeout);
-            previewTimeout = setTimeout(refreshPreview, 500); // Wait 500ms after typing stops
+            previewTimeout = setTimeout(refreshPreview, 500); 
         }
 
         function refreshPreview() {
             if(!state.previewVisible || !els.liveIframe) return;
             const code = els.editor ? els.editor.value : '';
             
-            if (state.format === 'md' && typeof marked !== 'undefined') {
-                // Render Markdown styling with github-like CSS directly injected
+            const activeTab = state.tabs.find(t => t.id === state.activeTabId);
+            
+            // SMART URL REWRITER FOR WORKSPACE FILES
+            if (activeTab && activeTab.workspacePath && state.workspace) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(code, 'text/html');
+                const currentPath = activeTab.workspacePath;
+
+                const replaceAttr = (tagName, attrName) => {
+                    const elements = doc.querySelectorAll(`${tagName}[${attrName}]`);
+                    elements.forEach(el => {
+                        const val = el.getAttribute(attrName);
+                        if (val && !val.startsWith('http') && !val.startsWith('data:') && !val.startsWith('blob:') && !val.startsWith('//')) {
+                            const resolvedPath = resolveRelativePath(currentPath, val);
+                            if (state.workspace.files[resolvedPath]) {
+                                el.setAttribute(attrName, state.workspace.files[resolvedPath].blobUrl);
+                            }
+                        }
+                    });
+                };
+                
+                replaceAttr('link', 'href');
+                replaceAttr('script', 'src');
+                replaceAttr('img', 'src');
+                replaceAttr('video', 'src');
+                replaceAttr('source', 'src');
+                replaceAttr('audio', 'src');
+
+                const styles = doc.querySelectorAll('style');
+                styles.forEach(style => {
+                    style.innerHTML = style.innerHTML.replace(/url\(['"]?(.*?)['"]?\)/g, (match, p1) => {
+                        if (p1 && !p1.startsWith('http') && !p1.startsWith('data:') && !p1.startsWith('blob:') && !p1.startsWith('//')) {
+                            const resolvedPath = resolveRelativePath(currentPath, p1);
+                            if (state.workspace.files[resolvedPath]) {
+                                return `url("${state.workspace.files[resolvedPath].blobUrl}")`;
+                            }
+                        }
+                        return match;
+                    });
+                });
+
+                els.liveIframe.srcdoc = "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
+            } 
+            else if (state.format === 'md' && typeof marked !== 'undefined') {
                 const mdHtml = `
                     <html><head><style>
                         body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; line-height: 1.6; padding: 2rem; color: #24292f; }
@@ -2007,24 +2233,19 @@
         function generateLineNumbers() {
             if (!els.editor || !els.lineNumbers) return;
             const lines = els.editor.value.split('\n').length;
-            // Only regenerate if count changed to save performance
             if (els.lineNumbers.children.length === lines && lines !== 0) return;
             
             let html = '';
-            for (let i = 1; i <= Math.max(lines, 1); i++) {
-                html += `<div>${i}</div>`;
-            }
+            for (let i = 1; i <= Math.max(lines, 1); i++) html += `<div>${i}</div>`;
             els.lineNumbers.innerHTML = html;
         }
 
         function updateCursorPos() {
-            if (state.wordVisible) return; // Managed separately
-            
+            if (state.wordVisible) return; 
             const el = els.editor;
             if (!el) return;
             const text = el.value;
             const pos = el.selectionStart;
-            
             const lines = text.substr(0, pos).split('\n');
             const line = lines.length;
             const col = lines[lines.length - 1].length + 1;
@@ -2039,26 +2260,22 @@
 
         function updateFileDisplay() {
             const extMap = { 'txt': 'txt', 'md': 'md', 'json': 'json', 'html': 'html', 'css': 'css', 'js': 'js', 'c': 'c', 'py': 'py', 'passage': 'txt', 'youtube': 'txt', 'hashtag': 'txt', 'base64-enc': 'txt', 'base64-dec': 'txt', 'url-enc': 'txt', 'url-dec': 'txt' };
-            const nameMap = {
-                'txt': 'Plain Text', 'md': 'Markdown', 'json': 'JSON', 'html': 'HTML', 'css': 'CSS', 'js': 'JavaScript', 'c': 'C/C++', 'py': 'Python', 'passage': 'Text Passage', 'youtube': 'YouTube Title', 'hashtag': 'Hashtags', 'base64-enc': 'Base64 Encoded', 'base64-dec': 'Base64 Decoded', 'url-enc': 'URL Encoded', 'url-dec': 'URL Decoded'
-            };
+            const nameMap = { 'txt': 'Plain Text', 'md': 'Markdown', 'json': 'JSON', 'html': 'HTML', 'css': 'CSS', 'js': 'JavaScript', 'c': 'C/C++', 'py': 'Python', 'passage': 'Text Passage', 'youtube': 'YouTube Title', 'hashtag': 'Hashtags', 'base64-enc': 'Base64 Encoded', 'base64-dec': 'Base64 Decoded', 'url-enc': 'URL Encoded', 'url-dec': 'URL Decoded' };
 
             let baseName = state.fileName.includes('.') ? state.fileName.split('.').slice(0, -1).join('.') : state.fileName;
             let ext = extMap[state.format] || 'txt';
             let fullName = `${baseName}.${ext}`;
+            
+            const activeTab = state.tabs.find(t => t.id === state.activeTabId);
+            if (activeTab) fullName = activeTab.name; 
 
             if (state.excelVisible) fullName = 'spreadsheet.csv';
             if (state.wordVisible) fullName = 'document.html';
 
-            // Title bar
             if(els.fileNameDisplays[0]) els.fileNameDisplays[0].textContent = `${fullName} - Text to All Text`;
-            
-            // Breadcrumb
-            if(els.breadcrumbFormat) els.breadcrumbFormat.textContent = state.wordVisible ? 'html' : (state.excelVisible ? 'csv' : state.format);
+            if(els.breadcrumbFormat) els.breadcrumbFormat.textContent = state.wordVisible ? 'html' : (state.excelVisible ? 'csv' : (activeTab && activeTab.isMedia ? 'media' : state.format));
             if(els.fileNameDisplays[1]) els.fileNameDisplays[1].textContent = fullName;
-
-            // Status Bar
-            if(els.statusLanguage) els.statusLanguage.textContent = state.wordVisible ? 'Rich Text' : (state.excelVisible ? 'CSV Spreadsheet' : (nameMap[state.format] || 'Text'));
+            if(els.statusLanguage) els.statusLanguage.textContent = state.wordVisible ? 'Rich Text' : (state.excelVisible ? 'CSV Spreadsheet' : (activeTab && activeTab.isMedia ? 'Media File' : (nameMap[state.format] || 'Text')));
         }
 
         function updateUIForFormat() {
@@ -2264,10 +2481,8 @@
         }
 
         function formatCode(text, type) {
-            // Minification logic
             if (state.settings.minify) {
                 if (type === 'json') return JSON.stringify(JSON.parse(text));
-                // Basic naive minification for others (remove extra spaces and newlines)
                 if (['js', 'css', 'html', 'c', 'cpp'].includes(type)) {
                     return text.replace(/\s+/g, ' ').replace(/\s*([{}:;,>])\s*/g, '$1').trim();
                 }
@@ -2384,7 +2599,6 @@
             let label = '';
 
             if (type === 'uuid') {
-                // Generate a random UUID v4
                 result = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
                     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
                     return v.toString(16);
@@ -2445,7 +2659,6 @@
             if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
             urlInput.value = url;
 
-            // UI Loading state
             btnText.textContent = "Extracting...";
             btnIcon.className = "fa-solid fa-circle-notch fa-spin";
             document.getElementById('extract-btn').disabled = true;
@@ -2453,7 +2666,6 @@
             try {
                 let html = null;
                 if (proxyToggle.checked) {
-                    // Method 1: CodeTabs Proxy (Works well for most sites)
                     try {
                         const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`);
                         if (res.ok) html = await res.text();
@@ -2461,7 +2673,6 @@
                         console.warn("Primary proxy failed, trying fallback...");
                     }
 
-                    // Method 2: AllOrigins JSON wrapper (Excellent fallback for file:/// 'null' origins)
                     if (!html || html.length < 50) {
                         try {
                             const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}&ts=${Date.now()}`);
@@ -2474,28 +2685,21 @@
                         }
                     }
                 } else {
-                    // Direct fetch (Will fail on most sites unless they allow CORS)
                     const res = await fetch(url).catch(() => null);
                     if (res && res.ok) html = await res.text();
                 }
 
                 if (html && html.length > 5) {
-                    
-                    // Client-side DOMParser Logic
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
-                    
-                    // Reconstruct clean outerHTML
                     const parsedHTML = "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
                     
-                    // Parse URL for filename
                     let safeName = 'extracted_source';
                     try {
                         const host = new URL(url).hostname;
                         safeName = host.replace('www.', '');
                     } catch(e) {}
 
-                    // Open into new Tab safely
                     const newId = Date.now();
                     state.tabs.push({ id: newId, name: safeName, content: parsedHTML, format: 'html' });
                     switchEditorTab(newId);
@@ -2503,7 +2707,6 @@
                     saveToHistory(parsedHTML, 'html', `Extracted ${safeName}`);
                     showToast(`Extracted source from ${url}`, "success");
                     
-                    // Auto-open preview
                     if(!state.previewVisible) toggleHtmlPreview();
                     refreshPreview();
 
@@ -2533,7 +2736,6 @@
                     formatTarget = 'c';
                 }
 
-                // Add to new tab
                 const newId = Date.now();
                 state.tabs.push({ id: newId, name: file.name, content: e.target.result, format: formatTarget });
                 switchEditorTab(newId);
@@ -2551,6 +2753,14 @@
         }
 
         function downloadFile() {
+            // Check if active tab is in workspace, if so sync
+            const activeTab = state.tabs.find(t => t.id === state.activeTabId);
+            if (activeTab && activeTab.workspacePath && state.workspace) {
+                syncActiveTab();
+                showToast(`Saved ${activeTab.name} to Workspace memory`, 'success');
+                return;
+            }
+
             if (!state.content) {
                 showToast('Editor is empty', 'error');
                 return;
@@ -2593,44 +2803,22 @@
                 return;
             }
 
-            // Split by newlines, commas, or spaces
             const rawList = rawInput.value.split(/[\n,\s]+/);
             let cleanedNumbers = [];
 
             rawList.forEach(item => {
-                // Remove all non-digit characters (+, -, space, parens, etc.)
                 let digitsOnly = item.replace(/\D/g, '');
-
                 if (!digitsOnly) return;
-
-                // Strip '91' if it exists at the start and leaves exactly 10 digits
-                if (digitsOnly.startsWith('91') && digitsOnly.length === 12) {
-                    digitsOnly = digitsOnly.substring(2);
-                }
-                
-                // Strip '0' if it exists at the start and leaves exactly 10 digits
-                if (digitsOnly.startsWith('0') && digitsOnly.length === 11) {
-                    digitsOnly = digitsOnly.substring(1);
-                }
-
-                // Keep only valid 10 digit numbers
-                if (digitsOnly.length === 10) {
-                    cleanedNumbers.push(digitsOnly);
-                }
+                if (digitsOnly.startsWith('91') && digitsOnly.length === 12) digitsOnly = digitsOnly.substring(2);
+                if (digitsOnly.startsWith('0') && digitsOnly.length === 11) digitsOnly = digitsOnly.substring(1);
+                if (digitsOnly.length === 10) cleanedNumbers.push(digitsOnly);
             });
 
-            // Remove duplicates using Set
             cleanedNumbers = [...new Set(cleanedNumbers)];
+            if (addPrefix.checked) cleanedNumbers = cleanedNumbers.map(num => '+91' + num);
 
-            // Add prefix if requested
-            if (addPrefix.checked) {
-                cleanedNumbers = cleanedNumbers.map(num => '+91' + num);
-            }
-
-            // Output the result
             outputEl.value = cleanedNumbers.join('\n');
             countEl.textContent = `${cleanedNumbers.length} valid number${cleanedNumbers.length !== 1 ? 's' : ''}`;
-
             showToast(`Cleaned ${cleanedNumbers.length} unique numbers`, 'success');
         }
 
@@ -2667,11 +2855,10 @@
                 return;
             }
 
-            const lines = linksValue.split('\n');
+            const lines = linksValue.split(/[\n,\s]+/);
             const extractedData = [];
             let count = 1;
 
-            // Regex matches typical Google Drive file IDs (25+ characters typically standard base64url charset)
             const idRegex = /(?:\/d\/|id=)([-\w]{25,})/;
 
             lines.forEach(line => {
@@ -2680,10 +2867,8 @@
 
                 const match = url.match(idRegex);
                 if (match && match[1]) {
-                    extractedData.push({
-                        id: match[1],
-                        name: `${evName} ${count}`
-                    });
+                    const paddedCount = count.toString().padStart(2, '0');
+                    extractedData.push(`{ id: "${match[1]}", name: "${evName} ${paddedCount}" }`);
                     count++;
                 }
             });
@@ -2694,9 +2879,7 @@
                 return;
             }
 
-            const jsonString = JSON.stringify(extractedData, null, 4);
-            outputEl.value = `data = ${jsonString}`;
-            
+            outputEl.value = extractedData.join(',\n');
             showToast(`Extracted ${extractedData.length} IDs successfully`, 'success');
         }
 
@@ -2732,9 +2915,10 @@
             let ext = 'js';
             
             if (type === 'json') {
-                // Strip the "data = " prefix to create valid raw JSON for download
-                content = content.replace(/^data\s*=\s*/, '');
+                content = `[\n${content}\n]`.replace(/\{ id:/g, '{ "id":').replace(/, name:/g, ', "name":');
                 ext = 'json';
+            } else {
+                content = `const data = [\n${content}\n];`;
             }
 
             const safeFileName = eventName.toLowerCase().replace(/[^a-z0-9]+/g, '_');
@@ -2773,30 +2957,19 @@
                 return;
             }
 
-            // Split by newlines, commas, or spaces
             const rawList = rawInput.split(/[\n,\s]+/);
             let cleanedNumbers = [];
 
             rawList.forEach(item => {
                 let digitsOnly = item.replace(/\D/g, '');
                 if (!digitsOnly) return;
-
                 if (remove91) {
-                    if (digitsOnly.startsWith('91') && digitsOnly.length === 12) {
-                        digitsOnly = digitsOnly.substring(2);
-                    }
-                    if (digitsOnly.startsWith('0') && digitsOnly.length === 11) {
-                        digitsOnly = digitsOnly.substring(1);
-                    }
+                    if (digitsOnly.startsWith('91') && digitsOnly.length === 12) digitsOnly = digitsOnly.substring(2);
+                    if (digitsOnly.startsWith('0') && digitsOnly.length === 11) digitsOnly = digitsOnly.substring(1);
                 }
-
-                // Keep only valid 10 digit numbers
-                if (digitsOnly.length === 10) {
-                    cleanedNumbers.push(digitsOnly);
-                }
+                if (digitsOnly.length === 10) cleanedNumbers.push(digitsOnly);
             });
 
-            // Remove duplicates
             cleanedNumbers = [...new Set(cleanedNumbers)];
 
             if (cleanedNumbers.length === 0) {
@@ -2808,10 +2981,8 @@
             let result = '';
             cleanedNumbers.forEach(num => {
                 result += `${num}\n`;
-                
                 let waUrl = `https://wa.me/${num}`;
                 if (waMsg) waUrl += `?text=${encodeURIComponent(waMsg)}`;
-                
                 result += `WhatsApp → ${waUrl}\n`;
                 result += `Call → tel:${num}\n`;
                 result += `Telegram → https://t.me/+${num}\n\n`;
@@ -2909,10 +3080,7 @@
                     if (!digitsOnly) return;
                     if (digitsOnly.startsWith('91') && digitsOnly.length === 12) digitsOnly = digitsOnly.substring(2);
                     if (digitsOnly.startsWith('0') && digitsOnly.length === 11) digitsOnly = digitsOnly.substring(1);
-                    
-                    if (digitsOnly.length === 10) {
-                        items.push(`https://wa.me/91${digitsOnly}`);
-                    }
+                    if (digitsOnly.length === 10) items.push(`https://wa.me/91${digitsOnly}`);
                 });
                 items = [...new Set(items)];
                 if (items.length === 0) {
@@ -2944,10 +3112,8 @@
                 const wrapper = document.createElement('div');
                 wrapper.className = 'flex flex-col items-center bg-white p-2 rounded shadow-md w-full';
                 
-                // Append preview
                 qrCode.append(wrapper);
                 
-                // Resize preview to fit neatly inside the sidebar panel
                 setTimeout(() => {
                    const canvas = wrapper.querySelector('canvas') || wrapper.querySelector('svg');
                    if(canvas) {
@@ -2964,7 +3130,6 @@
                     label.textContent = dataStr;
                     wrapper.appendChild(label);
                 }
-
                 previewContainer.appendChild(wrapper);
             });
 
@@ -2978,11 +3143,9 @@
             }
 
             if (activeQrCodes.length === 1) {
-                // Single download
                 activeQrCodes[0].instance.download({ name: "qr_code", extension: format });
                 showToast(`Downloaded as ${format.toUpperCase()}`, 'success');
             } else {
-                // Bulk ZIP download
                 if (typeof JSZip === 'undefined') {
                     showToast('ZIP library is missing', 'error');
                     return;
@@ -3029,11 +3192,7 @@
             
             try {
                 const blob = await activeQrCodes[0].instance.getRawData("png");
-                await navigator.clipboard.write([
-                    new ClipboardItem({
-                        [blob.type]: blob
-                    })
-                ]);
+                await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
                 showToast('Copied QR Image to clipboard!', 'success');
             } catch (e) {
                 console.error(e);
@@ -3049,7 +3208,8 @@
 
         function toggleSpreadsheetView(showExcel) {
             state.excelVisible = showExcel;
-            state.wordVisible = false; // Turn off word view
+            state.wordVisible = false;
+            toggleMediaView(false);
             
             const textEditor = document.getElementById('text-editor-wrapper');
             const excelEditor = document.getElementById('excel-editor-wrapper');
@@ -3061,7 +3221,6 @@
                 textEditor.classList.add('hidden');
                 wordEditor.classList.add('hidden');
                 wordEditor.classList.remove('flex');
-                
                 excelEditor.classList.remove('hidden');
                 excelEditor.classList.add('flex');
             } else {
@@ -3081,14 +3240,8 @@
             sheetData = Array.from({ length: rows }, () => Array(cols).fill(''));
 
             let html = '<table class="spreadsheet-table"><thead><tr><th class="spreadsheet-th spreadsheet-th-corner"></th>';
-            
-            // Column Headers A-Z
-            for (let c = 0; c < cols; c++) {
-                html += `<th class="spreadsheet-th">${String.fromCharCode(65 + c)}</th>`;
-            }
+            for (let c = 0; c < cols; c++) html += `<th class="spreadsheet-th">${String.fromCharCode(65 + c)}</th>`;
             html += '</tr></thead><tbody>';
-            
-            // Rows
             for (let r = 0; r < rows; r++) {
                 html += `<tr><th class="spreadsheet-th spreadsheet-th-row">${r + 1}</th>`;
                 for (let c = 0; c < cols; c++) {
@@ -3101,15 +3254,11 @@
             showToast('Spreadsheet grid initialized', 'info');
         }
 
-        function updateSheetData(r, c, val) {
-            sheetData[r][c] = val;
-        }
+        function updateSheetData(r, c, val) { sheetData[r][c] = val; }
 
         function getCleanSheetData() {
             let maxRow = -1;
             let maxCol = -1;
-            
-            // Find boundaries of actual data
             for (let r = 0; r < sheetData.length; r++) {
                 for (let c = 0; c < sheetData[r].length; c++) {
                     if (sheetData[r][c].trim() !== '') {
@@ -3118,14 +3267,9 @@
                     }
                 }
             }
-            
-            if (maxRow === -1) return []; // Empty
-            
-            // Extract clean grid
+            if (maxRow === -1) return [];
             let clean = [];
-            for (let r = 0; r <= maxRow; r++) {
-                clean.push(sheetData[r].slice(0, maxCol + 1));
-            }
+            for (let r = 0; r <= maxRow; r++) clean.push(sheetData[r].slice(0, maxCol + 1));
             return clean;
         }
 
@@ -3135,8 +3279,6 @@
                 showToast('Spreadsheet is empty', 'error');
                 return;
             }
-            
-            // Basic CSV escaping logic
             let csv = cleanData.map(row => 
                 row.map(cell => {
                     cell = cell.replace(/"/g, '""');
@@ -3163,7 +3305,6 @@
                 showToast('Spreadsheet is empty', 'error');
                 return;
             }
-            
             let csv = cleanData.map(row => 
                 row.map(cell => {
                     cell = cell.replace(/"/g, '""');
@@ -3172,7 +3313,6 @@
                 }).join(',')
             ).join('\n');
 
-            // Open CSV in a new tab!
             const newId = Date.now();
             state.tabs.push({ id: newId, name: 'spreadsheet_data', content: csv, format: 'txt' });
             switchEditorTab(newId);
@@ -3180,22 +3320,16 @@
             showToast('Data exported to new code editor tab successfully', 'success');
         }
 
-        // Spreadsheet Arrow Key Navigation
         document.addEventListener('keydown', function(e) {
             if (state.excelVisible && e.target.classList.contains('spreadsheet-input')) {
                 let r = parseInt(e.target.dataset.row);
                 let c = parseInt(e.target.dataset.col);
                 let nextInput;
 
-                if (e.key === 'ArrowDown') {
-                    nextInput = document.querySelector(`.spreadsheet-input[data-row="${r+1}"][data-col="${c}"]`);
-                } else if (e.key === 'ArrowUp') {
-                    nextInput = document.querySelector(`.spreadsheet-input[data-row="${r-1}"][data-col="${c}"]`);
-                } else if (e.key === 'ArrowRight' && e.target.selectionEnd === e.target.value.length) {
-                    nextInput = document.querySelector(`.spreadsheet-input[data-row="${r}"][data-col="${c+1}"]`);
-                } else if (e.key === 'ArrowLeft' && e.target.selectionStart === 0) {
-                    nextInput = document.querySelector(`.spreadsheet-input[data-row="${r}"][data-col="${c-1}"]`);
-                }
+                if (e.key === 'ArrowDown') nextInput = document.querySelector(`.spreadsheet-input[data-row="${r+1}"][data-col="${c}"]`);
+                else if (e.key === 'ArrowUp') nextInput = document.querySelector(`.spreadsheet-input[data-row="${r-1}"][data-col="${c}"]`);
+                else if (e.key === 'ArrowRight' && e.target.selectionEnd === e.target.value.length) nextInput = document.querySelector(`.spreadsheet-input[data-row="${r}"][data-col="${c+1}"]`);
+                else if (e.key === 'ArrowLeft' && e.target.selectionStart === 0) nextInput = document.querySelector(`.spreadsheet-input[data-row="${r}"][data-col="${c-1}"]`);
 
                 if (nextInput) {
                     e.preventDefault();
@@ -3208,7 +3342,8 @@
         
         function toggleWordView(showWord) {
             state.wordVisible = showWord;
-            state.excelVisible = false; // Turn off excel view
+            state.excelVisible = false;
+            toggleMediaView(false);
             
             const textEditor = document.getElementById('text-editor-wrapper');
             const excelEditor = document.getElementById('excel-editor-wrapper');
@@ -3222,7 +3357,6 @@
                     excelEditor.classList.add('hidden');
                     excelEditor.classList.remove('flex');
                 }
-                
                 wordEditor.classList.remove('hidden');
                 wordEditor.classList.add('flex');
             } else {
@@ -3263,24 +3397,7 @@
                 return;
             }
             
-            const html = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Document</title>
-<style>
-    body { font-family: 'Arial', sans-serif; font-size: 11pt; line-height: 1.5; max-width: 210mm; margin: 0 auto; padding: 25.4mm; }
-    ul { list-style-type: disc; padding-left: 20px; }
-    ol { list-style-type: decimal; padding-left: 20px; }
-    h1 { font-size: 24pt; font-weight: bold; margin-bottom: 12pt; }
-    h2 { font-size: 18pt; font-weight: bold; margin-bottom: 10pt; }
-    h3 { font-size: 14pt; font-weight: bold; margin-bottom: 8pt; }
-</style>
-</head>
-<body>
-${content}
-</body>
-</html>`;
+            const html = `<!DOCTYPE html>\n<html>\n<head>\n<meta charset="utf-8">\n<title>Document</title>\n<style>\n    body { font-family: 'Arial', sans-serif; font-size: 11pt; line-height: 1.5; max-width: 210mm; margin: 0 auto; padding: 25.4mm; }\n    ul { list-style-type: disc; padding-left: 20px; }\n    ol { list-style-type: decimal; padding-left: 20px; }\n    h1 { font-size: 24pt; font-weight: bold; margin-bottom: 12pt; }\n    h2 { font-size: 18pt; font-weight: bold; margin-bottom: 10pt; }\n    h3 { font-size: 14pt; font-weight: bold; margin-bottom: 8pt; }\n</style>\n</head>\n<body>\n${content}\n</body>\n</html>`;
             
             const blob = new Blob([html], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
@@ -3297,7 +3414,7 @@ ${content}
         // --- Common Export Logic ---
 
         async function downloadZip() {
-            if (!state.content) {
+            if (!state.content && !state.workspace) {
                 showToast('Editor is empty', 'error');
                 return;
             }
@@ -3315,15 +3432,9 @@ ${content}
 
             try {
                 const zip = new JSZip();
-                
-                // Add the main file
                 zip.file(finalName, state.content);
-                
-                // Add a simple README file automatically for a professional touch
                 zip.file("README.md", `# ${baseName} Project\n\nGenerated via Text to All Text VS Code Edition by SanStudio.\n\nEnjoy your code!`);
-                
                 const content = await zip.generateAsync({ type: "blob" });
-                
                 const url = URL.createObjectURL(content);
                 const a = document.createElement('a');
                 a.href = url;
@@ -3339,53 +3450,145 @@ ${content}
             }
         }
 
+        // Editor Specific Keydown
         function handleEditorKeydown(e) {
             if (e.key === 'Tab') {
                 e.preventDefault();
                 const start = this.selectionStart;
                 const end = this.selectionEnd;
                 const indent = state.settings.indentSize === 'tab' ? '\t' : ' '.repeat(parseInt(state.settings.indentSize));
-                
                 this.value = this.value.substring(0, start) + indent + this.value.substring(end);
                 this.selectionStart = this.selectionEnd = start + indent.length;
-                // Trigger input event to update state and line numbers
                 if(els.editor) els.editor.dispatchEvent(new Event('input'));
             }
             if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                 e.preventDefault();
                 formatContent();
             }
-            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        }
+
+        // Global Keydown Router for IDE Shortcuts
+        function handleGlobalKeydown(e) {
+            // Save (Ctrl+S)
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
                 e.preventDefault();
-                if (state.wordVisible) {
-                    exportWordHtml();
-                } else if (state.excelVisible) {
-                    exportSheetCSV();
-                } else {
-                    downloadFile();
-                }
+                if (state.wordVisible) exportWordHtml();
+                else if (state.excelVisible) exportSheetCSV();
+                else downloadFile();
             }
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'n') {
+            // New (Ctrl+N)
+            else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'n') {
                 e.preventDefault();
-                if (state.wordVisible) {
-                    clearWordDoc();
-                } else if (state.excelVisible) {
-                    initSpreadsheet();
-                } else {
-                    createNewFile();
-                }
+                if (state.wordVisible) clearWordDoc();
+                else if (state.excelVisible) initSpreadsheet();
+                else createNewFile();
             }
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'o') {
+            // Open (Ctrl+O)
+            else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'o') {
                 e.preventDefault();
                 document.getElementById('file-input').click();
             }
-            if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+            // Toggle Sidebar (Ctrl+B)
+            else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
                 e.preventDefault();
                 toggleSidebar();
+            }
+            // Close Tab (Alt+W)
+            else if (e.altKey && e.key.toLowerCase() === 'w') {
+                e.preventDefault();
+                closeEditorTab(state.activeTabId);
+            }
+            // Toggle Word Wrap (Alt+Z)
+            else if (e.altKey && e.key.toLowerCase() === 'z') {
+                e.preventDefault();
+                toggleWordWrap();
+            }
+            // Toggle Live Preview (Alt+P)
+            else if (e.altKey && e.key.toLowerCase() === 'p') {
+                e.preventDefault();
+                toggleHtmlPreview();
+            }
+            // Focus Explorer (Ctrl+Shift+E)
+            else if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'e') {
+                e.preventDefault();
+                switchSidebarTab('explorer');
+            }
+            // Focus Tools (Ctrl+Shift+F)
+            else if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'f') {
+                e.preventDefault();
+                switchSidebarTab('tools');
+            }
+            // Switch Tabs (Alt+1 to Alt+9)
+            else if (e.altKey && e.key >= '1' && e.key <= '9') {
+                e.preventDefault();
+                const idx = parseInt(e.key) - 1;
+                if (state.tabs[idx]) {
+                    switchEditorTab(state.tabs[idx].id);
+                }
+            }
+        }
+
+        function toggleWordWrap() {
+            state.settings.wordWrap = !state.settings.wordWrap;
+            applyWordWrap();
+            saveSettings();
+            showToast(`Word Wrap: ${state.settings.wordWrap ? 'ON' : 'OFF'}`, 'info');
+        }
+
+        function applyWordWrap() {
+            if (els.editor) {
+                els.editor.setAttribute('wrap', state.settings.wordWrap ? 'soft' : 'off');
+            }
+            const wrapStatus = document.getElementById('status-word-wrap');
+            if (wrapStatus) {
+                wrapStatus.textContent = `Wrap: ${state.settings.wordWrap ? 'On' : 'Off'}`;
             }
         }
 
         // --- Drag & Drop ---
+        
+        // Recursive folder reading logic for Drag and Drop
+        async function scanFiles(item, path = '') {
+            return new Promise((resolve) => {
+                if (item.isFile) {
+                    item.file(file => {
+                        // Inject a custom path property to track its folder hierarchy
+                        Object.defineProperty(file, 'customPath', { value: path + file.name });
+                        resolve([file]);
+                    });
+                } else if (item.isDirectory) {
+                    const dirReader = item.createReader();
+                    const readAllEntries = async (reader) => {
+                        let allEntries = [];
+                        let readEntries = async () => {
+                            return new Promise((resolveRead) => {
+                                reader.readEntries(entries => {
+                                    if (entries.length > 0) {
+                                        allEntries = allEntries.concat(entries);
+                                        resolveRead(readEntries());
+                                    } else {
+                                        resolveRead(allEntries);
+                                    }
+                                });
+                            });
+                        };
+                        return readEntries();
+                    };
+
+                    readAllEntries(dirReader).then(async entries => {
+                        let files = [];
+                        for (let i = 0; i < entries.length; i++) {
+                            const subFiles = await scanFiles(entries[i], path + item.name + '/');
+                            files = files.concat(subFiles);
+                        }
+                        resolve(files);
+                    });
+                } else {
+                    resolve([]);
+                }
+            });
+        }
+
         function setupGlobalDragAndDrop() {
             const overlay = document.getElementById('drag-overlay');
             if(!overlay) return;
@@ -3399,9 +3602,44 @@ ${content}
                 if (dragCounter === 0) { overlay.classList.add('hidden'); overlay.classList.remove('flex'); }
             });
             window.addEventListener('dragover', (e) => e.preventDefault());
-            window.addEventListener('drop', (e) => {
+            window.addEventListener('drop', async (e) => {
                 e.preventDefault(); dragCounter = 0; overlay.classList.add('hidden'); overlay.classList.remove('flex');
-                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                
+                if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+                    let allFiles = [];
+                    let isFolderDrop = false;
+
+                    // Parse all dropped items
+                    for (let i = 0; i < e.dataTransfer.items.length; i++) {
+                        const item = e.dataTransfer.items[i].webkitGetAsEntry();
+                        if (item) {
+                            if (item.isDirectory) {
+                                isFolderDrop = true;
+                            }
+                            const files = await scanFiles(item, '');
+                            allFiles = allFiles.concat(files);
+                        }
+                    }
+
+                    if (isFolderDrop) {
+                        // Handle as full workspace folder
+                        handleFolderSelection(allFiles);
+                        if (!state.sidebarVisible || state.sidebarTab !== 'workspace') switchSidebarTab('workspace');
+                    } else {
+                        // Standard multiple file drop
+                        const mediaFiles = allFiles.filter(f => f.type.startsWith('video/') || f.type.startsWith('audio/') || f.name.match(/\.(mp4|webm|ogg|mov|mkv|avi|mp3|wav|flac|m4a|aac)$/i));
+                        const others = allFiles.filter(f => !mediaFiles.includes(f));
+                        
+                        if (mediaFiles.length > 0) {
+                            handleVideoSelection(mediaFiles);
+                            if (!state.sidebarVisible || state.sidebarTab !== 'video') switchSidebarTab('video');
+                        }
+                        if (others.length > 0) {
+                            handleFileUpload(others[0]);
+                        }
+                    }
+                } else if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    // Fallback for older browsers
                     const files = Array.from(e.dataTransfer.files);
                     const mediaFiles = files.filter(f => f.type.startsWith('video/') || f.type.startsWith('audio/') || f.name.match(/\.(mp4|webm|ogg|mov|mkv|avi|mp3|wav|flac|m4a|aac)$/i));
                     const others = files.filter(f => !mediaFiles.includes(f));
@@ -3425,7 +3663,6 @@ ${content}
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             
-            // Trigger reflow for opacity transition
             void modal.offsetWidth;
             
             modal.classList.remove('opacity-0');
@@ -3442,7 +3679,7 @@ ${content}
             setTimeout(() => {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
-            }, 300); // Wait for CSS transition
+            }, 300);
         }
 
         function copyToClipboard() {
@@ -3489,13 +3726,13 @@ ${content}
                     if(els.chkTrim) els.chkTrim.checked = state.settings.trim;
                     if(els.chkSpaces) els.chkSpaces.checked = state.settings.removeSpaces;
                     if(els.chkLines) els.chkLines.checked = state.settings.removeLines;
+                    if(state.settings.wordWrap === undefined) state.settings.wordWrap = false;
                 }
                 updateStatusSpaces();
             }
         }
 
         function applyTheme() {
-            // Apply theme class to document body
             document.body.className = `bg-vs-editor text-vs-text h-screen w-screen flex flex-col font-sans overflow-hidden select-none ${state.theme}`;
         }
 
@@ -3515,7 +3752,7 @@ ${content}
                 info: 'fa-info-circle text-vs-accent'
             };
 
-            toast.className = `flex items-center gap-3 px-4 py-2 rounded shadow-lg border-l-4 transform translate-y-10 opacity-0 transition-all duration-200 text-xs ${colors[type]}`;
+            toast.className = `flex items-center gap-3 px-4 py-2 rounded shadow-lg border-l-4 transform translate-y-10 opacity-0 transition-all duration-200 text-xs ${colors[type]} z-[9999]`;
             toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span>${message}</span>`;
 
             container.appendChild(toast);
