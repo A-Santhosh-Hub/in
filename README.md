@@ -1,6 +1,3 @@
 # in
 Portfolio site is live at https://a-santhosh-hub.github.io/in/
 --------
-
-### 📸 Preview
-option to see the ADVENTURE
