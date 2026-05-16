@@ -1663,6 +1663,141 @@
         .notification-toast.success i { color: var(--secondary); }
         .notification-toast.error i { color: #ef4444; }
 
+        /* --- GTA 6 Style Preloader --- */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            background: #050507; /* Deep Rockstar dark */
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        #preloader.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .preloader-content {
+            text-align: center;
+            width: 80%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .preloader-logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+        }
+
+        .preloader-logo .gta-vi {
+            background: linear-gradient(135deg, #d946ef, #ff007f, #ff7700, #ffcc00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 4.5rem;
+            line-height: 1;
+            filter: drop-shadow(0 0 15px rgba(255, 0, 127, 0.4));
+            margin-left: -5px;
+        }
+
+        /* NEW: Wrapper to hold the car and the bar together */
+        .preloader-progress-wrapper {
+            width: 100%;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        /* NEW: GTA Car Icon */
+        .gta-car {
+            position: absolute;
+            bottom: 8px; /* Sits right on top of the loading bar */
+            left: 0%;
+            color: #ffffff;
+            font-size: 1.6rem;
+            z-index: 2;
+            filter: drop-shadow(-5px 2px 5px rgba(255, 0, 127, 0.8));
+            /* Drives across and bounces slightly */
+            animation: gtaDriveCar 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards, carBounce 0.15s linear infinite alternate;
+        }
+
+        .preloader-bar-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        .preloader-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff007f, #ff7700, #ffcc00);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 119, 0, 0.8);
+            animation: gtaLoadBar 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .preloader-text {
+            color: #ff7700;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            animation: gtaBlinkText 1.5s infinite;
+        }
+
+        /* Prevent scrolling while loading */
+        body.loading-lock {
+            overflow: hidden !important;
+        }
+
+        @keyframes gtaLoadBar {
+            0% { width: 0%; }
+            15% { width: 25%; }
+            45% { width: 45%; }
+            60% { width: 70%; }
+            80% { width: 85%; }
+            100% { width: 100%; }
+        }
+
+        /* NEW: Drive animation perfectly matching the load bar */
+        @keyframes gtaDriveCar {
+            0% { left: 0%; }
+            15% { left: 25%; }
+            45% { left: 45%; }
+            60% { left: 70%; }
+            80% { left: 85%; }
+            100% { left: 100%; }
+        }
+
+        /* NEW: Bouncing animation to simulate driving */
+        @keyframes carBounce {
+            0% { transform: translateX(-50%) translateY(0); }
+            100% { transform: translateX(-50%) translateY(-2px); }
+        }
+
+        @keyframes gtaBlinkText {
+            0%, 100% { opacity: 1; filter: drop-shadow(0 0 5px rgba(255, 119, 0, 0.5)); }
+            50% { opacity: 0.4; filter: none; }
+        }
+
         /* Responsive Styles */
         @media (max-width: 992px) {
             .hero-content, .about-content, .contact-container {
@@ -1825,11 +1960,35 @@
                 height: 50px;
                 font-size: 1.3rem;
             }
+            
+            /* Preloader Mobile Adjustments */
+            .preloader-logo { font-size: 1.8rem; }
+            .preloader-logo .gta-vi { font-size: 3.2rem; } /* Slightly scaled down so "Studio" fits perfectly on mobile */
         }
     </style>
 </head>
 
-<body>
+<body class="dark-mode loading-lock">
+    
+    <!-- GTA 6 Style Preloader -->
+    <div id="preloader">
+        <div class="preloader-content">
+            <div class="preloader-logo">
+                San<span class="gta-vi">Studio</span>
+            </div>
+            
+            <!-- Added Wrapper and Car Icon -->
+            <div class="preloader-progress-wrapper">
+                <i class="fa-solid fa-car-side gta-car"></i>
+                <div class="preloader-bar-container">
+                    <div class="preloader-bar"></div>
+                </div>
+            </div>
+            
+            <div class="preloader-text">Loading Assets...</div>
+        </div>
+    </div>
+
     <!-- Header & Navigation -->
     <header id="main-header">
         <div class="container nav-container">
@@ -2683,8 +2842,13 @@
                 }
             });
         }
-        if (localStorage.getItem('theme') === 'dark') {
+        
+        // Default to Dark Mode unless specifically set to light previously
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.remove('dark-mode');
+        } else {
             document.body.classList.add('dark-mode');
+            localStorage.setItem('theme', 'dark');
         }
 
         // --- Mobile Menu Toggle ---
@@ -3040,6 +3204,22 @@
         window.addEventListener('load', setMobileVh);
         window.addEventListener('resize', setMobileVh);
         window.addEventListener('DOMContentLoaded', setMobileVh);
+        
+        // --- GTA 6 Preloader Logic ---
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            // Wait a minimum of 2.6 seconds so the bar animation finishes, then fade out
+            setTimeout(() => {
+                preloader.classList.add('fade-out');
+                document.body.classList.remove('loading-lock');
+                
+                // Completely remove from DOM after fade transition completes
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 800);
+            }, 2600); 
+        });
+
     </script>
 </body>
 
