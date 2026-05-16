@@ -1710,25 +1710,30 @@
             .hamburg { display: block; z-index: 1001; }
 
             .hero {
-                min-height: auto; /* Changed from 100vh to auto to prevent cramping */
-                padding-top: 140px;
-                padding-bottom: 110px; /* Added extra padding so buttons clear the bottom FABs */
+                min-height: auto; 
+                padding-top: 130px;
+                padding-bottom: 140px; /* Massively increased bottom padding to clear the floating briefcase button */
             }
 
             .hero-content {
                 display: flex;
                 flex-direction: column-reverse;
-                gap: 30px; /* Reduced gap slightly */
+                gap: 25px; /* Reduced gap */
                 text-align: center;
             }
 
             .hero-image {
                 margin: 0 auto;
-                max-width: 250px; /* Scaled down from 300px for better fit */
+                max-width: 220px; /* Scaled down for better fit */
             }
 
-            .hero-text h1 { font-size: 2.2rem; margin-bottom: 12px; }
-            .typewriter { font-size: 1.4rem; margin-bottom: 15px; }
+            .hero-text h1 { font-size: 2.1rem; margin-bottom: 10px; }
+            
+            .typewriter { 
+                font-size: 1.3rem; 
+                margin-bottom: 15px; 
+                white-space: nowrap; /* CRITICAL: Prevents text from breaking and cutting off on small screens */
+            }
             
             .hero-buttons {
                 justify-content: center;
@@ -1749,20 +1754,37 @@
             header { border-radius: 20px; padding: 5px; }
             
             /* Text scaling for smaller phones */
-            .hero-text h1 { font-size: 1.9rem; } 
-            .typewriter { font-size: 1.25rem; }
-            .hero-text p { font-size: 0.95rem; margin-bottom: 25px; }
+            .hero-text h1 { font-size: 1.7rem; } 
+            .typewriter { font-size: 1.15rem; }
+            .hero-text p { 
+                font-size: 0.9rem; 
+                margin-bottom: 25px; 
+                padding: 0 15px; /* Added padding so text doesn't touch the screen edges */
+                line-height: 1.5;
+            }
             
             /* Further scale down image on very small screens */
-            .hero-image { max-width: 220px; }
+            .hero-image { max-width: 180px; }
             
+            .social-links {
+                gap: 10px;
+                flex-wrap: wrap;
+                padding: 0 10px;
+            }
+            .social-links a {
+                width: 44px;
+                height: 44px;
+                font-size: 1.1rem;
+            }
+
             /* Button Layout */
             .hero-buttons { 
                 flex-direction: column; 
                 width: 100%; 
                 gap: 12px;
+                padding: 0 15px; /* Adds breathing room on the sides */
             }
-            .hero-buttons .btn { width: 100%; }
+            .hero-buttons .btn { width: 100%; padding: 14px; font-size: 0.95rem; }
             
             .section-title { font-size: 2.2rem; }
             .about-stats { grid-template-columns: 1fr; gap: 15px; }
