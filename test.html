@@ -1710,25 +1710,25 @@
             .hamburg { display: block; z-index: 1001; }
 
             .hero {
-                min-height: calc(var(--vh, 1vh) * 100);
-                padding-top: 130px;
-                padding-bottom: 60px;
+                min-height: auto; /* Changed from 100vh to auto to prevent cramping */
+                padding-top: 140px;
+                padding-bottom: 110px; /* Added extra padding so buttons clear the bottom FABs */
             }
 
             .hero-content {
                 display: flex;
                 flex-direction: column-reverse;
-                gap: 40px;
+                gap: 30px; /* Reduced gap slightly */
                 text-align: center;
             }
 
             .hero-image {
                 margin: 0 auto;
-                max-width: 300px;
+                max-width: 250px; /* Scaled down from 300px for better fit */
             }
 
-            .hero-text h1 { font-size: 2.5rem; margin-bottom: 15px; }
-            .typewriter { font-size: 1.5rem; margin-bottom: 20px; }
+            .hero-text h1 { font-size: 2.2rem; margin-bottom: 12px; }
+            .typewriter { font-size: 1.4rem; margin-bottom: 15px; }
             
             .hero-buttons {
                 justify-content: center;
@@ -1747,9 +1747,23 @@
 
         @media (max-width: 576px) {
             header { border-radius: 20px; padding: 5px; }
-            .hero-text h1 { font-size: 2.2rem; }
-            .hero-buttons { flex-direction: column; width: 100%; }
+            
+            /* Text scaling for smaller phones */
+            .hero-text h1 { font-size: 1.9rem; } 
+            .typewriter { font-size: 1.25rem; }
+            .hero-text p { font-size: 0.95rem; margin-bottom: 25px; }
+            
+            /* Further scale down image on very small screens */
+            .hero-image { max-width: 220px; }
+            
+            /* Button Layout */
+            .hero-buttons { 
+                flex-direction: column; 
+                width: 100%; 
+                gap: 12px;
+            }
             .hero-buttons .btn { width: 100%; }
+            
             .section-title { font-size: 2.2rem; }
             .about-stats { grid-template-columns: 1fr; gap: 15px; }
             .stat-item { padding: 20px; text-align: center; }
@@ -1765,6 +1779,29 @@
                 flex-grow: 1;
                 padding: 8px 12px;
                 font-size: 0.9rem;
+            }
+
+            /* Adjust Music Widget for Mobile */
+            .music-widget {
+                bottom: 20px;
+                left: 20px;
+                padding: 6px 15px 6px 6px;
+                gap: 10px;
+            }
+            .music-btn-toggle {
+                width: 40px;
+                height: 40px;
+                font-size: 0.95rem;
+            }
+            .visualizer-container {
+                width: 60px;
+            }
+            .hire-me-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
             }
         }
     </style>
