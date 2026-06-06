@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santhosh A - Software Developer Resume</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Base Reset & Typography */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #cbd5e1; /* Light gray background for previewing in browser */
+            color: #111827;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* A4 Paper Setup */
+        .resume-wrapper {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 40px auto;
+            background-color: #ffffff;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column; /* FIXED: Now stacks Header on top of Columns */
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ==================== TOP HEADER (FULL WIDTH) ==================== */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 40px 35px 20px 35px;
+            gap: 20px;
+            background-color: #ffffff;
+        }
+        
+        .header-left {
+            width: 63%; /* Gives plenty of room to the text */
+        }
+        .header-left h1 {
+            font-size: 40px;
+            font-weight: 900;
+            color: #0b1b3d;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+            line-height: 1;
+        }
+        .title-primary {
+            font-size: 10px;
+            font-weight: 800;
+            color: #0b1b3d;
+            margin-bottom: 2px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .title-secondary {
+            font-size: 12px;
+            font-weight: 600;
+            color: #2563eb; /* Primary Blue */
+            margin-bottom: 10px;
+        }
+        .summary {
+            font-size: 10.5px;
+            line-height: 1.6;
+            color: #334155;
+            text-align: justify;
+        }
+
+        .header-right {
+            width: 37%; /* Gives plenty of room to contacts to prevent overlap */
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        /* Contact Details */
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 9.5px;
+            color: #111827;
+            text-decoration: none;
+            white-space: nowrap; /* FIXED: Strictly prevents links from breaking to a new line */
+        }
+        .contact-icon {
+            width: 18px;
+            height: 18px;
+            background-color: #0b1b3d;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            flex-shrink: 0;
+        }
+        
+        /* Company Logo Box */
+        .logo-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            width: 65px;
+        }
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            margin-bottom: 3px;
+        }
+        .logo-text-1 {
+            font-size: 9px;
+            font-weight: 900;
+            color: #0b1b3d;
+            line-height: 1;
+            letter-spacing: 0.5px;
+        }
+        .logo-text-2 {
+            font-size: 5.5px;
+            color: #2563eb;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            margin-top: 1px;
+        }
+
+        /* ==================== BODY COLUMNS WRAPPER ==================== */
+        .body-columns {
+            display: flex;
+            flex: 1;
+        }
+
+        /* ==================== LEFT COLUMN ==================== */
+        .left-col {
+            width: 33%;
+            background-color: #041434; /* Deep Navy Blue matching the image */
+            color: #ffffff;
+            padding: 25px 25px 40px 35px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .left-section-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1.5px solid #ffffff;
+            padding-bottom: 6px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .left-section-title i {
+            font-size: 16px;
+        }
+
+        .skill-group { margin-bottom: 12px; }
+        .skill-title {
+            color: #60a5fa; /* Light Blue */
+            font-size: 11.5px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .skill-items {
+            font-size: 10.5px;
+            line-height: 1.6;
+            color: #e5e7eb;
+            display: flex;
+            flex-wrap: wrap;
+            row-gap: 2px;
+        }
+        .skill-items span {
+            display: flex;
+            align-items: center;
+            margin-right: 12px;
+        }
+        .skill-items span::before {
+            content: "•";
+            margin-right: 4px;
+            font-size: 14px;
+        }
+
+        .highlight-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .highlight-item {
+            display: flex;
+            align-items: center; 
+            gap: 10px;
+            font-size: 11px;
+            line-height: 1.3;
+            color: #e5e7eb;
+        }
+        .highlight-item i {
+            font-size: 14px;
+            width: 16px;
+            text-align: center;
+            color: #ffffff;
+        }
+        .highlight-item strong {
+            color: #ffffff;
+            font-size: 12px;
+        }
+
+        .edu-item { margin-bottom: 12px; }
+        .edu-degree {
+            font-size: 10.5px;
+            font-weight: 700;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            color: #ffffff;
+        }
+        .edu-details {
+            font-size: 10px;
+            color: #cbd5e1;
+            line-height: 1.4;
+        }
+
+        .lang-list {
+            display: flex;
+            gap: 15px;
+            font-size: 11px;
+        }
+        .lang-list span::before {
+            content: "•";
+            margin-right: 5px;
+        }
+
+
+        /* ==================== RIGHT COLUMN ==================== */
+        .right-col {
+            width: 67%;
+            padding: 20px 35px 40px 25px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-section {
+            margin-bottom: 16px;
+        }
+        .right-section-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #0b1b3d;
+            text-transform: uppercase;
+            border-bottom: 1.5px solid #cbd5e1;
+            padding-bottom: 4px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .right-section-title i {
+            font-size: 14px;
+        }
+
+        /* Experience */
+        .exp-block {
+            margin-bottom: 10px;
+        }
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 4px;
+        }
+        .exp-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .exp-date {
+            font-size: 10.5px;
+            color: #111827;
+            font-weight: 500;
+        }
+        .list-disc {
+            list-style-type: disc;
+            padding-left: 16px;
+            font-size: 10.5px;
+            color: #334155;
+            line-height: 1.5;
+        }
+        .list-disc li {
+            margin-bottom: 3px;
+        }
+
+        /* Featured Projects Layout Adjustments */
+        .projects-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .project-card {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .project-icon-box {
+            width: 38px;
+            height: 38px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .bg-purple { background-color: #8b5cf6; }
+        .bg-red { background-color: #ef4444; }
+        .bg-green { background-color: #22c55e; }
+        .bg-orange { background-color: #f59e0b; }
+        .bg-blue { background-color: #3b82f6; }
+
+        .project-details {
+            flex: 1.3;
+        }
+        .project-details h4 {
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #0b1b3d;
+            margin-bottom: 2px;
+        }
+        .project-details p {
+            font-size: 9.5px;
+            color: #334155;
+            line-height: 1.4;
+        }
+        
+        .project-links {
+            flex: 0.8;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .tech-stack {
+            font-size: 9.5px;
+            color: #111827;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        .project-link {
+            font-size: 9px;
+            color: #2563eb;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .project-link i {
+            font-size: 9px;
+        }
+
+        /* View More Button */
+        .view-more-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        .view-more-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border: 1.5px solid #94a3b8;
+            border-radius: 4px;
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #0b1b3d;
+            text-decoration: none;
+            background-color: #ffffff;
+        }
+
+        /* Certifications Left Column */
+        .cert-left-list {
+            list-style-type: disc;
+            padding-left: 15px;
+            font-size: 10.5px;
+            color: #e5e7eb;
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .cert-left-list strong {
+            color: #ffffff;
+            font-size: 10.5px;
+        }
+        .cert-left-list span {
+            color: #cbd5e1;
+            font-size: 9.5px;
+        }
+
+        /* Print Settings */
+        @media print {
+            body { background: none; margin: 0; padding: 0; }
+            .resume-wrapper { 
+                width: 210mm; 
+                height: 297mm; 
+                margin: 0; 
+                box-shadow: none; 
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact; 
+            }
+            .top-header { background-color: #ffffff !important; }
+            .left-col { background-color: #041434 !important; color: white !important; }
+            .bg-purple { background-color: #8b5cf6 !important; }
+            .bg-red { background-color: #ef4444 !important; }
+            .bg-green { background-color: #22c55e !important; }
+            .bg-orange { background-color: #f59e0b !important; }
+            .bg-blue { background-color: #3b82f6 !important; }
+            .bg-black { background-color: #111827 !important; }
+            .contact-icon { background-color: #0b1b3d !important; color: white !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="resume-wrapper">
+    
+    <!-- ==================== TOP HEADER (FULL WIDTH) ==================== -->
+    <div class="top-header">
+        <!-- Left Side: Names & Summary -->
+        <div class="header-left">
+            <h1>SANTHOSH A</h1>
+            <div class="title-primary">SOFTWARE DEVELOPER | FULL STACK DEVELOPER | JAVA DEVELOPER</div>
+            <div class="title-secondary">Founder – SanStudio (Software & Digital Solutions)</div>
+            <p class="summary">
+                MCA graduate and passionate Software Developer with strong hands-on experience in <strong>Java, Python, SQL, Web Development, AI Tools,</strong> and <strong>UI/UX Design.</strong> Founder of <strong>SanStudio</strong>, an independent startup focused on building web applications, SaaS tools, and digital solutions. Built <strong>35+ projects</strong> including web apps, Java applications, AI tools, and portfolio ecosystem. Committed to writing clean code and delivering meaningful solutions.
+            </p>
+        </div>
+        
+        <!-- Right Side: Contact & Logo -->
+        <div class="header-right">
+            <div class="contact-list">
+                <div class="contact-item"><div class="contact-icon"><i class="fa-solid fa-phone"></i></div> +91 9003356047</div>
+                <div class="contact-item"><div class="contact-icon"><i class="fa-solid fa-envelope"></i></div> arussanthosh@gmail.com</div>
+                <div class="contact-item"><div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div> Chennai, Tamil Nadu</div>
+                <a href="https://a-santhosh-hub.github.io/in/" class="contact-item" target="_blank"><div class="contact-icon"><i class="fa-solid fa-globe"></i></div> a-santhosh-hub.github.io/in/</a>
+                <a href="https://github.com/A-Santhosh-Hub" class="contact-item" target="_blank"><div class="contact-icon"><i class="fa-brands fa-github"></i></div> github.com/A-Santhosh-Hub</a>
+                <a href="https://sanstudio-hub.github.io/in/" class="contact-item" target="_blank"><div class="contact-icon"><i class="fa-solid fa-link"></i></div> sanstudio-hub.github.io/in/</a>
+            </div>
+            <!-- SanStudio Logo -->
+            <div class="logo-box">
+                <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 0L93.3013 25V75L50 100L6.69873 75V25L50 0Z" fill="#0b1b3d"/>
+                    <path d="M30 65V35L50 25L70 35V45L50 55L30 45" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M70 35V65L50 75L30 65V55L50 45L70 55" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="logo-text-1">SANSTUDIO</div>
+                <div class="logo-text-2">DIGITAL SOLUTIONS</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== BODY COLUMNS WRAPPER ==================== -->
+    <div class="body-columns">
+        
+        <!-- ==================== LEFT COLUMN ==================== -->
+        <div class="left-col">
+            
+            <!-- Technical Skills -->
+            <div>
+                <h2 class="left-section-title"><i class="fa-regular fa-circle-user"></i> TECHNICAL SKILLS</h2>
+                
+                <div class="skill-group">
+                    <div class="skill-title">Programming Languages</div>
+                    <div class="skill-items">
+                        <span>Java</span> <span>Python</span> <span>JavaScript</span> <span>SQL</span>
+                    </div>
+                </div>
+
+                <div class="skill-group">
+                    <div class="skill-title">Web Technologies</div>
+                    <div class="skill-items">
+                        <span>HTML5</span> <span>CSS3</span> <span>JavaScript</span>
+                        <span>Tailwind CSS</span> <span>Bootstrap</span>
+                    </div>
+                </div>
+
+                <div class="skill-group">
+                    <div class="skill-title">Database</div>
+                    <div class="skill-items">
+                        <span>MySQL</span> <span>XAMPP</span>
+                    </div>
+                </div>
+
+                <div class="skill-group">
+                    <div class="skill-title">Tools & Platforms</div>
+                    <div class="skill-items">
+                        <span>Git</span> <span>GitHub</span> <span>VS Code</span>
+                        <span>Chrome DevTools</span> <span>Postman</span>
+                    </div>
+                </div>
+
+                <div class="skill-group">
+                    <div class="skill-title">Design & Others</div>
+                    <div class="skill-items">
+                        <span>Figma</span> <span>Blender 3D</span> <span>Photoshop</span>
+                        <span>Prompt Engineering</span>
+                    </div>
+                </div>
+
+                <div class="skill-group">
+                    <div class="skill-title">Concepts</div>
+                    <div class="skill-items">
+                        <span>OOP</span> <span>DBMS</span> <span>Data Structures</span>
+                        <span>Responsive Design</span> <span>REST API (Basics)</span>
+                        <span>Local Storage</span> <span>JSON</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Highlights -->
+            <div>
+                <h2 class="left-section-title"><i class="fa-solid fa-award"></i> PROJECT HIGHLIGHTS</h2>
+                <ul class="highlight-list">
+                    <li class="highlight-item"><i class="fa-solid fa-file-lines"></i> <div><strong>35+</strong> Projects Developed</div></li>
+                    <li class="highlight-item"><i class="fa-brands fa-github"></i> <div><strong>38+</strong> GitHub Repositories</div></li>
+                    <li class="highlight-item"><i class="fa-solid fa-window-restore"></i> <div><strong>10+</strong> Portfolio Websites</div></li>
+                    <li class="highlight-item"><i class="fa-solid fa-rocket"></i> <div><strong>5+</strong> SaaS / Web Applications</div></li>
+                    <li class="highlight-item"><i class="fa-solid fa-users"></i> 
+                        <div>
+                            <strong>Founder of SanStudio</strong><br>
+                            <span style="font-size: 9px; color: #cbd5e1;">(Software & Digital Solutions)</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Certifications (Moved to Left) -->
+            <div>
+                <h2 class="left-section-title"><i class="fa-solid fa-certificate"></i> CERTIFICATIONS</h2>
+                <ul class="cert-left-list">
+                    <li>
+                        <strong>Database Management System (DBMS)</strong><br>
+                        <span>Great Learning</span>
+                    </li>
+                    <li>
+                        <strong>Python Programming</strong><br>
+                        <span>Great Learning</span>
+                    </li>
+                    <li>
+                        <strong>Programming in Java (Basics)</strong><br>
+                        <span>Great Learning</span>
+                    </li>
+                    <li>
+                        <strong>HTML, CSS, JavaScript for Beginners</strong><br>
+                        <span>Udemy</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Languages -->
+            <div>
+                <h2 class="left-section-title"><i class="fa-solid fa-comments"></i> LANGUAGES</h2>
+                <div class="lang-list">
+                    <span>English</span>
+                    <span>Tamil</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== RIGHT COLUMN ==================== -->
+        <div class="right-col">
+            
+            <!-- Experience -->
+            <div class="right-section">
+                <h2 class="right-section-title"><i class="fa-solid fa-briefcase"></i> EXPERIENCE</h2>
+                
+                <div class="exp-block">
+                    <div class="exp-header">
+                        <span class="exp-title">Founder & Software Developer – SanStudio</span>
+                        <span class="exp-date">Jun 2024 – Present</span>
+                    </div>
+                    <ul class="list-disc">
+                        <li>Founded and managing SanStudio, a software and digital solutions startup.</li>
+                        <li>Building web applications, SaaS tools, UI/UX designs, and digital products.</li>
+                        <li>Handling project planning, development, deployment, branding and client solutions.</li>
+                        <li>Working on AI tools, automation, and modern web technologies.</li>
+                    </ul>
+                </div>
+
+                <div class="exp-block">
+                    <div class="exp-header">
+                        <span class="exp-title">Multimedia Designer – ALP Astrology Office, Chennai</span>
+                        <span class="exp-date">Present</span>
+                    </div>
+                    <ul class="list-disc">
+                        <li>Creating digital, web/SaaS, and promotional content for branding and communication.</li>
+                    </ul>
+                </div>
+
+                <div class="exp-block">
+                    <div class="exp-header">
+                        <span class="exp-title">Intern – United Soft Tech, Salem</span>
+                        <span class="exp-date">Mar 2025 – May 2025</span>
+                    </div>
+                    <ul class="list-disc">
+                        <li>Research Paper Writing & Project Developer Intern.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Featured Projects (Updated Layout) -->
+            <div class="right-section">
+                <h2 class="right-section-title"><i class="fa-solid fa-code"></i> FEATURED PROJECTS</h2>
+                
+                <div class="projects-wrapper">
+                    
+                    <!-- Project 1 -->
+                    <div class="project-card">
+                        <div class="project-icon-box bg-purple"><i class="fa-solid fa-brain"></i></div>
+                        <div class="project-details">
+                            <h4>AI Prompt Showcase Platform</h4>
+                            <p>Platform to showcase AI-generated prompts and images.<br>Includes advanced UI/UX with animations and responsive design.</p>
+                        </div>
+                        <div class="project-links">
+                            <div class="tech-stack">HTML, CSS, JavaScript</div>
+                            <a href="https://a-santhosh-hub.github.io/AI-Prompt-Showcase/" class="project-link" target="_blank">a-santhosh-hub.github.io/AI-Prompt-Showcase/ <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Project 2 -->
+                    <div class="project-card">
+                        <div class="project-icon-box bg-red"><i class="fa-solid fa-rocket"></i></div>
+                        <div class="project-details">
+                            <h4>Firecracker Ordering Web App</h4>
+                            <p>Web application for firecracker ordering and quotation.<br>WhatsApp integration, product management and invoice features.</p>
+                        </div>
+                        <div class="project-links">
+                            <div class="tech-stack">HTML, CSS, JavaScript, MySQL</div>
+                            <a href="https://a-santhosh-hub.github.io/Firecracker-Ordering/" class="project-link" target="_blank">a-santhosh-hub.github.io/Firecracker-Ordering/ <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Project 3 -->
+                    <div class="project-card">
+                        <div class="project-icon-box bg-green"><i class="fa-solid fa-calculator"></i></div>
+                        <div class="project-details">
+                            <h4>Student Grade Calculator</h4>
+                            <p>Calculate student grades, percentages and results.<br>PDF export, dark mode and local storage support.</p>
+                        </div>
+                        <div class="project-links">
+                            <div class="tech-stack">HTML, CSS, JavaScript</div>
+                            <a href="https://a-santhosh-hub.github.io/Student-Grade-Calculator/" class="project-link" target="_blank">a-santhosh-hub.github.io/Student-Grade-Calculator/ <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Project 4 -->
+                    <div class="project-card">
+                        <div class="project-icon-box bg-orange"><i class="fa-solid fa-hashtag"></i></div>
+                        <div class="project-details">
+                            <h4>Fencing Work Calculator</h4>
+                            <p>Cost estimation for fencing work with dynamic calculations,<br>GST, PDF export and WhatsApp integration.</p>
+                        </div>
+                        <div class="project-links">
+                            <div class="tech-stack">HTML, CSS, JavaScript</div>
+                            <a href="https://a-santhosh-hub.github.io/Fencing-Work-Calculator/" class="project-link" target="_blank">a-santhosh-hub.github.io/Fencing-Work-Calculator/ <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Project 5 -->
+                    <div class="project-card">
+                        <div class="project-icon-box bg-blue"><i class="fa-solid fa-globe"></i></div>
+                        <div class="project-details">
+                            <h4>Portfolio Ecosystem</h4>
+                            <p>Collection of personal and client portfolio websites<br>with modern UI/UX and smooth animations.</p>
+                        </div>
+                        <div class="project-links">
+                            <div class="tech-stack">HTML, CSS, JavaScript</div>
+                            <a href="https://a-santhosh-hub.github.io/HTML/" class="project-link" target="_blank">a-santhosh-hub.github.io/HTML/ <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- View More Button -->
+                <div class="view-more-container">
+                    <a href="https://github.com/A-Santhosh-Hub" class="view-more-btn" target="_blank">
+                        View More Projects on GitHub &rarr; github.com/A-Santhosh-Hub
+                    </a>
+                </div>
+            </div>
+
+            <!-- Open Source & GitHub -->
+            <div class="right-section">
+                <h2 class="right-section-title"><i class="fa-brands fa-github"></i> OPEN SOURCE & GITHUB</h2>
+                <ul class="list-disc">
+                    <li>Published 35+ software and web development projects on GitHub.</li>
+                    <li>Active in version control, issue handling, documentation and project maintenance.</li>
+                    <li>Repositories include web apps, Java projects, AI tools, UI/UX designs, 3D models and more.</li>
+                </ul>
+            </div>
+
+            <!-- Education (Moved to Right) -->
+            <div class="right-section" style="margin-bottom: 0;">
+                <h2 class="right-section-title"><i class="fa-solid fa-graduation-cap"></i> EDUCATION</h2>
+                
+                <div class="exp-block" style="margin-bottom: 12px;">
+                    <div class="exp-header">
+                        <span class="exp-title">Master of Computer Applications (MCA)</span>
+                        <span class="exp-date">Sep 2023 – May 2025</span>
+                    </div>
+                    <div style="font-size: 10.5px; color: #334155; line-height: 1.5;">
+                        Anna University, Chennai<br>
+                        Nandha Engineering College, Erode - 638052<br>
+                        <span style="font-weight: 600; color: #111827;">CGPA: 7.9</span>
+                    </div>
+                </div>
+
+                <div class="exp-block" style="margin-bottom: 0;">
+                    <div class="exp-header">
+                        <span class="exp-title">Bachelor of Science in Computer Science (B.Sc CS)</span>
+                        <span class="exp-date">Jun 2019 – Jun 2022</span>
+                    </div>
+                    <div style="font-size: 10.5px; color: #334155; line-height: 1.5;">
+                        Bharathiyar University, Coimbatore<br>
+                        Nandha Arts and Science College, Erode - 638052<br>
+                        <span style="font-weight: 600; color: #111827;">CGPA: 6.5</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
