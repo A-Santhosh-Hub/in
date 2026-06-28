@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ============================================================
+       CINEMATIC PORTFOLIO — SANTHOSH A
+       Neo-Noir · John Wick · Men in Black · Luxury Minimal
+       ============================================================ -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Santhosh A — Software Developer, Full Stack Developer, Java Developer. Founder of SanStudio. 35+ Projects. MCA Graduate." />
+  <meta name="author" content="Santhosh A" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#000000" />
+
+  <title>SANTHOSH A — Developer Portfolio</title>
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Santhosh A | Software Developer & Founder of SanStudio" />
+  <meta property="og:description" content="35+ projects, 38+ GitHub repos. Software Developer, Full Stack Developer, and Founder of SanStudio." />
+  <meta property="og:image" content="https://avatars.githubusercontent.com/u/177222217" />
+
+  <!-- Preload -->
+  <link rel="preload" href="intro.mp4" as="video" type="video/mp4" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://avatars.githubusercontent.com/u/177222217" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Santhosh A",
+    "url": "https://santhosh2024.neocities.org/",
+    "image": "https://avatars.githubusercontent.com/u/177222217",
+    "jobTitle": ["Software Developer", "Full Stack Developer", "Java Developer"],
+    "alumniOf": [
+      { "@type": "EducationalOrganization", "name": "Nandha Engineering College" },
+      { "@type": "EducationalOrganization", "name": "Nandha Arts and Science College" }
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Chennai",
+      "addressRegion": "Tamil Nadu",
+      "addressCountry": "India"
+    },
+    "sameAs": [
+      "https://github.com/A-Santhosh-Hub",
+      "https://www.linkedin.com/in/santhosh-a-sanstudio/",
+      "https://www.instagram.com/santhosh_747_dark/"
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <!-- Cinematic Splash Screen -->
+  <div id="splashScreen" style="position: fixed; inset: 0; background: var(--black); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+    <img src="SANTHOSH.png" id="splashName" alt="Santhosh A" style="opacity: 0; max-width: 60vw; max-height: 200px; transform: scale(0.95);" />
+  </div>
+
+  <!-- Cursor Glow -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- Film Grain Overlay -->
+  <div class="film-grain" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       FIXED VIDEO BACKGROUND
+       ============================================================ -->
+  <div class="video-bg" id="videoBg">
+    <video
+      class="video-bg__video"
+      id="heroVideo"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      aria-hidden="true"
+    >
+      <source src="intro.mp4" type="video/mp4" />
+    </video>
+  </div>
+  <div class="video-bg__overlay" id="videoOverlay" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION — Minimal, appears on scroll
+       ============================================================ -->
+  <nav class="nav" id="mainNav" aria-label="Main navigation">
+    <a href="#hero" class="nav-logo">SA</a>
+
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="#about" class="nav-link">About</a></li>
+      <li><a href="#skills" class="nav-link">Skills</a></li>
+      <li><a href="#experience" class="nav-link">Experience</a></li>
+      <li><a href="#projects" class="nav-link">Projects</a></li>
+      <li><a href="#education" class="nav-link">Education</a></li>
+      <li><a href="#contact" class="nav-link">Contact</a></li>
+    </ul>
+
+    <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-overlay" id="mobileOverlay">
+    <button class="mobile-close" id="mobileClose" aria-label="Close menu">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="mobile-menu">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PAGE WRAPPER — Cinematic Fade
+       ============================================================ -->
+  <div class="page-wrapper" id="pageWrapper" style="opacity: 0;">
+
+    <!-- ========================================================
+         HERO — Movie Opening Sequence
+         ======================================================== -->
+    <section class="hero" id="hero" aria-label="Hero">
+
+      <!-- Atmospheric Effects -->
+      <div class="hero__light-beam" aria-hidden="true"></div>
+      <div class="hero__fog" aria-hidden="true"></div>
+      <div class="hero__particles" aria-hidden="true"></div>
+
+      <!-- SA Monogram — Top Left -->
+      <div class="hero__monogram" id="heroMonogram">SA</div>
+
+      <!-- Menu — Top Right -->
+      <button class="hero__menu-btn" id="heroMenuBtn" aria-label="Open navigation">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Name Block — Left Center -->
+      <div class="hero__name-block" id="heroNameBlock">
+        <span class="hero__role-label" id="heroRoleLabel">Software Developer</span>
+        <h1 class="hero__name" id="heroName">Santhosh A</h1>
+        <p class="hero__tagline" id="heroTagline">
+          I build solutions. I create <span>impact.</span>
+        </p>
+      </div>
+
+      <!-- Stats Panel — Right Side -->
+      <div class="hero__stats" id="heroStats">
+        <div class="hero__stat">
+          <div class="hero__stat-icon"><i class="fas fa-code"></i></div>
+          <div class="hero__stat-info">
+            <div class="hero__stat-number" data-count="35">35+</div>
+            <div class="hero__stat-label">Projects</div>
+          </div>
+        </div>
+
+        <div class="hero__stat">
+          <div class="hero__stat-icon"><i class="fab fa-github"></i></div>
+          <div class="hero__stat-info">
+            <div class="hero__stat-number" data-count="38">38+</div>
+            <div class="hero__stat-label">GitHub Repos</div>
+          </div>
+        </div>
+
+        <div class="hero__stat">
+          <div class="hero__stat-icon"><i class="fas fa-layer-group"></i></div>
+          <div class="hero__stat-info">
+            <div class="hero__stat-number" data-count="10">10+</div>
+            <div class="hero__stat-label">Portfolio Websites</div>
+          </div>
+        </div>
+
+        <div class="hero__stat">
+          <div class="hero__stat-icon"><i class="fas fa-cloud"></i></div>
+          <div class="hero__stat-info">
+            <div class="hero__stat-number" data-count="5">5+</div>
+            <div class="hero__stat-label">SaaS Applications</div>
+          </div>
+        </div>
+
+        <div class="hero__stat">
+          <div class="hero__stat-icon"><i class="fas fa-robot"></i></div>
+          <div class="hero__stat-info">
+            <div class="hero__stat-number">AI Tools</div>
+            <div class="hero__stat-label">Innovative Solutions</div>
+          </div>
+        </div>
+
+        <div class="hero__stat">
+          <div class="hero__stat-icon"><i class="fas fa-globe"></i></div>
+          <div class="hero__stat-info">
+            <div class="hero__stat-number">Web Development</div>
+            <div class="hero__stat-label">Modern & Responsive</div>
+          </div>
+        </div>
+
+        <div class="hero__stat">
+          <div class="hero__stat-icon"><i class="fas fa-pen-nib"></i></div>
+          <div class="hero__stat-info">
+            <div class="hero__stat-number">UI / UX Design</div>
+            <div class="hero__stat-label">Clean & Minimal</div>
+          </div>
+        </div>
+
+        <div class="hero__stat">
+          <div class="hero__stat-icon"><i class="fas fa-cube"></i></div>
+          <div class="hero__stat-info">
+            <div class="hero__stat-number">Blender 3D</div>
+            <div class="hero__stat-label">3D Models & Design</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Nav — Far Left -->
+      <nav class="hero__section-nav" id="heroSectionNav" aria-label="Section navigation">
+        <a href="#hero" class="hero__section-link active">
+          <span class="hero__section-num">01</span>
+          <span class="hero__section-label">Intro</span>
+        </a>
+        <a href="#about" class="hero__section-link">
+          <span class="hero__section-num">02</span>
+          <span class="hero__section-label">About</span>
+        </a>
+        <a href="#skills" class="hero__section-link">
+          <span class="hero__section-num">03</span>
+          <span class="hero__section-label">Skills</span>
+        </a>
+        <a href="#projects" class="hero__section-link">
+          <span class="hero__section-num">04</span>
+          <span class="hero__section-label">Projects</span>
+        </a>
+        <a href="#contact" class="hero__section-link">
+          <span class="hero__section-num">05</span>
+          <span class="hero__section-label">Contact</span>
+        </a>
+      </nav>
+
+      <!-- Social — Bottom Left -->
+      <div class="hero__social" id="heroSocial">
+        <a href="https://github.com/A-Santhosh-Hub" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="https://www.linkedin.com/in/santhosh-a-sanstudio/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="mailto:arussanthosh@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+      </div>
+
+      <!-- Scroll Indicator — Bottom Right -->
+      <div class="hero__scroll-indicator" id="heroScroll">
+        <span class="hero__scroll-text">Scroll to explore</span>
+        <div class="hero__scroll-icon">
+          <div class="hero__scroll-dot"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================================
+         ABOUT — Movie Character Introduction
+         ======================================================== -->
+    <section class="section" id="about" aria-label="About">
+      <div class="section__inner">
+        <div class="section__label" data-reveal>About</div>
+        <h2 class="section__title" data-reveal>Who I Am</h2>
+        <div class="section__divider" data-reveal></div>
+
+        <div class="about__layout">
+          <div class="about__text" data-reveal>
+            <p>
+              MCA graduate and passionate Software Developer with strong hands-on experience
+              in Java, Python, SQL, Web Development, AI Tools, and UI/UX Design.
+            </p>
+            <p>
+              Founder of <strong>SanStudio</strong>, an independent startup focused on building
+              web applications, SaaS tools, and digital solutions. Built 35+ projects including
+              web apps, Java applications, AI tools, and a portfolio ecosystem.
+            </p>
+            <p>
+              Committed to writing clean code and delivering meaningful solutions.
+              Based in Chennai, Tamil Nadu.
+            </p>
+          </div>
+
+          <div class="about__stats">
+            <div class="about__stat-card" data-reveal>
+              <div class="about__stat-num" data-count="35">0+</div>
+              <div class="about__stat-desc">Projects Developed</div>
+            </div>
+            <div class="about__stat-card" data-reveal>
+              <div class="about__stat-num" data-count="38">0+</div>
+              <div class="about__stat-desc">GitHub Repositories</div>
+            </div>
+            <div class="about__stat-card" data-reveal>
+              <div class="about__stat-num" data-count="10">0+</div>
+              <div class="about__stat-desc">Portfolio Websites</div>
+            </div>
+            <div class="about__stat-card" data-reveal>
+              <div class="about__stat-num" data-count="5">0+</div>
+              <div class="about__stat-desc">SaaS Applications</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         SKILLS — Control Panel Grid
+         ======================================================== -->
+    <section class="section section--graphite" id="skills" aria-label="Skills">
+      <div class="section__inner">
+        <div class="section__label" data-reveal>Expertise</div>
+        <h2 class="section__title" data-reveal>Technical Skills</h2>
+        <div class="section__divider" data-reveal></div>
+
+        <div class="skills__grid">
+          <div class="skill-card" data-reveal>
+            <div class="skill-card__icon"><i class="fas fa-terminal"></i></div>
+            <div class="skill-card__title">Languages</div>
+            <ul class="skill-card__list">
+              <li class="skill-tag">Java</li>
+              <li class="skill-tag">Python</li>
+              <li class="skill-tag">JavaScript</li>
+              <li class="skill-tag">SQL</li>
+            </ul>
+          </div>
+
+          <div class="skill-card" data-reveal>
+            <div class="skill-card__icon"><i class="fas fa-globe"></i></div>
+            <div class="skill-card__title">Web Technologies</div>
+            <ul class="skill-card__list">
+              <li class="skill-tag">HTML5</li>
+              <li class="skill-tag">CSS3</li>
+              <li class="skill-tag">JavaScript</li>
+              <li class="skill-tag">Tailwind CSS</li>
+              <li class="skill-tag">Bootstrap</li>
+            </ul>
+          </div>
+
+          <div class="skill-card" data-reveal>
+            <div class="skill-card__icon"><i class="fas fa-database"></i></div>
+            <div class="skill-card__title">Database</div>
+            <ul class="skill-card__list">
+              <li class="skill-tag">MySQL</li>
+              <li class="skill-tag">XAMPP</li>
+            </ul>
+          </div>
+
+          <div class="skill-card" data-reveal>
+            <div class="skill-card__icon"><i class="fas fa-tools"></i></div>
+            <div class="skill-card__title">Tools & Platforms</div>
+            <ul class="skill-card__list">
+              <li class="skill-tag">Git</li>
+              <li class="skill-tag">GitHub</li>
+              <li class="skill-tag">VS Code</li>
+              <li class="skill-tag">Chrome DevTools</li>
+              <li class="skill-tag">Postman</li>
+            </ul>
+          </div>
+
+          <div class="skill-card" data-reveal>
+            <div class="skill-card__icon"><i class="fas fa-palette"></i></div>
+            <div class="skill-card__title">Design & Creative</div>
+            <ul class="skill-card__list">
+              <li class="skill-tag">Figma</li>
+              <li class="skill-tag">Blender 3D</li>
+              <li class="skill-tag">Photoshop</li>
+              <li class="skill-tag">Prompt Engineering</li>
+            </ul>
+          </div>
+
+          <div class="skill-card" data-reveal>
+            <div class="skill-card__icon"><i class="fas fa-brain"></i></div>
+            <div class="skill-card__title">Concepts</div>
+            <ul class="skill-card__list">
+              <li class="skill-tag">OOP</li>
+              <li class="skill-tag">DBMS</li>
+              <li class="skill-tag">Data Structures</li>
+              <li class="skill-tag">REST API</li>
+              <li class="skill-tag">Responsive Design</li>
+              <li class="skill-tag">JSON</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         EXPERIENCE — Cinematic Vertical Timeline
+         ======================================================== -->
+    <section class="section" id="experience" aria-label="Experience">
+      <div class="section__inner">
+        <div class="section__label" data-reveal>Journey</div>
+        <h2 class="section__title" data-reveal>Experience</h2>
+        <div class="section__divider" data-reveal></div>
+
+        <div class="exp-timeline">
+          <div class="exp-item" data-reveal>
+            <div class="exp-item__role">Founder & Software Developer</div>
+            <div class="exp-item__date">Jun 2024 — Present</div>
+            <div class="exp-item__company">SanStudio — Software & Digital Solutions</div>
+            <ul class="exp-item__details">
+              <li>Founded and managing SanStudio, a software and digital solutions startup</li>
+              <li>Building web applications, SaaS tools, UI/UX designs, and digital products</li>
+              <li>Handling project planning, development, deployment, branding and client solutions</li>
+              <li>Working on AI tools, automation, and modern web technologies</li>
+            </ul>
+          </div>
+
+          <div class="exp-item" data-reveal>
+            <div class="exp-item__role">Multimedia Designer</div>
+            <div class="exp-item__date">Present</div>
+            <div class="exp-item__company">ALP Astrology Office — Chennai</div>
+            <ul class="exp-item__details">
+              <li>Creating digital, web/SaaS, and promotional content for branding and communication</li>
+            </ul>
+          </div>
+
+          <div class="exp-item" data-reveal>
+            <div class="exp-item__role">Intern — Project Developer</div>
+            <div class="exp-item__date">Mar 2025 — May 2025</div>
+            <div class="exp-item__company">United Soft Tech — Salem</div>
+            <ul class="exp-item__details">
+              <li>Research Paper Writing & Project Developer Intern</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         PROJECTS — Movie Poster Cards
+         ======================================================== -->
+    <section class="section section--graphite" id="projects" aria-label="Projects">
+      <div class="section__inner">
+        <div class="section__label" data-reveal>Built</div>
+        <h2 class="section__title" data-reveal>Selected Projects</h2>
+        <div class="section__divider" data-reveal></div>
+
+        <div class="projects__grid">
+          <div class="project-poster" data-reveal>
+            <div class="project-poster__number">01</div>
+            <div class="project-poster__name">QRCode Secure</div>
+            <div class="project-poster__desc">
+              Web app to generate password-protected QR codes for personal details.
+              Information remains fully secured and requires a password to access.
+            </div>
+            <div class="project-poster__stack">
+              <span class="project-poster__tech">HTML</span>
+              <span class="project-poster__tech">CSS</span>
+              <span class="project-poster__tech">JS</span>
+              <span class="project-poster__tech">Node.js</span>
+            </div>
+          </div>
+
+          <div class="project-poster" data-reveal>
+            <div class="project-poster__number">02</div>
+            <div class="project-poster__name">SanStudio Meet</div>
+            <div class="project-poster__desc">
+              Modern, browser-based WebRTC video meeting platform.
+              Requires no downloads or sign-ups for seamless connectivity.
+            </div>
+            <div class="project-poster__stack">
+              <span class="project-poster__tech">WebRTC</span>
+              <span class="project-poster__tech">HTML</span>
+              <span class="project-poster__tech">CSS</span>
+              <span class="project-poster__tech">JS</span>
+            </div>
+          </div>
+
+          <div class="project-poster" data-reveal>
+            <div class="project-poster__number">03</div>
+            <div class="project-poster__name">Blender 3D Models</div>
+            <div class="project-poster__desc">
+              Developing custom 3D models and digital environments using Blender.
+              Creative 3D designs, texturing, and rendering workflows.
+            </div>
+            <div class="project-poster__stack">
+              <span class="project-poster__tech">Blender 3D</span>
+              <span class="project-poster__tech">Web Integration</span>
+            </div>
+          </div>
+
+          <div class="project-poster" data-reveal>
+            <div class="project-poster__number">04</div>
+            <div class="project-poster__name">HTML to APK Converter</div>
+            <div class="project-poster__desc">
+              Convert HTML projects into installable Android APK.
+              No Android Studio required for most tasks.
+            </div>
+            <div class="project-poster__stack">
+              <span class="project-poster__tech">Python</span>
+              <span class="project-poster__tech">Android</span>
+            </div>
+          </div>
+
+          <div class="project-poster" data-reveal>
+            <div class="project-poster__number">05</div>
+            <div class="project-poster__name">Portfolio Ecosystem</div>
+            <div class="project-poster__desc">
+              Collection of personal and client portfolio websites with modern UI/UX
+              and smooth animations. A complete digital presence ecosystem.
+            </div>
+            <div class="project-poster__stack">
+              <span class="project-poster__tech">HTML</span>
+              <span class="project-poster__tech">CSS</span>
+              <span class="project-poster__tech">JavaScript</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         EDUCATION — Award Wall
+         ======================================================== -->
+    <section class="section" id="education" aria-label="Education">
+      <div class="section__inner">
+        <div class="section__label" data-reveal>Academic</div>
+        <h2 class="section__title" data-reveal>Education</h2>
+        <div class="section__divider" data-reveal></div>
+
+        <div class="edu__grid">
+          <div class="edu-card" data-reveal>
+            <div class="edu-card__degree">Master of Computer Applications (MCA)</div>
+            <div class="edu-card__school">
+              Anna University<br />
+              Nandha Engineering College, Erode
+            </div>
+            <div class="edu-card__meta">
+              <span class="edu-card__badge">CGPA: 7.9</span>
+              <span class="edu-card__year">2023 — 2025</span>
+            </div>
+          </div>
+
+          <div class="edu-card" data-reveal>
+            <div class="edu-card__degree">Bachelor of Science in Computer Science</div>
+            <div class="edu-card__school">
+              Bharathiyar University<br />
+              Nandha Arts and Science College, Erode
+            </div>
+            <div class="edu-card__meta">
+              <span class="edu-card__badge">CGPA: 6.5</span>
+              <span class="edu-card__year">2019 — 2022</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         CONTACT — Minimal, Dark, Luxury CTA
+         ======================================================== -->
+    <section class="section section--graphite" id="contact" aria-label="Contact">
+      <div class="section__inner">
+        <div class="section__label" data-reveal>Connect</div>
+        <h2 class="section__title" data-reveal>Get In Touch</h2>
+        <div class="section__divider" data-reveal></div>
+
+        <div class="contact__grid">
+          <div class="contact-card" data-reveal>
+            <div class="contact-card__icon"><i class="fas fa-phone"></i></div>
+            <div class="contact-card__label">Phone</div>
+            <div class="contact-card__value">
+              <a href="tel:+919003356047">+91 9003356047</a>
+            </div>
+          </div>
+
+          <div class="contact-card" data-reveal>
+            <div class="contact-card__icon"><i class="fas fa-envelope"></i></div>
+            <div class="contact-card__label">Email</div>
+            <div class="contact-card__value">
+              <a href="mailto:arussanthosh@gmail.com">arussanthosh@gmail.com</a>
+            </div>
+          </div>
+
+          <div class="contact-card" data-reveal>
+            <div class="contact-card__icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="contact-card__label">Location</div>
+            <div class="contact-card__value">Chennai, Tamil Nadu</div>
+          </div>
+
+          <div class="contact-card" data-reveal>
+            <div class="contact-card__icon"><i class="fab fa-github"></i></div>
+            <div class="contact-card__label">GitHub</div>
+            <div class="contact-card__value">
+              <a href="https://github.com/A-Santhosh-Hub" target="_blank" rel="noopener">A-Santhosh-Hub</a>
+            </div>
+          </div>
+
+          <div class="contact-card" data-reveal>
+            <div class="contact-card__icon"><i class="fab fa-linkedin-in"></i></div>
+            <div class="contact-card__label">LinkedIn</div>
+            <div class="contact-card__value">
+              <a href="https://www.linkedin.com/in/santhosh-a-sanstudio/" target="_blank" rel="noopener">santhosh-a-sanstudio</a>
+            </div>
+          </div>
+
+          <div class="contact-card" data-reveal>
+            <div class="contact-card__icon"><i class="fas fa-briefcase"></i></div>
+            <div class="contact-card__label">Portfolio</div>
+            <div class="contact-card__value">
+              <a href="https://sanstudio-hub.github.io/in/" target="_blank" rel="noopener">sanstudio-hub.github.io</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Links -->
+        <div class="social-row" data-reveal>
+          <a href="https://github.com/A-Santhosh-Hub" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+          <a href="https://www.linkedin.com/in/santhosh-a-sanstudio/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="https://www.instagram.com/santhosh_747_dark/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.facebook.com/santhosh.mp.923519" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.youtube.com/@crazyvideos788" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         FOOTER
+         ======================================================== -->
+    <footer class="footer">
+      <p class="footer__text">&copy; 2026 <a href="#hero">Santhosh A</a> &nbsp;&middot;&nbsp; SanStudio &nbsp;&middot;&nbsp; All Rights Reserved</p>
+    </footer>
+
+  </div><!-- /.page-wrapper -->
+
+  <!-- ============================================================
+       LIBRARIES
+       ============================================================ -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1/dist/lenis.min.js"></script>
+  <script src="https://unpkg.com/split-type"></script>
+
+  <script src="script.js"></script>
+</body>
+</html>
