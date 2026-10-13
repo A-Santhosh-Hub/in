@@ -1,0 +1,87 @@
+/* Chapter artwork and identity: four distinct environments + Santhosh's portrait. */
+.hero-landscape { display:block; background:none; backface-visibility:hidden; }
+.hero-landscape img { display:block; width:100%; height:100%; max-width:none; object-fit:cover; object-position:50% 55%; }
+.hero { height:175svh; }
+.hero-sticky { isolation:isolate; }
+.hero-shade { background:linear-gradient(180deg,#0c0d1b22 10%,transparent 40%,#0c0d1b77 80%,#0c0d1b 100%); }
+.hero-grain { opacity:.045; }
+.hero-title-stage { left:30%; top:47%; width:47vw; max-width:660px; z-index:3; }
+.hero-wordmark { font-size:clamp(88px,10vw,166px); text-shadow:2px 4px 0 #21162f,-2px -1px 0 #21162f,4px 7px 0 #21162f; }
+.hero-numeral { font-size:clamp(300px,34vw,550px); opacity:.86; }
+.hero-roles { font-size:12px; text-shadow:0 2px 6px #0c0d1b; }
+.hero-person { position:absolute; right:1.5%; bottom:0; width:48%; height:91%; display:block; z-index:2; pointer-events:none; transform-origin:bottom center; will-change:transform,opacity; mask-image:linear-gradient(#000 85%,transparent 100%); }
+.hero-person img { display:block; width:100%; height:100%; object-fit:contain; object-position:center bottom; }
+.character-tag { position:absolute; right:4.2%; top:44%; z-index:4; color:var(--cream); font:600 11px 'Barlow Condensed',sans-serif; letter-spacing:.12em; writing-mode:vertical-rl; }
+.character-tag span { color:var(--pink); margin-top:15px; }
+.hero-bottom { z-index:5; bottom:65px; }
+.hero-bottom .hero-availability { padding:8px 12px; background:#0c0d1b99; }
+.hero-location { text-shadow:0 1px 5px #0c0d1b; }
+.hero-chapter { z-index:5; }
+.hero-edition { z-index:5; }
+/* Alternate the composition: portrait on the left, the creative statement on the right. */
+.manifesto { min-height:930px; padding:160px 7vw; display:flex; justify-content:flex-end; align-items:center; text-align:left; background:radial-gradient(ellipse at 18% 50%,#4131518c,transparent 60%),var(--dark); }
+.intro-portrait { position:absolute; left:-1%; bottom:0; width:49%; height:93%; z-index:1; pointer-events:none; display:block; mask-image:linear-gradient(#000 75%,transparent 100%); }
+.intro-portrait img { width:100%; height:100%; object-fit:contain; object-position:center bottom; display:block; }
+.manifesto-inner { width:49%; max-width:680px; z-index:2; }
+.manifesto-title { font-size:clamp(75px,7.7vw,125px); margin-bottom:33px; }
+.manifesto .eyebrow { font-size:12px; color:var(--text-light); }
+.manifesto p { font-size:17px; }
+.intro-actions { justify-content:flex-start; gap:16px; }
+.intro-actions .btn { font-size:13px; padding-inline:23px; }
+.intro-meta { justify-content:flex-start; flex-wrap:wrap; font-size:10px; gap:15px; margin-top:45px; }
+.manifesto-watermark { font-size:72vw; bottom:-38%; right:-3%; }
+.manifesto .resume-dropdown-menu { z-index:8; }
+/* Backgrounds are real responsive images: local, lazy-loaded, with intrinsic dimensions. */
+#projects,#about,#contact { position:relative; isolation:isolate; }
+.chapter-scenery { position:absolute; left:0; top:0; width:100%; height:680px; z-index:-1; display:block; pointer-events:none; overflow:hidden; mask-image:linear-gradient(#000 0%,#000 55%,transparent 100%); }
+.chapter-scenery img { display:block; width:100%; height:100%; max-width:none; object-fit:cover; }
+#projects { background:var(--dark); }
+#projects .chapter-scenery { opacity:.43; }
+#projects .chapter-scenery img { object-position:center 60%; }
+#projects .section-title { text-shadow:0 3px 30px #0c0d1b88; }
+#projects .section-lede { color:#e0d8e4; }
+#projects .section-title small { color:#f0dce7; }
+.project-cover::before { background-image:linear-gradient(135deg,#0c0d1b11,#0c0d1b55),var(--project-art,url('art/chapter-work.webp')); background-position:center; filter:none; opacity:1; }
+.cover-icon { color:var(--cream); text-shadow:3px 4px 0 #0c0d1b88,0 4px 25px #0c0d1b77; }
+.cover-orbit { border-color:#fff9cb33; }
+.project-cover { backface-visibility:hidden; transition:transform .18s linear; }
+#about .chapter-scenery { opacity:.24; height:730px; }
+#about .chapter-scenery img { object-position:center 38%; }
+.about-image { background-image:linear-gradient(#0c0d1b55,#0c0d1b88),url('art/chapter-about.webp'); background-position:center; }
+.world-break-art { background-image:linear-gradient(90deg,#0c0d1bb0,#0c0d1b11),url('art/chapter-about.webp'); background-position:center; filter:none; }
+.world-break { contain:paint; }
+.sanstudio-banner { background-image:linear-gradient(#0c0d1b88,#0c0d1bb0),url('art/chapter-work.webp'); }
+#contact { background:var(--dark); padding-bottom:140px; }
+#contact .chapter-scenery { opacity:.75; height:100%; mask-image:linear-gradient(#000, #000 82%,transparent); }
+#contact::before { content:''; position:absolute; inset:0; z-index:-1; background:linear-gradient(90deg,#0c0d1b9e,#0c0d1b8c); }
+#contact .chapter-scenery img { object-position:65% center; }
+#contact .section-title,#contact .contact-container { position:relative; z-index:1; }
+#contact .contact-form { background:#0c0d1bce; padding:30px; }
+#contact .contact-stats-grid,#contact .contact-item { background:#0c0d1b70; }
+#contact .contact-item { padding-inline:18px !important; }
+#contact .c-stat-item { padding-left:18px; }
+#contact .form-input,#contact .form-textarea { background:#0c0d1b77; }
+body:not(.dark-mode) #contact { color:var(--cream); --text-light:#d2c3d7; --light:#fff9cb; --glass-border:#ffffff44; }
+body:not(.dark-mode) #projects .section-title { color:var(--cream); }
+body:not(.dark-mode) #projects .chapter-scenery { opacity:.9; }
+@media(min-width:1800px) { .hero-title-stage { left:31%; }.hero-person { right:8%; width:40%; }.manifesto { justify-content:center; gap:4vw; min-height:1050px; }.intro-portrait { position:relative; left:auto; width:40%; height:850px; align-self:flex-end; margin-bottom:-160px; }.manifesto-inner { width:44%; } }
+@media(max-width:1100px) { .hero-title-stage { left:28%; width:50vw; }.hero-person { right:-6%; width:59%; height:87%; }.hero-wordmark { font-size:12vw; }.hero-numeral { font-size:39vw; }.hero-roles { font-size:10px; }.character-tag { right:3%; }.manifesto { min-height:850px; padding:120px 5vw; }.intro-portrait { width:49%; height:86%; left:-4%; }.manifesto-inner { width:52%; }.manifesto-title { font-size:8.6vw; }.manifesto p { font-size:15px; }.intro-actions { gap:10px; }.intro-actions .btn { font-size:12px; padding:15px 17px; gap:12px; } }
+@media(max-width:800px) {
+ .hero-title-stage { left:29%; top:44%; }.hero-person { right:-12%; height:80%; width:65%; }.hero-bottom { bottom:70px; }.hero-roles { font-size:9px; letter-spacing:.1em; max-width:280px; margin-inline:auto; }.character-tag { display:none; }
+ .manifesto { min-height:780px; padding:100px 30px; }.manifesto-inner { width:52%; }.manifesto-title { font-size:8.7vw; }.intro-portrait { width:52%; left:-6%; height:80%; }.manifesto .eyebrow { font-size:10px; }.intro-actions { flex-direction:column; align-items:flex-start; gap:12px; }.intro-actions .btn { min-width:210px; }.intro-meta { font-size:9px; gap:12px; margin-top:30px; }
+ #contact .contact-form { padding:23px; }
+}
+@media(max-width:560px) {
+ .hero { height:160svh; }.hero-sticky { min-height:650px; }.hero-landscape img { object-position:43% center; }.hero-title-stage { left:31%; top:33%; width:54%; }.hero-wordmark { font-size:17vw; }.hero-numeral { font-size:54vw; }.hero-roles { font-size:8px; letter-spacing:.06em; max-width:180px; margin:23px auto 0; }.hero-person { width:91%; height:70%; right:-20%; bottom:20px; mask-image:linear-gradient(#000 70%,transparent 98%); }.hero-edition { top:106px; font-size:9px; }.hero-bottom { bottom:82px; gap:18px; justify-items:start; text-align:left; left:23px; right:23px; grid-template-columns:1fr; }.enter-world { align-items:flex-start; gap:6px; font-size:11px; }.enter-world span { margin-left:37px; }.hero-location { font-size:10px; line-height:1.6; }.hero-location span,.hero-location strong { display:block; }.hero-location strong { margin-left:0; }.hero-chapter { font-size:8px; bottom:26px; }
+ .manifesto { display:block; min-height:0; padding:80px 23px 0; overflow:hidden; }.manifesto-inner { width:100%; max-width:none; position:relative; margin-left:0; }.manifesto-title { font-size:clamp(68px,18vw,96px); line-height:.98; }.manifesto p { font-size:14px; }.manifesto .eyebrow { font-size:11px; }.intro-actions { flex-direction:row; flex-wrap:wrap; align-items:center; gap:12px; }.intro-actions .btn { min-width:0; padding-inline:20px; }.intro-actions .resume-dropdown-container { width:auto; }.intro-actions .resume-dropdown-container .btn { min-width:135px; }.intro-meta { gap:10px 15px; font-size:9px; margin-top:30px; }.intro-meta span:last-child { width:auto; }.intro-portrait { position:relative; left:auto; bottom:auto; width:100%; height:490px; max-height:none; margin-top:25px; z-index:1; mask-image:linear-gradient(#000 75%,transparent); }.intro-portrait img { object-position:center top; }.manifesto { display:flex; flex-direction:column; }.manifesto-inner { order:0; }.intro-portrait { order:1; }.manifesto-watermark { bottom:1%; }
+ .chapter-scenery { height:660px; }#projects .chapter-scenery { opacity:.45; }#projects .chapter-scenery img { object-position:37% center; }.world-break-art { background-image:linear-gradient(90deg,#0c0d1b9c,#0c0d1b55),url('art/chapter-about-mobile.webp'); background-position:40% center; }.sanstudio-banner { background-image:linear-gradient(#0c0d1b88,#0c0d1bb0),url('art/chapter-work-mobile.webp'); }.about-image { background-image:linear-gradient(#0c0d1b55,#0c0d1b88),url('art/chapter-about-mobile.webp'); }
+ #contact { padding-bottom:90px; }#contact .chapter-scenery { height:100%; opacity:.7; }#contact .chapter-scenery img { object-position:67% center; }#contact .contact-form { padding:24px 18px; }#contact .contact-item { padding-inline:15px !important; }.project-cover::before { background-image:linear-gradient(135deg,#0c0d1b11,#0c0d1b55),var(--project-art-mobile,url('art/chapter-work-mobile.webp')); }
+}
+@media(max-width:360px) { .hero-title-stage { top:32%; }.hero-person { height:66%; width:96%; right:-23%; }.hero-roles { font-size:7px; max-width:150px; }.intro-actions .btn { padding-inline:15px; font-size:11px; }.intro-portrait { height:420px; }.manifesto-title { font-size:63px; }.hero-sticky { min-height:620px; } }
+@media(max-height:650px) and (min-width:561px) { .hero-person { height:91%; width:43%; right:2%; }.hero-title-stage { top:46%; left:31%; width:45%; }.hero-wordmark { font-size:18vh; }.hero-numeral { font-size:59vh; }.hero-bottom { bottom:30px; }.hero-edition { top:85px; }.hero-roles { margin-top:15px; }.hero-chapter { display:none; } }
+body.motion-paused .hero-person,body.motion-paused .intro-portrait { transform:none !important; opacity:1 !important; }
+body.motion-paused .hero { height:auto; }
+body.motion-paused .hero-sticky { position:relative; }
+body.motion-paused .hero-landscape { transform:none !important; }body.motion-paused .hero-title-stage { transform:translate3d(-50%,-50%,0) !important; opacity:1 !important; }body.motion-paused .hero-bottom,body.motion-paused .manifesto-inner { transform:none !important; opacity:1 !important; }
+@media(prefers-reduced-motion:reduce) { .hero-person,.intro-portrait { transform:none !important; opacity:1 !important; } }
+@media print { .hero-person,.intro-portrait,.chapter-scenery,.character-tag { display:none !important; }.manifesto { padding:30px 0; min-height:0; }.manifesto-inner { width:100%; }.hero-title-stage { left:50%; }.hero-wordmark { font-size:65px; } }

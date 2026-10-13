@@ -1,0 +1,24 @@
+/* Overlapping chapter cameras: no empty travel between the outgoing and incoming scene. */
+.chapter-transitions #main-content { overflow-x:clip; overflow-anchor:none; }
+.chapter-track { position:relative; isolation:isolate; pointer-events:none; }
+.chapter-camera { position:sticky; min-height:100svh; background:var(--dark); overflow:clip; pointer-events:auto; }
+.chapter-surface { min-height:100svh; margin-block:0; }
+/* Prepare only the current/next cameras; avoid re-rasterizing scaled artwork every frame. */
+.camera-warm { will-change:transform,opacity; }
+.camera-warm > .chapter-surface { will-change:transform; }
+.camera-warm .intro-portrait,.camera-warm .manifesto-inner,.camera-warm .world-break-art,.camera-warm .world-break-copy { will-change:transform; }
+.chapter-camera:not(.camera-warm) .hero-person,.chapter-camera:not(.camera-warm) .hero-landscape,.chapter-camera:not(.camera-warm) .hero-title-stage { will-change:auto; }
+.chapter-transitions #home { height:auto; }
+.chapter-transitions .hero-sticky { position:relative; }
+.chapter-transitions .manifesto-inner { transform-origin:center; }
+.chapter-transitions .intro-portrait { transform-origin:center bottom; }
+/* Chapter-level zoom replaces the delayed heading reveal, which otherwise looks like loading. */
+.chapter-surface .section-title.reveal-ready { opacity:1; transform:none; }
+body.motion-paused .chapter-track { height:auto !important; margin-top:0 !important; }
+body.motion-paused .chapter-camera { position:relative; top:auto !important; transform:none !important; opacity:1 !important; pointer-events:auto !important; min-height:0; }
+body.motion-paused .chapter-surface { transform:none !important; min-height:0; }
+@media(prefers-reduced-motion:reduce),print {
+ .chapter-track { height:auto !important; margin-top:0 !important; }
+ .chapter-camera { position:relative; top:auto !important; transform:none !important; opacity:1 !important; pointer-events:auto !important; min-height:0; }
+ .chapter-surface { transform:none !important; min-height:0; }
+}
