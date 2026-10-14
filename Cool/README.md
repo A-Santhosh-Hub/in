@@ -4,7 +4,7 @@ A static portfolio with original GTA VI-inspired tropical artwork, oversized edi
 
 ## Preview
 
-Run `npm.cmd start` in Windows PowerShell (or `npm start` elsewhere), then open http://127.0.0.1:4173. No build step is needed. The server binds only to your computer. Upload `index.html` and `assets/` together to your existing static host when ready; this update has not been deployed.
+Run `npm.cmd start` in Windows PowerShell (or `npm start` elsewhere), then open  https://a-santhosh-hub.github.io/in/Cool/. No build step is needed. The server binds only to your computer. Upload `index.html` and `assets/` together to your existing static host when ready; this update has not been deployed.
 
 ## Artwork and composition
 
